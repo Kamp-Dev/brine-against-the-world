@@ -48,10 +48,10 @@ function drawTransformation(sample) {
 
 // A short, wordless ink burst anchored to the fist at contact.
 function drawComicImpact(e){
- const t=(e.duration-e.life)/.34;if(t<0||t>=1)return;
- const size=24+28*Math.sin(Math.min(1,t*2)*Math.PI/2),fade=Math.pow(1-t,.65);
+ const power=e.power||1,t=(e.duration-e.life)/(.22+.08*power);if(t<0||t>=1)return;
+ const size=(24+28*Math.sin(Math.min(1,t*3)*Math.PI/2))*power,fade=Math.pow(1-t,.65);
  ctx.save();ctx.translate(e.x,e.y);ctx.globalAlpha=fade;
  const star=(radius,n,turn,fill)=>{const p=[];for(let i=0;i<n*2;i++){const a=turn+i*Math.PI/n,r=radius*(i%2?.42:1)*(1+.1*Math.sin(i*4.7));p.push([Math.cos(a)*r,Math.sin(a)*r*.82]);}path(p,fill,'#182627',2.5);};
- star(size,9,.13,'#bf4b2b');star(size*.72,7,-.24,'#f0b64f');star(size*(t<.13?.51:.32),6,.2,'#fff2cd');
- for(let i=0;i<8;i++){const a=i*Math.PI/4+.14,d=25+52*t,r=(1-t)*6;ctx.save();ctx.translate(Math.cos(a)*d,Math.sin(a)*d*.8);ctx.rotate(a+t);path([[-r,-r*.5],[r*1.7,0],[-r,r*.5]],i%2?'#f0b64f':'#fff2cd','#182627',1.4);ctx.restore();}ctx.restore();
+ star(size*1.12,11,.06,'#121d21');star(size,9,.13,'#bf4b2b');star(size*.77,7,-.24,'#f0b64f');star(size*(t<.16?.63:.38),6,.2,'#fff2cd');
+ for(let i=0;i<8;i++){const a=i*Math.PI/4+.14,d=(25+62*t)*power,r=(1-t)*7*power;ctx.save();ctx.translate(Math.cos(a)*d,Math.sin(a)*d*.8);ctx.rotate(a+t);path([[-r,-r*.5],[r*2.7,0],[-r,r*.5]],i%2?'#f0b64f':'#fff2cd','#182627',2);ctx.restore();}ctx.restore();
 }

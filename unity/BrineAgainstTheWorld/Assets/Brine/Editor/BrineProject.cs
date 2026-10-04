@@ -85,7 +85,7 @@ public static class BrineProject
     }
     public static void BuildAndTest()
     {
-        try { CreateScene(); CheckModel(); AnimationChecks.Run(); ExpansionChecks.Run(); SessionState.SetBool("Brine.Test", true); EditorApplication.EnterPlaymode(); }
+        try { CreateScene(); CheckModel(); AnimationChecks.Run(); ExpansionChecks.Run(); SamuraiCombatChecks.Run(); SessionState.SetBool("Brine.Test", true); EditorApplication.EnterPlaymode(); }
         catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
     }
     public static void OpenAndPlay()

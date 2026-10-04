@@ -19,6 +19,8 @@
   get transformProgress(){return this.ultimatePhase==='enter'?(8.8-this.ultimateTime)/.4:this.ultimatePhase==='exit'?( .4-this.ultimateTime)/.4:0}
   get meleeDuration(){return this.settings.meleeDuration||1.2}
   get meleeImpact(){return this.settings.meleeImpact||.45}
+  get meleeStrikes(){const a=this.meleeImpact,b=this.meleeDuration-a;return this.selectedForm==='samurai'&&this.meleeAttackIndex%2?[{time:a*9/15,multiplier:1,power:1.05},{time:a+b/14,multiplier:1,power:1.15},{time:a+b*7/14,multiplier:2,power:1.55}]:[{time:a,multiplier:4,power:this.selectedForm==='samurai'?1.4:1.15}]}
+
   get ultimateSeconds(){return Math.ceil(Math.max(0,Math.min(8,this.ultimateTime-.4)))}
   get guarded(){return this.enemy.action==='guard'&&this.enemyCycle<this.enemy.interval*.65}
   get submerged(){return this.enemy.action==='burrow'&&this.enemyCycle>this.enemy.interval*.35&&this.enemyCycle<this.enemy.interval*.7}
@@ -27,7 +29,7 @@
   buyMod(){if(this.modRank>=3||this.gold<this.modCost())return false;this.gold-=this.modCost();this.mods[this.weapon]=this.modRank+1;return true}
   chooseForm(id){if(!["step-shell","samurai"].includes(id)||this.ultimateActive)return false;this.selectedForm=id;return true}
   chooseRoute(id){if(!Number.isInteger(id)||id<0||id>2||this.best<id*5||this.state==='defeat'||this.ultimateActive)return false;this.route=id;return true}
-  ultimate(){if(this.state!=='fight'||this.paused||this.ultimateCharge<100||this.ultimateActive)return false;this.ultimateCharge=0;this.ultimateTime=8.8;this.meleeAttackIndex=0;this.meleeWalkTime=0;this.meleeIdleTime=0;this.meleeIdleActive=false;this.meleeWalking=false;this.meleeCycle=0;this.meleeLanded=false;this.meleeSince=99;this.meleeLanded=false;this.burst=0;this.shots=[];return true}
+  ultimate(){if(this.state!=='fight'||this.paused||this.ultimateCharge<100||this.ultimateActive)return false;this.ultimateCharge=0;this.ultimateTime=8.8;this.meleeAttackIndex=0;this.meleeWalkTime=0;this.meleeIdleTime=0;this.meleeIdleActive=false;this.meleeWalking=false;this.meleeCycle=0;this.meleeLanded=false;this.meleeHitIndex=0;this.meleeSince=99;this.meleeLanded=false;this.meleeHitIndex=0;this.burst=0;this.shots=[];return true}
   get boss(){return this.stage%5===0}
   get level(){return 1+Math.floor(Math.sqrt(this.xp/30))}
   get nextXp(){return this.level*this.level*30}
@@ -38,8 +40,8 @@
   get reward(){return (this.settings.reward+Math.floor((this.stage-1)*2))*(this.boss?4:1)*routes[this.route].reward|0}
   get offlineRate(){return this.best===0?0:Math.min(60,4+this.best*1.5)}
   cost(kind){return Math.floor((kind==='damage'?18:kind==='shell'?16:30)*Math.pow(1.5,this.upgrades[kind]))}
-  reset(){this.selectedForm="step-shell";this.meleeAttackIndex=0;this.route=0;this.mods={scrap:0,repeater:0,lowtide:0};this.ultimateCharge=0;this.ultimateTime=0;this.meleeAdvance=0;this.meleeWalking=false;this.meleeWalkTime=0;this.meleeIdleTime=0;this.meleeIdleActive=false;this.meleeCycle=0;this.meleeLanded=false;this.meleeSince=99;this.enemyDepth=0;this.enemyAttack=99;this.weapon='scrap';this.gold=0;this.kills=0;this.stage=1;this.best=0;this.xp=0;this.upgrades={damage:0,shell:0,speed:0};this.farming=false;this.paused=false;this.time=0;this.distance=0;this.shotSerial=0;this.charge=0;this.offlineEarned=0;this.playerHp=this.maxPlayerHp;this.startEncounter()}
-  startEncounter(){this.meleeCycle=0;this.meleeLanded=false;this.state='travel';this.age=0;this.enemyX=520;this.hp=this.maxHp=Math.round((this.settings.enemyHealth+(this.stage-1)*9)*this.enemy.health);this.cycle=0;this.enemyCycle=0;this.shots=[];this.enemyShots=[];this.effects=[];this.sinceShot=99;this.playerHit=0;this.burst=0;this.lastReward=0;this.enemyDepth=0;this.enemyAttack=99}
+  reset(){this.selectedForm="step-shell";this.meleeAttackIndex=0;this.route=0;this.mods={scrap:0,repeater:0,lowtide:0};this.ultimateCharge=0;this.ultimateTime=0;this.meleeAdvance=0;this.meleeWalking=false;this.meleeWalkTime=0;this.meleeIdleTime=0;this.meleeIdleActive=false;this.meleeCycle=0;this.meleeLanded=false;this.meleeHitIndex=0;this.meleeSince=99;this.enemyDepth=0;this.enemyAttack=99;this.weapon='scrap';this.gold=0;this.kills=0;this.stage=1;this.best=0;this.xp=0;this.upgrades={damage:0,shell:0,speed:0};this.farming=false;this.paused=false;this.time=0;this.distance=0;this.shotSerial=0;this.charge=0;this.offlineEarned=0;this.playerHp=this.maxPlayerHp;this.startEncounter()}
+  startEncounter(){this.meleeCycle=0;this.meleeLanded=false;this.meleeHitIndex=0;this.state='travel';this.age=0;this.enemyX=520;this.hp=this.maxHp=Math.round((this.settings.enemyHealth+(this.stage-1)*9)*this.enemy.health);this.cycle=0;this.enemyCycle=0;this.shots=[];this.enemyShots=[];this.effects=[];this.sinceShot=99;this.playerHit=0;this.burst=0;this.lastReward=0;this.enemyDepth=0;this.enemyAttack=99}
   equip(id){if(!this.settings.weapons.some(w=>w.id===id))throw Error('Unknown weapon');if(this.best<this.settings.weapons.find(w=>w.id===id).unlock)return false;this.weapon=id;return true}
   buy(kind){if(!Object.hasOwn(this.upgrades,kind)||this.upgrades[kind]>=30)return false;const cost=this.cost(kind);if(this.gold<cost)return false;this.gold-=cost;this.upgrades[kind]++;if(kind==='shell'&&this.state!=='defeat')this.playerHp=Math.min(this.maxPlayerHp,this.playerHp+25);return true}
   get farmStage(){return Math.max(1,this.best-(this.best%5===0?1:0))}
@@ -63,8 +65,8 @@
     this.cycle+=dt;this.enemyCycle+=dt;
     const interval=this.burst>0?.15:this.interval;
     if(this.ultimatePhase==='melee'&&!this.meleeWalking&&!this.meleeIdleActive&&Math.abs(this.meleeAdvance-this.meleeReach)<.01){this.meleeCycle+=dt;
-     if(!this.meleeLanded&&this.meleeCycle>=this.meleeImpact){this.meleeLanded=true;this.meleeSince=0;this.hitEnemy(this.damage*4,'melee',505);}
-     if(this.meleeCycle>=this.meleeDuration){this.meleeCycle%=this.meleeDuration;this.meleeAttackIndex++;this.meleeLanded=false;}}
+     const strikes=this.meleeStrikes;while(this.state==='fight'&&this.meleeHitIndex<strikes.length&&this.meleeCycle+1e-8>=strikes[this.meleeHitIndex].time){const strike=strikes[this.meleeHitIndex++];this.meleeLanded=true;this.meleeSince=0;this.hitEnemy(this.damage*strike.multiplier,'melee',505,strike.power);}
+     if(this.meleeCycle>=this.meleeDuration){this.meleeCycle%=this.meleeDuration;this.meleeAttackIndex++;this.meleeLanded=false;this.meleeHitIndex=0;}}
 
     if(!this.ultimateActive&&!this.meleeWalking&&this.cycle>=interval){this.cycle=0;this.sinceShot=0;this.shotSerial++;if(this.burst>0)this.burst--;this.shots.push({x:origin.x,y:origin.y,damage:this.damage,weapon:this.weapon,startX:origin.x,speed:s.weapons.find(w=>w.id===this.weapon).speed});this.effects.push({type:'flash',x:origin.x,y:origin.y,weapon:this.weapon,life:.12,duration:.12})}
     if(this.state==='fight'&&this.enemyCycle>=this.enemy.interval){this.enemyCycle=0;this.enemyAttack=0;
@@ -77,9 +79,9 @@
    const remaining=[];for(const shot of this.shots){shot.x+=dt*shot.speed;if(shot.x>=this.enemyX-23){if(this.state==='fight'){this.hitEnemy(shot.damage,shot.weapon,shot.y)}}else if(shot.x<550)remaining.push(shot)}this.shots=remaining;
    const hostile=[];for(const shot of this.enemyShots){shot.x-=dt*310;if(shot.x<=145+this.meleeAdvance){shot.damage=Math.max(1,Math.round(shot.damage*(this.ultimateActive?.25:1)));this.playerHp=Math.max(0,this.playerHp-shot.damage);if(!this.ultimateActive)this.ultimateCharge=Math.min(100,this.ultimateCharge+5);this.playerHit=.22;this.effects.push({type:'hurt',x:124+this.meleeAdvance,y:440,damage:shot.damage,life:.45});if(this.playerHp===0){this.enter('defeat');this.shots=[];this.enemyShots=[];return}}else hostile.push(shot)}this.enemyShots=hostile;
   }
-  hitEnemy(damage,weapon,y){if(this.state!=='fight')return;const melee=weapon==='melee';if(this.submerged&&!melee){this.effects.push({type:'miss',x:this.enemyX,y,life:.5});return;}
+  hitEnemy(damage,weapon,y,power=1){if(this.state!=='fight')return;const melee=weapon==='melee';if(this.submerged&&!melee){this.effects.push({type:'miss',x:this.enemyX,y,life:.5});return;}
    damage=Math.round(damage*(this.guarded&&!melee?.35:1));this.hp=Math.max(0,this.hp-damage);this.charge=Math.min(100,this.charge+8);if(!this.ultimateActive)this.ultimateCharge=Math.min(100,this.ultimateCharge+12);
-   this.effects.push({type:'hit',x:melee?124+this.meleeAdvance+(this.settings.meleeReach||102)-4:this.enemyX,y,damage,weapon,life:.6,duration:.6});
+   this.effects.push({type:'hit',x:melee?124+this.meleeAdvance+(this.settings.meleeReach||102)-4:this.enemyX,y,damage,weapon,power,life:.6,duration:.6});
    if(this.hp===0){this.kills++;this.lastReward=this.reward;this.gold=Math.min(1e9,this.gold+this.lastReward);this.best=Math.max(this.best,this.stage);this.xp+=this.boss?35:10;this.playerHp=Math.min(this.maxPlayerHp,this.playerHp+Math.round(this.maxPlayerHp*.12));this.enter('reward');this.enemyShots=[];this.burst=0;this.effects.push({type:'reward',x:this.enemyX,y:y-50,damage:this.lastReward,life:1.2});}}
   save(now=Date.now()){return{version:1,selectedForm:this.selectedForm,route:this.route,mods:{...this.mods},ultimateCharge:this.ultimateCharge,savedAt:now,weapon:this.weapon,gold:this.gold,kills:this.kills,best:this.best,xp:this.xp,upgrades:{...this.upgrades},charge:this.charge,stage:this.stage,playerHp:this.playerHp,farming:this.farming,defeated:this.state==='defeat'}}
   load(data,now=Date.now()){

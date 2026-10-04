@@ -34,6 +34,13 @@
      if(pixels[p+3]<255)count++;pixels[p]=r;pixels[p+1]=g;pixels[p+2]=b;pixels[p+3]=255;
     }
    }
+   for(const eye of f.pupils||[]){
+    for(let y=Math.max(f.y,Math.floor(f.y+eye.y-eye.ry));y<Math.min(f.y+f.h,Math.ceil(f.y+eye.y+eye.ry));y++)for(let x=Math.max(f.x,Math.floor(f.x+eye.x-eye.rx));x<Math.min(f.x+f.w,Math.ceil(f.x+eye.x+eye.rx));x++){
+     if(((x-f.x-eye.x)/eye.rx)**2+((y-f.y-eye.y)/eye.ry)**2>1)continue;const p=(y*width+x)*4;
+     // Pupil masks follow each eye. Keep the orange eyelid and exterior silhouette intact.
+     if(snapshot[p+3]>20&&Math.max(snapshot[p],snapshot[p+1],snapshot[p+2])-Math.min(snapshot[p],snapshot[p+1],snapshot[p+2])<80){pixels[p]=pixels[p+1]=pixels[p+2]=12;pixels[p+3]=255;}
+    }
+   }
   }return count;
  }
  function prepareEyes(image,original,clip){
@@ -46,7 +53,7 @@
   const moving=m.meleeWalking||m.meleeIdleActive,attacking=!moving&&m.meleeCycle>0&&m.meleeCycle<m.meleeDuration;
   const name=moving?'walk':attacking&&m.meleeAttackIndex%2?'series':'slash',clip=data.clips.find(c=>c.name===name);let frame=0;
   if(moving)frame=Math.floor((m.meleeIdleActive?m.meleeIdleTime:m.meleeWalkTime)*18)%20;
-  else if(attacking){const impact=name==='slash'?6:15,t=m.meleeCycle;frame=t<m.meleeImpact?Math.floor(t/m.meleeImpact*impact):Math.min(clip.frames.length-1,impact+Math.floor((t-m.meleeImpact)/(m.meleeDuration-m.meleeImpact)*(clip.frames.length-impact)));}
+  else if(attacking){const impact=name==='slash'?6:15,t=m.meleeCycle;frame=t<m.meleeImpact?Math.floor(t/m.meleeImpact*impact+1e-7):Math.min(clip.frames.length-1,impact+Math.floor((t-m.meleeImpact)/(m.meleeDuration-m.meleeImpact)*(clip.frames.length-impact)+1e-7));}
   const f=clip.frames[frame];return{state:moving?'walk':attacking?name:'ready',clip,frame,f,angle:f.angle};
  }
  const api={sample,draw,duration,stages,restoreEyes,prepareEyes,combatSample};if(typeof module!=='undefined')module.exports=api;root.SamuraiBrine=api;

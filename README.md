@@ -65,3 +65,5 @@ Open `step-shell-review.html` for a replayable, slow-motion preview with a trans
 `world-review.html` previews all six enemies, their attack motions, melee contact, and scrolling scenery without changing a save. Enemy art lives in `web/enemies`, scenery in `web/scenery`, with identical Unity Resources copies. `enemy-motion.json` controls the anticipation, squash, lunge, and recovery of each type. These are code-driven sprite motions, not new frame-by-frame animations.
 
 Art was generated using the built-in image_gen tool; no GodModeAI credits were used. Prompts are preserved in `art/enemy-harbor-prompts.json`.
+
+Samurai pupil masks now track both eyes on every frame and seal bright flecks without filling the transparent exterior. Series Slash registers three separate contacts on frames 9, 16, and 22, dealing 1x, 1x, and 2x base damage respectively. Each contact produces a wordless comic impact, with a larger finisher. Total combo damage remains 4x. Browser and Unity timing checks cover 10–120 updates per second and stop remaining contacts after an enemy dies. No additional GodModeAI requests were used for these repairs.

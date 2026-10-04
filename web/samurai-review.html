@@ -4,21 +4,24 @@
 <canvas id="stage" width="960" height="620" aria-label="Samurai Brine animation preview"></canvas><p id="status" role="status">Loading…</p>
 <nav><button id="play">Pause</button><button id="restart">Replay</button><label>Speed <select id="speed"><option value="1">Normal</option><option value="0.5">Half</option><option value="0.25">Quarter</option></select></label><label>Sword <select id="weapon"><option value="katana">Breakwater</option><option value="none">No weapon / attachment check</option></select></label><label>Backdrop <select id="background"><option value="harbor">Harbor</option><option value="check">Transparency check</option></select></label></nav>
 <input id="seek" aria-label="Animation time" type="range" min="0" max="6" step="0.001" value="0"><p class="note">Budget locked: five GodMode requests, including one queue timeout. Attack sheets required artwork cleanup. Review the motion before promoting it to the main game.</p><a href="./">Return to game</a>
-</main><script src="samurai.js?v=samurai-form-1"></script><script>
+</main><script src="step-shell.js?v=samurai-hits-2"></script><script src="samurai.js?v=samurai-hits-2"></script><script>
 const canvas=document.querySelector('#stage'),ctx=canvas.getContext('2d'),images={};let data,playing=true,time=0,last=0,ready=false;
-const seek=document.querySelector('#seek');seek.max=SamuraiBrine.duration;
+const seek=document.querySelector('#seek');seek.max=SamuraiBrine.duration; const reviewTime=Number(new URLSearchParams(location.search).get("time")); if(location.search.includes("time=")&&Number.isFinite(reviewTime)){time=Math.max(0,Math.min(SamuraiBrine.duration-.001,reviewTime));playing=false;document.querySelector("#play").textContent="Play";}
 const load=(name,url)=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>{images[name]=im;resolve()};im.onerror=()=>reject(Error('Unable to load '+url));im.src=url});
+function path(points,fill,stroke='#19251d',width=3){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath();ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke()}
 function scene(s){
  if(document.querySelector('#background').value==='check'){for(let y=0;y<620;y+=24)for(let x=0;x<960;x+=24){ctx.fillStyle=(x/24+y/24)%2?'#9d7398':'#eadcc1';ctx.fillRect(x,y,24,24)}}
  else{ctx.fillStyle='#749593';ctx.fillRect(0,0,960,620);for(const [name,speed,height,y] of [['distance',.12,620,0],['quay',.43,470,75],['deck',1.12,170,460]]){const im=images[name],w=im.width/im.height*height,offset=s.distance*speed;for(let x=-offset%w-w;x<960;x+=w)ctx.drawImage(im,x,y,w,height)}}
  ctx.fillStyle='rgba(12,25,25,.18)';ctx.beginPath();ctx.ellipse(330,514,110,12,0,0,7);ctx.fill();
  SamuraiBrine.draw(ctx,data,images,s,330,510,320,document.querySelector('#weapon').value!=='none');
+ const contacts=s.state==='slash'?[{t:6/18,p:1.4}]:s.state==='series'?[{t:9/24,p:1.05},{t:16/24,p:1.15},{t:22/24,p:1.55}]:[];for(const hit of contacts){const age=s.time-hit.t;if(age>=0&&age<.22+.08*hit.p)drawComicImpact({x:680,y:360,duration:.6,life:.6-age,power:hit.p});}
  document.querySelector('#status').textContent=s.state.toUpperCase()+' · frame '+(s.frame+1)+' / '+s.clip.frames.length+' · '+time.toFixed(2)+' s';seek.value=time;
 }
 function render(now){if(ready){if(playing)time=(time+Math.min(.05,(now-last)/1000)*Number(document.querySelector('#speed').value))%SamuraiBrine.duration;scene(SamuraiBrine.sample(data,time))}last=now;requestAnimationFrame(render)}
 document.querySelector('#play').onclick=()=>{playing=!playing;document.querySelector('#play').textContent=playing?'Pause':'Play'};
 document.querySelector('#restart').onclick=()=>{time=0;playing=true;document.querySelector('#play').textContent='Pause'};
 seek.oninput=()=>{time=Number(seek.value);playing=false;document.querySelector('#play').textContent='Play'};
-fetch('samurai/animation.json').then(r=>r.json()).then(async d=>{data=d;await Promise.all([...d.clips.map(c=>load(c.name,'samurai/'+c.image)),load('walkOriginal','samurai/walk-original.png'),load('katana','samurai/katana.png'),load('distance','scenery/harbor-distance.png'),load('quay','scenery/harbor-quay.png'),load('deck','scenery/harbor-deck.png')]);for(const c of data.clips)images[c.name]=SamuraiBrine.prepareEyes(images[c.name],c.name==='walk'?images.walkOriginal:null,c);ready=true}).catch(e=>document.querySelector('#status').textContent=e.message);requestAnimationFrame(render);
+fetch('samurai/animation.json?v=samurai-hits-2').then(r=>r.json()).then(async d=>{data=d;await Promise.all([...d.clips.map(c=>load(c.name,'samurai/'+c.image)),load('walkOriginal','samurai/walk-original.png'),load('katana','samurai/katana.png'),load('distance','scenery/harbor-distance.png'),load('quay','scenery/harbor-quay.png'),load('deck','scenery/harbor-deck.png')]);for(const c of data.clips)images[c.name]=SamuraiBrine.prepareEyes(images[c.name],c.name==='walk'?images.walkOriginal:null,c);ready=true}).catch(e=>document.querySelector('#status').textContent=e.message);requestAnimationFrame(render);
 </script></body></html>
+
 
