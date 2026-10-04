@@ -69,3 +69,9 @@ Art was generated using the built-in image_gen tool; no GodModeAI credits were u
 Samurai pupil masks now track both eyes on every frame and seal bright flecks without filling the transparent exterior. Series Slash registers three separate contacts on frames 9, 16, and 22, dealing 1x, 1x, and 2x base damage respectively. Each contact produces a wordless comic impact, with a larger finisher. Total combo damage remains 4x. Browser and Unity timing checks cover 10–120 updates per second and stop remaining contacts after an enemy dies. No additional GodModeAI requests were used for these repairs.
 
 Eye opacity follow-up: all 62 Samurai source frames now carry bounded eye-interior spans. Both runtimes restore fully missing pupil pixels and make these interiors opaque, while retaining exterior transparency. Walk repairs use the original pre-keyed sheet.
+
+## Ticket Board UI and upgrades
+
+The selected third Harbor Ledger concept supplies the title banner, ticket frames and navigation art. Runtime text, health, equipment, charge and prices stay live. Battle and action controls remain visible above menus. The Road upgrade strip scrolls horizontally through six cards using touch, arrow controls or keyboard arrows in the browser; Unity provides horizontal scrolling and paging controls.
+
+Damage, Shell and Speed retain their existing behavior. Scavenging adds 5% to fight and offline salvage per rank (20 ranks); Patch Up adds one percentage point to post-win healing (10 ranks); Tide Charge adds one point of melee-form charge per successful hit (8 ranks). Costs start at 60/45/75 salvage and grow by 50% per rank. Legacy saves start these ranks at zero. Offline earnings remain capped at eight hours. Run npm test for progression and asset checks; Unity BuildAndTest includes TicketBoardChecks.

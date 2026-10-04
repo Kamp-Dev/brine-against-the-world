@@ -6,6 +6,7 @@
  enemies.push({name:'Gate Hauler',art:'gate-hauler',health:1.3,damage:11,interval:3.1,height:126,action:'guard'}, {name:'Sump Mender',art:'sump-mender',health:1.1,damage:7,interval:3.4,height:143,action:'repair'}, {name:'Mud Skipper',art:'mud-skipper',health:.95,damage:13,interval:2.8,height:110,action:'burrow'});
  enemies[0].action='lob';enemies[1].action='burst';enemies[2].action='slam';
  const routes=[{name:'Dry Docks',reward:1,damage:1},{name:'Drainage Run',reward:1.25,damage:1.2},{name:'Salt Flats',reward:1.5,damage:1.45}];
+ const upgradeRules={damage:{cost:18,cap:30},shell:{cost:16,cap:30},speed:{cost:30,cap:30},scavenging:{cost:60,cap:20},patch:{cost:45,cap:10},tide:{cost:75,cap:8}};
  const integer=(v,min,max,fallback)=>Number.isFinite(v)?Math.min(max,Math.max(min,Math.floor(v))):fallback;
  class Encounter{
   constructor(settings=defaults){this.settings=settings;this.reset()}
@@ -37,13 +38,17 @@
   get damage(){return this.settings.weapons.find(w=>w.id===this.weapon).damage+this.upgrades.damage*4+(this.level-1)*2+this.modRank*5}
   get interval(){return this.settings.shotInterval*this.settings.weapons.find(w=>w.id===this.weapon).interval/(1+this.upgrades.speed*.08)}
   get enemyDamage(){return Math.round((this.enemy.damage+Math.floor((this.stage-1)*1.6))*routes[this.route].damage)}
-  get reward(){return (this.settings.reward+Math.floor((this.stage-1)*2))*(this.boss?4:1)*routes[this.route].reward|0}
-  get offlineRate(){return this.best===0?0:Math.min(60,4+this.best*1.5)}
-  cost(kind){return Math.floor((kind==='damage'?18:kind==='shell'?16:30)*Math.pow(1.5,this.upgrades[kind]))}
-  reset(){this.selectedForm="step-shell";this.meleeAttackIndex=0;this.route=0;this.mods={scrap:0,repeater:0,lowtide:0};this.ultimateCharge=0;this.ultimateTime=0;this.meleeAdvance=0;this.meleeWalking=false;this.meleeWalkTime=0;this.meleeIdleTime=0;this.meleeIdleActive=false;this.meleeCycle=0;this.meleeLanded=false;this.meleeHitIndex=0;this.meleeSince=99;this.enemyDepth=0;this.enemyAttack=99;this.weapon='scrap';this.gold=0;this.kills=0;this.stage=1;this.best=0;this.xp=0;this.upgrades={damage:0,shell:0,speed:0};this.farming=false;this.paused=false;this.time=0;this.distance=0;this.shotSerial=0;this.charge=0;this.offlineEarned=0;this.playerHp=this.maxPlayerHp;this.startEncounter()}
+  get salvageMultiplier(){return 1+this.upgrades.scavenging*.05}
+  get recoveryPercent(){return 12+this.upgrades.patch}
+  get chargePerHit(){return 12+this.upgrades.tide}
+  cap(kind){return upgradeRules[kind]?.cap||0}
+  get reward(){return (this.settings.reward+Math.floor((this.stage-1)*2))*(this.boss?4:1)*routes[this.route].reward*this.salvageMultiplier|0}
+  get offlineRate(){return this.best===0?0:Math.min(60,4+this.best*1.5)*this.salvageMultiplier}
+  cost(kind){return upgradeRules[kind]?Math.floor(upgradeRules[kind].cost*Math.pow(1.5,this.upgrades[kind])):Infinity}
+  reset(){this.selectedForm="step-shell";this.meleeAttackIndex=0;this.route=0;this.mods={scrap:0,repeater:0,lowtide:0};this.ultimateCharge=0;this.ultimateTime=0;this.meleeAdvance=0;this.meleeWalking=false;this.meleeWalkTime=0;this.meleeIdleTime=0;this.meleeIdleActive=false;this.meleeCycle=0;this.meleeLanded=false;this.meleeHitIndex=0;this.meleeSince=99;this.enemyDepth=0;this.enemyAttack=99;this.weapon='scrap';this.gold=0;this.kills=0;this.stage=1;this.best=0;this.xp=0;this.upgrades={damage:0,shell:0,speed:0,scavenging:0,patch:0,tide:0};this.farming=false;this.paused=false;this.time=0;this.distance=0;this.shotSerial=0;this.charge=0;this.offlineEarned=0;this.playerHp=this.maxPlayerHp;this.startEncounter()}
   startEncounter(){this.meleeCycle=0;this.meleeLanded=false;this.meleeHitIndex=0;this.state='travel';this.age=0;this.enemyX=520;this.hp=this.maxHp=Math.round((this.settings.enemyHealth+(this.stage-1)*9)*this.enemy.health);this.cycle=0;this.enemyCycle=0;this.shots=[];this.enemyShots=[];this.effects=[];this.sinceShot=99;this.playerHit=0;this.burst=0;this.lastReward=0;this.enemyDepth=0;this.enemyAttack=99}
   equip(id){if(!this.settings.weapons.some(w=>w.id===id))throw Error('Unknown weapon');if(this.best<this.settings.weapons.find(w=>w.id===id).unlock)return false;this.weapon=id;return true}
-  buy(kind){if(!Object.hasOwn(this.upgrades,kind)||this.upgrades[kind]>=30)return false;const cost=this.cost(kind);if(this.gold<cost)return false;this.gold-=cost;this.upgrades[kind]++;if(kind==='shell'&&this.state!=='defeat')this.playerHp=Math.min(this.maxPlayerHp,this.playerHp+25);return true}
+  buy(kind){if(!Object.hasOwn(this.upgrades,kind)||this.upgrades[kind]>=this.cap(kind))return false;const cost=this.cost(kind);if(this.gold<cost)return false;this.gold-=cost;this.upgrades[kind]++;if(kind==='shell'&&this.state!=='defeat')this.playerHp=Math.min(this.maxPlayerHp,this.playerHp+25);return true}
   get farmStage(){return Math.max(1,this.best-(this.best%5===0?1:0))}
   retry(){this.ultimateTime=0;this.stage=this.farmStage;this.farming=this.best>0;this.playerHp=this.maxPlayerHp;this.paused=false;this.startEncounter()}
   toggleFarm(){if(this.ultimateActive||this.best===0||this.state==='defeat')return;this.farming=!this.farming;this.stage=this.farming?this.farmStage:this.best+1;this.startEncounter()}
@@ -80,17 +85,17 @@
    const hostile=[];for(const shot of this.enemyShots){shot.x-=dt*310;if(shot.x<=145+this.meleeAdvance){shot.damage=Math.max(1,Math.round(shot.damage*(this.ultimateActive?.25:1)));this.playerHp=Math.max(0,this.playerHp-shot.damage);if(!this.ultimateActive)this.ultimateCharge=Math.min(100,this.ultimateCharge+5);this.playerHit=.22;this.effects.push({type:'hurt',x:124+this.meleeAdvance,y:440,damage:shot.damage,life:.45});if(this.playerHp===0){this.enter('defeat');this.shots=[];this.enemyShots=[];return}}else hostile.push(shot)}this.enemyShots=hostile;
   }
   hitEnemy(damage,weapon,y,power=1){if(this.state!=='fight')return;const melee=weapon==='melee';if(this.submerged&&!melee){this.effects.push({type:'miss',x:this.enemyX,y,life:.5});return;}
-   damage=Math.round(damage*(this.guarded&&!melee?.35:1));this.hp=Math.max(0,this.hp-damage);this.charge=Math.min(100,this.charge+8);if(!this.ultimateActive)this.ultimateCharge=Math.min(100,this.ultimateCharge+12);
+   damage=Math.round(damage*(this.guarded&&!melee?.35:1));this.hp=Math.max(0,this.hp-damage);this.charge=Math.min(100,this.charge+8);if(!this.ultimateActive)this.ultimateCharge=Math.min(100,this.ultimateCharge+this.chargePerHit);
    this.effects.push({type:'hit',x:melee?124+this.meleeAdvance+(this.settings.meleeReach||102)-4:this.enemyX,y,damage,weapon,power,life:.6,duration:.6});
-   if(this.hp===0){this.kills++;this.lastReward=this.reward;this.gold=Math.min(1e9,this.gold+this.lastReward);this.best=Math.max(this.best,this.stage);this.xp+=this.boss?35:10;this.playerHp=Math.min(this.maxPlayerHp,this.playerHp+Math.round(this.maxPlayerHp*.12));this.enter('reward');this.enemyShots=[];this.burst=0;this.effects.push({type:'reward',x:this.enemyX,y:y-50,damage:this.lastReward,life:1.2});}}
+   if(this.hp===0){this.kills++;this.lastReward=this.reward;this.gold=Math.min(1e9,this.gold+this.lastReward);this.best=Math.max(this.best,this.stage);this.xp+=this.boss?35:10;this.playerHp=Math.min(this.maxPlayerHp,this.playerHp+Math.round(this.maxPlayerHp*this.recoveryPercent/100));this.enter('reward');this.enemyShots=[];this.burst=0;this.effects.push({type:'reward',x:this.enemyX,y:y-50,damage:this.lastReward,life:1.2});}}
   save(now=Date.now()){return{version:1,selectedForm:this.selectedForm,route:this.route,mods:{...this.mods},ultimateCharge:this.ultimateCharge,savedAt:now,weapon:this.weapon,gold:this.gold,kills:this.kills,best:this.best,xp:this.xp,upgrades:{...this.upgrades},charge:this.charge,stage:this.stage,playerHp:this.playerHp,farming:this.farming,defeated:this.state==='defeat'}}
   load(data,now=Date.now()){
    if(!data||data.version!==1||!Number.isFinite(data.savedAt))return false;
    this.reset();this.chooseForm(data.selectedForm);this.route=integer(data.route,0,2,0);this.ultimateCharge=integer(data.ultimateCharge,0,100,0);for(const w of this.settings.weapons)this.mods[w.id]=integer(data.mods?.[w.id],0,3,0);this.gold=integer(data.gold,0,1e9,0);this.kills=integer(data.kills,0,1e7,0);this.best=integer(data.best,0,10000,0);this.xp=integer(data.xp,0,1e9,0);
-   for(const k of Object.keys(this.upgrades))this.upgrades[k]=integer(data.upgrades?.[k],0,30,0);
+   for(const k of Object.keys(this.upgrades))this.upgrades[k]=integer(data.upgrades?.[k],0,this.cap(k),0);
    this.route=Math.min(this.route,Math.floor(this.best/5),2);this.stage=integer(data.stage,1,this.best+1,Math.max(1,this.best+1));this.farming=!!data.farming&&this.best>0;this.playerHp=integer(data.playerHp,0,this.maxPlayerHp,this.maxPlayerHp);this.charge=integer(data.charge,0,100,0);if(this.settings.weapons.some(w=>w.id===data.weapon&&this.best>=w.unlock))this.weapon=data.weapon;
    const seconds=Math.min(8*3600,Math.max(0,(now-data.savedAt)/1000));this.offlineEarned=Math.floor(seconds/60*this.offlineRate);this.gold=Math.min(1e9,this.gold+this.offlineEarned);this.startEncounter();if(data.defeated||this.playerHp===0)this.enter('defeat');return true;
   }
  }
- const api={Encounter,weapons,defaults,enemies,routes};if(typeof module!=='undefined')module.exports=api;else root.BrineCombat=api;
+ const api={Encounter,weapons,defaults,enemies,routes,upgradeRules};if(typeof module!=='undefined')module.exports=api;else root.BrineCombat=api;
 })(typeof window!=='undefined'?window:globalThis);
