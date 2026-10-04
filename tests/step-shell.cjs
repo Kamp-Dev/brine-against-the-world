@@ -74,3 +74,11 @@ for(const hz of [30,60,120]){
  let landed=false;for(let i=0;i<hz;i++){m.tick(1/hz,origin);if(m.meleeIdleActive)assert.equal(m.meleeCycle,0,'finish step before winding up punch');else{assert(Math.abs(m.meleeIdleTime*3-Math.round(m.meleeIdleTime*3))<.0001,'handoff at a planted step boundary');landed=true;break;}}assert(landed,'step settles without delaying combat indefinitely');
 }
 console.log('PASS: complete idle loops, independent cadence, and planted-step attack handoffs at 30/60/120 Hz.');
+
+for(const hz of [30,60,120]){
+ const m=new Encounter(settings);m.ultimateTime=7;m.state='reward';m.age=0;m.meleeCycle=m.meleeDuration;m.meleeAdvance=85;let before=m.distance;
+ m.tick(1/hz,origin);assert(m.meleeIdleActive);assert(Math.abs(m.distance-before-settings.enemySpeed*.6*.7/hz)<1e-7,'scenery starts with the first waiting step, before enemy travel');
+ m.state='travel';m.enemyX=500;before=m.distance;m.tick(1/hz,origin);assert(Math.abs(m.distance-before-settings.enemySpeed*.6*.7/hz)<1e-7,'travel keeps the same scenery speed without double scrolling');
+ m.paused=true;before=m.distance;m.tick(.1,origin);assert.equal(m.distance,before,'pause stops scenery');m.paused=false;m.state='fight';m.meleeIdleActive=false;m.meleeCycle=.2;before=m.distance;m.tick(1/hz,origin);assert.equal(m.distance,before,'scenery stops for punches');
+}
+console.log('PASS: scenery starts with waiting shuffle, keeps a steady travel pace, and stops for pause/combat.');
