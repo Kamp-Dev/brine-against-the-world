@@ -108,5 +108,6 @@
       "ratio": 1.578826,
       "contactFraction": 0.12
     }
-  ]
+  ],
+  "meleeMoveSpeed": 84
 }

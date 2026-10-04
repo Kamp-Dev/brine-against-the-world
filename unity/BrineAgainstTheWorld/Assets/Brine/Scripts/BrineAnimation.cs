@@ -9,7 +9,8 @@ namespace BrineGame
     {
         public string sheet;
         public int columns, rows, cellWidth, cellHeight, frames;
-        public float fps, duration;
+        public float fps, duration, height;
+        public Crop[] frameBounds;
         public Crop bounds;
         public Crop renderBounds;
         public Grip[] grips;
@@ -29,12 +30,12 @@ namespace BrineGame
         public static Crop Bounds(ClipData clip) => clip.renderBounds != null && clip.renderBounds.h > 0 ? clip.renderBounds : Common;
         public static Pose Sample(EncounterModel model, AnimationData data)
         {
-            bool firing = model.State != EncounterState.Travel;
+            bool firing = model.State != EncounterState.Travel && !model.MeleeWalking;
             float phase = 6;
-            if (!firing) phase = (model.Age * data.walk.fps) % data.walk.frames;
+            if (!firing) phase = ((model.MeleeWalking?model.MeleeWalkTime:model.Age) * data.walk.fps) % data.walk.frames;
             else if (model.State == EncounterState.Raise) phase = Mathf.Min(6, model.Age / model.Settings.raiseDuration * 7);
             else if (model.State == EncounterState.Lower) phase = Mathf.Min(6, model.Age / model.Settings.lowerDuration * 7);
-            bool lowering = model.State == EncounterState.Lower;
+            bool lowering = firing && model.State == EncounterState.Lower;
             int frame = lowering ? 6-Mathf.FloorToInt(phase) : Mathf.FloorToInt(phase);
             var clip = firing ? data.fire : data.walk;
             var grip = clip.grips[frame]; var next = clip.grips[lowering ? Mathf.Max(0,frame-1) : firing ? Mathf.Min(6,frame+1) : (frame+1)%clip.frames];

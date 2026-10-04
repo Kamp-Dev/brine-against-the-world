@@ -3,18 +3,19 @@ function sampleStepShell(m, data) {
  const phase=m.ultimatePhase||'normal',t=Math.max(0,Math.min(1,m.transformProgress||0));
  const transition=phase==='enter'||phase==='exit';
  const show=phase==='melee'||(phase==='enter'&&t>=.5)||(phase==='exit'&&t<.5);
- const moving=m.state==='travel'||Math.abs((phase==='melee'&&['fight','raise'].includes(m.state)?m.meleeReach:0)-(m.meleeAdvance||0))>3;
- const attacking=phase==='melee'&&m.meleeCycle>0&&m.meleeCycle<m.meleeDuration;
- const clip=moving&&!attacking?data.walk:data.punch;
+ const moving=phase==='melee'&&(m.meleeWalking||m.state==='travel');
+ const attacking=phase==='melee'&&!moving&&m.meleeCycle>0&&m.meleeCycle<m.meleeDuration;
+ const clip=moving?data.walk:data.punch;
  let frame=0;
- if(phase==='melee'&&moving&&!attacking)frame=Math.floor(m.time*clip.fps)%clip.frames;
+ // Position-driven steps show a whole gait during the short approach, starting at frame zero.
+ if(moving)frame=m.meleeWalking?Math.min(clip.frames-1,Math.floor(Math.max(0,Math.min(1,(m.meleeAdvance||0)/Math.max(1,m.meleeReach)))*(clip.frames-1))):Math.floor(m.age*clip.fps)%clip.frames;
  else if(attacking)frame=Math.min(clip.frames-1,Math.floor(m.meleeCycle/m.meleeDuration*clip.frames));
  const cover=transition?Math.min(1,Math.pow(Math.sin(t*Math.PI),4)*1.5):0;
  return {show,clip,frame,cover,squash:transition?1-.06*Math.sin(t*Math.PI):1};
 }
 function drawStepShell(sample) {
- const a=sample.clip,b=a.renderBounds,k=stepShellConfig.height/b.h,img=stepShellImages[a.kind];
- ctx.drawImage(img,(sample.frame%a.columns)*a.cellWidth+b.x,Math.floor(sample.frame/a.columns)*a.cellHeight+b.y,b.w,b.h,124-b.w*k/2,572-stepShellConfig.height,b.w*k,stepShellConfig.height);
+ const a=sample.clip,b=a.frameBounds?.[sample.frame]||a.renderBounds,height=a.height||stepShellConfig.height,k=height/b.h,img=stepShellImages[a.kind];
+ ctx.drawImage(img,(sample.frame%a.columns)*a.cellWidth+b.x,Math.floor(sample.frame/a.columns)*a.cellHeight+b.y,b.w,b.h,124-b.w*k/2,572-height,b.w*k,height);
 }
 function drawTransformation(sample) {
  if(sample.cover<=.005)return;

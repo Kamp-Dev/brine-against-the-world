@@ -43,11 +43,11 @@ function gun(p,layer){if(model.ultimateActive)return;const w=equipped(),img=weap
  if(layer==='grip')region(0,w.splitY,w.splitX,w.height-w.splitY);
  else{region(0,0,w.splitX,w.splitY);region(w.splitX,0,w.width-w.splitX,w.height)}ctx.restore();if(layer==='barrel'&&model.modRank){ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.angle);for(let i=0;i<model.modRank;i++){ctx.fillStyle='#102d30';ctx.fillRect(13+i*5,-15,4,11);ctx.fillStyle='#d5ae68';ctx.fillRect(14+i*5,-14,2,8)}ctx.restore();}}
 
-function pose(){const firing=model.state!=='travel',a=firing?config.fire:config.walk;
- let phase=6;if(!firing)phase=(model.age*a.fps)%a.frames;
+function pose(){const firing=model.state!=='travel'&&!model.meleeWalking,a=firing?config.fire:config.walk;
+ let phase=6;if(!firing)phase=((model.meleeWalking?model.meleeWalkTime:model.age)*a.fps)%a.frames;
  else if(model.state==='raise')phase=Math.min(6,model.age/model.settings.raiseDuration*7);
  else if(model.state==='lower')phase=Math.min(6,model.age/model.settings.lowerDuration*7);
- const lowering=model.state==='lower',f=lowering?6-Math.floor(phase):Math.floor(phase),img=firing&&f!==0?fire:walk,b=a.renderBounds||{x:190,y:20,w:413,h:405},k=120/b.h,left=124-b.w*k/2,top=452,p=a.grips[f],next=a.grips[lowering?Math.max(0,f-1):firing?Math.min(6,f+1):(f+1)%a.frames];
+ const lowering=firing&&model.state==='lower',f=lowering?6-Math.floor(phase):Math.floor(phase),img=firing&&f!==0?fire:walk,b=a.renderBounds||{x:190,y:20,w:413,h:405},k=120/b.h,left=124-b.w*k/2,top=452,p=a.grips[f],next=a.grips[lowering?Math.max(0,f-1):firing?Math.min(6,f+1):(f+1)%a.frames];
  const t=phase-Math.floor(phase),w=equipped(),u=Math.min(1,model.sinceShot/model.settings.recoilDuration);
  const kick=firing?Math.sin(Math.PI*u)*Math.exp(-3*u)*3*w.recoil:0,lean=-kick*.012;
  const hx=left+(p.x-b.x)*k,hy=top+(p.y-b.y)*k,dx=hx-124,dy=hy-572;
@@ -111,9 +111,9 @@ function hud(){
  ctx.fillText(model.damage+' DMG  ·  '+model.interval.toFixed(2)+'s',26,160);
  if(model.state==='defeat'||model.paused){ctx.fillStyle='#17221ee8';ctx.fillRect(26,237,398,122);ctx.fillStyle='#f6ead2';ctx.font='bold 24px system-ui';ctx.fillText(model.paused?'TAKE A BREATHER.':'SHELL CRACKED.',46,278);ctx.font='13px system-ui';ctx.fillText(model.paused?'Resume when you’re ready.':'Refit below. Your upgrades stay with you.',46,311)}
 }
-Promise.all([fetch('animation.json?v=harbor-roster-1').then(r=>r.json()),fetch('gameplay.json?v=harbor-roster-1').then(r=>r.json()),fetch('enemies/bounds.json?v=harbor-roster-1').then(r=>r.json()),fetch('parallax.json?v=harbor-roster-1').then(r=>r.json()),fetch('step-shell.json?v=harbor-roster-1').then(r=>r.json()),fetch('enemy-motion.json?v=harbor-roster-1').then(r=>r.json())]).then(async([d,s,b,parallax,ultimate,motion])=>{
+Promise.all([fetch('animation.json?v=melee-walk-2').then(r=>r.json()),fetch('gameplay.json?v=melee-walk-2').then(r=>r.json()),fetch('enemies/bounds.json?v=melee-walk-2').then(r=>r.json()),fetch('parallax.json?v=melee-walk-2').then(r=>r.json()),fetch('step-shell.json?v=melee-walk-2').then(r=>r.json()),fetch('enemy-motion.json?v=melee-walk-2').then(r=>r.json())]).then(async([d,s,b,parallax,ultimate,motion])=>{
  enemyMotionConfig=motion;stepShellConfig=ultimate;config=d;enemyBounds=b;parallaxData=parallax;model.settings=s;model.reset();try{model.load(JSON.parse(localStorage.getItem(SAVE_KEY)))}catch{saveNote='Could not read the saved game. This session starts fresh.'}
  showOffline();persist();walk.src=d.walk.sheet;fire.src=d.fire.sheet;
- harborPlate.src="ui/harbor-reference.png";harborClean.src="ui/harbor-clean.png";const pending=[walk.decode(),fire.decode(),harborPlate.decode(),harborClean.decode()];for(const w of s.weapons){const img=weaponImages[w.id]=new Image();img.src="weapons/"+w.art+".png";pending.push(img.decode())}for(const enemy of BrineCombat.enemies){const img=enemyImages[enemy.art]=new Image();img.src='enemies/'+enemy.art+'.png?v=harbor-roster-1';pending.push(img.decode())}
- for(const kind of ['punch','walk']){stepShellImages[kind].src=stepShellConfig[kind].sheet;pending.push(stepShellImages[kind].decode());}for(const l of parallax.layers){const img=sceneryImages[l.image]=new Image();img.src='scenery/'+l.image+'.png';pending.push(img.decode())}await Promise.all(pending);ctx.setTransform(4.8,0,0,4.8,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ready=true;$("loading").hidden=true;refresh();
+ harborPlate.src="ui/harbor-reference.png";harborClean.src="ui/harbor-clean.png";const pending=[walk.decode(),fire.decode(),harborPlate.decode(),harborClean.decode()];for(const w of s.weapons){const img=weaponImages[w.id]=new Image();img.src="weapons/"+w.art+".png";pending.push(img.decode())}for(const enemy of BrineCombat.enemies){const img=enemyImages[enemy.art]=new Image();img.src='enemies/'+enemy.art+'.png?v=melee-walk-2';pending.push(img.decode())}
+ for(const kind of ['punch','walk']){stepShellImages[kind].src=stepShellConfig[kind].sheet+'?v=melee-walk-2';pending.push(stepShellImages[kind].decode());}for(const l of parallax.layers){const img=sceneryImages[l.image]=new Image();img.src='scenery/'+l.image+'.png';pending.push(img.decode())}await Promise.all(pending);ctx.setTransform(4.8,0,0,4.8,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ready=true;$("loading").hidden=true;refresh();
 }).catch(e=>{$('status').textContent='Could not load the game: '+e.message;$('status').classList.add('error');$('loading').textContent='Could not load harbor. Reload to retry.'});requestAnimationFrame(render);

@@ -56,7 +56,7 @@ This repository is a prototype for testing. No open-source license is granted by
 
 ## Approved Step Shell replacement
 
-Step Shell now uses the supplied Ultimate design, replacing the temporary polygon armor. It has a 29-frame punch and 28-frame walk. Each activation includes a 0.4-second local comic transformation, eight seconds of melee, and a 0.4-second return. Punch damage lands on frame 15; guns are stowed during the power-up. Original normal-form animation is preserved.
+Step Shell now uses the supplied Ultimate design, replacing the temporary polygon armor. It has a 29-frame punch and 12-frame walk with alternating foot lifts. The approach uses a bounded walking speed and position-driven steps; attacks wait until Brine reaches melee range. Each activation includes a 0.4-second local comic transformation, eight seconds of melee, and a 0.4-second return. Punch damage lands on frame 15; guns are stowed during the power-up. Original normal-form animation is preserved.
 
 Open `step-shell-review.html` for a replayable, slow-motion preview with a transparency-check backdrop; it does not read or modify your save. GodModeAI generation and cleanup used four requests at an expected one credit each, within the five-credit limit.
 

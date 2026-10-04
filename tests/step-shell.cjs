@@ -13,7 +13,7 @@ for(const hz of [30,60,120]){
   previousHp=m.hp;
   if(m.ultimateActive&&(phase==='enter'||phase==='exit'))assert.equal(m.shots.length,0,'no floating gun projectiles in transition');
  }
- assert.equal(swaps,2,'one transformation each way');assert(firstHit>.9&&firstHit<1.4,'contact follows approach and punch windup');assert.equal(m.ultimatePhase,'normal');assert(m.shotSerial>0,'gun resumes');
+ assert.equal(swaps,2,'one transformation each way');assert(firstHit>1.8&&firstHit<2.5,'contact follows approach and punch windup');assert.equal(m.ultimatePhase,'normal');assert(m.shotSerial>0,'gun resumes');
 }
 for(const kind of ['punch','walk']){const clip=data[kind],bytes=fs.readFileSync('web/'+clip.sheet);assert.equal(bytes.readUInt32BE(16),clip.columns*clip.cellWidth);assert.equal(bytes.readUInt32BE(20),clip.rows*clip.cellHeight);assert(clip.renderBounds.x+clip.renderBounds.w<=clip.cellWidth);assert(clip.renderBounds.y+clip.renderBounds.h<=clip.cellHeight);assert.equal(bytes[25],6,'RGBA sheet');}
 assert.deepEqual(data,JSON.parse(fs.readFileSync('unity/BrineAgainstTheWorld/Assets/Brine/Resources/step-shell.json')));
@@ -28,3 +28,19 @@ for(const stage of [1,2,3,4,5,6])for(const hz of [30,60,120]){
  const before=m.meleeReach;m.enemyX+=20;assert(Math.abs(m.meleeReach-before-20)<.001,'approach follows actual opponent position');
 }
 console.log('PASS: fist contact and burst position for six enemies at 30/60/120 Hz.');
+
+for(const hz of [30,60,120])for(const stage of [1,2,3,4,5,6]){
+ const m=new Encounter(settings);m.stage=stage;m.state='fight';m.enemyX=330;m.hp=m.maxHp=100000;m.playerHp=100000;m.enemyCycle=-10000;m.ultimateCharge=100;m.ultimate();
+ const frames=new Set();let movingSeconds=0,firstStrike=false;
+ for(let i=0;i<hz*3;i++){const before=m.meleeAdvance;m.tick(1/hz,origin);const s=sample(m);
+  assert(Math.abs(m.meleeAdvance-before)<=settings.meleeMoveSpeed/hz+.0001,'approach has no exponential teleport');
+  if(m.meleeWalking){assert.equal(s.clip.kind,'walk','every moving Step Shell frame walks');frames.add(s.frame);movingSeconds+=1/hz;assert.equal(m.meleeCycle,0,'approach cannot punch');}
+  if(m.effects.some(e=>e.weapon==='melee')){firstStrike=true;break;}
+ }
+ assert(firstStrike);assert(frames.size>=Math.floor(data.walk.frames*.75),'approach displays a visible gait');assert(movingSeconds>.75,'approach takes a visible stride');
+ m.hp=1; // Finish an enemy, then ensure recovery finishes before the retreat starts.
+ for(let i=0;i<hz*3;i++){m.tick(1/hz,origin);if(m.meleeWalking&&m.ultimatePhase==='melee')assert.equal(sample(m).clip.kind,'walk','retreat never slides in a punch pose');}
+}
+console.log('PASS: visible position-driven walking on approach and retreat, no attacks while moving, bounded travel speed at 30/60/120 Hz.');
+
+for(const clip of [data.walk,data.punch]){if(clip.frameBounds){assert.equal(clip.frameBounds.length,clip.frames);for(const b of clip.frameBounds){assert(b.x>=0&&b.y>=0);assert(b.x+b.w<=clip.cellWidth&&b.y+b.h<=clip.cellHeight);assert.equal(b.h,clip.renderBounds.h);}}}
