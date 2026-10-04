@@ -23,12 +23,13 @@ function sampleStepShell(m, data) {
  const transition=phase==='enter'||phase==='exit';
  const show=phase==='melee'||(phase==='enter'&&t>=.5)||(phase==='exit'&&t<.5);
  const waiting=phase==='melee'&&['reward','lower','travel'].includes(m.state)&&!(m.meleeCycle>0&&m.meleeCycle<m.meleeDuration);
- const moving=phase==='melee'&&(m.meleeWalking||waiting);
+ const moving=phase==='melee'&&(m.meleeWalking||waiting||m.meleeIdleActive);
  const attacking=phase==='melee'&&!moving&&m.meleeCycle>0&&m.meleeCycle<m.meleeDuration;
  const clip=moving?data.walk:data.punch;
  let frame=0;
- // Position-driven steps show a whole gait during the short approach, starting at frame zero.
- if(moving)frame=m.meleeWalking?Math.min(clip.frames-1,Math.floor(Math.max(0,Math.min(1,(m.meleeAdvance||0)/Math.max(1,m.meleeReach)))*(clip.frames-1))):Math.floor(m.time*clip.fps)%clip.frames;
+ // Complete two steps on approach; the partial trailing step is excluded from the idle loop.
+ const loopFrames=clip.loopFrames||clip.frames;
+ if(moving)frame=m.meleeWalking&&!m.meleeIdleActive?Math.min(clip.frames-1,Math.floor(Math.max(0,Math.min(1,(m.meleeAdvance||0)/Math.max(1,m.meleeReach)))*loopFrames)):Math.floor((m.meleeIdleTime||0)*clip.fps)%loopFrames;
  else if(attacking)frame=Math.min(clip.frames-1,Math.floor(m.meleeCycle/m.meleeDuration*clip.frames));
  const cover=transition?Math.min(1,Math.pow(Math.sin(t*Math.PI),4)*1.5):0;
  return {show,clip,frame,cover,squash:transition?1-.06*Math.sin(t*Math.PI):1};

@@ -66,3 +66,11 @@ for(const hz of [30,60,120]){
  for(let i=0;i<hz*10;i++)m.tick(1/hz,origin);assert.equal(m.ultimatePhase,'normal');assert.equal(m.meleeAdvance,0,'normal form returns to its lane');assert.equal(sample(m).hop,undefined);
 }
 console.log('PASS: Step Shell holds position and loops the approved walk between enemies; pause and Ultimate expiry behave correctly.');
+
+for(const hz of [30,60,120]){
+ const m=new Encounter(settings);m.state='travel';m.ultimateTime=7;m.meleeAdvance=85;m.meleeCycle=0;m.enemyX=500;m.playerHp=100000;
+ for(let i=0;i<hz;i++){m.tick(1/hz,origin);const pose=sample(m);assert(pose.frame<data.walk.loopFrames,'partial trailing step excluded');const alternate=sample({...m,time:m.time+173,ultimatePhase:m.ultimatePhase,meleeDuration:m.meleeDuration});assert.equal(pose.frame,alternate.frame,'idle cadence does not depend on global clock');}
+ m.state='fight';m.enemyX=330;m.meleeAdvance=m.meleeReach;m.meleeIdleTime=.12;m.meleeIdleActive=true;m.enemyCycle=-100;m.hp=m.maxHp=100000;
+ let landed=false;for(let i=0;i<hz;i++){m.tick(1/hz,origin);if(m.meleeIdleActive)assert.equal(m.meleeCycle,0,'finish step before winding up punch');else{assert(Math.abs(m.meleeIdleTime*3-Math.round(m.meleeIdleTime*3))<.0001,'handoff at a planted step boundary');landed=true;break;}}assert(landed,'step settles without delaying combat indefinitely');
+}
+console.log('PASS: complete idle loops, independent cadence, and planted-step attack handoffs at 30/60/120 Hz.');

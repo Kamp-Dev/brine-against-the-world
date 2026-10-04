@@ -9,7 +9,7 @@ namespace BrineGame
     {
         public string sheet;
         public bool backgroundKey;
-        public int columns, rows, cellWidth, cellHeight, frames;
+        public int columns, rows, cellWidth, cellHeight, frames, loopFrames;
         public float fps, duration, height;
         public Crop[] frameBounds;
         public Crop bounds;
