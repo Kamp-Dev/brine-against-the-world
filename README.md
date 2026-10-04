@@ -75,3 +75,11 @@ Eye opacity follow-up: all 62 Samurai source frames now carry bounded eye-interi
 The selected third Harbor Ledger concept supplies the title banner, ticket frames and navigation art. Runtime text, health, equipment, charge and prices stay live. Battle and action controls remain visible above menus. The Road upgrade strip scrolls horizontally through six cards using touch, arrow controls or keyboard arrows in the browser; Unity provides horizontal scrolling and paging controls.
 
 Damage, Shell and Speed retain their existing behavior. Scavenging adds 5% to fight and offline salvage per rank (20 ranks); Patch Up adds one percentage point to post-win healing (10 ranks); Tide Charge adds one point of melee-form charge per successful hit (8 ranks). Costs start at 60/45/75 salvage and grow by 50% per rank. Legacy saves start these ranks at zero. Offline earnings remain capped at eight hours. Run npm test for progression and asset checks; Unity BuildAndTest includes TicketBoardChecks.
+
+### Comic UI refresh
+
+The browser UI scales to 2160 × 3840 portrait with live text and vector controls. Existing combat sprites and animations are unchanged; 4K output does not add detail to their source images. Volley readiness has an orange/gold state and READY badge. Weapon and form cards are separated, with full Step Shell and Samurai emblems. Upgrade cards support touch swiping, mouse dragging, trackpad/wheel scrolling, and keyboard arrows without paging buttons.
+
+Bangers is the default heading font, with Barlow Condensed for readable statistics. Camp offers Bungee and Barlow alternatives; `web/font-review.html` compares them. Fonts are bundled with their SIL Open Font License notices in `web/fonts` and Unity Resources/Fonts. The form emblems are UI illustrations only, generated with the built-in image tool; no GodModeAI credits were used.
+
+Validation: browser gameplay/asset/animation tests; mouse drag without purchasing; portrait layout at 2160 × 3840; all three font choices; Unity model checks and play-mode smoke test.
