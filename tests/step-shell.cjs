@@ -58,11 +58,11 @@ console.log('PASS: runtime backdrop key preserves the chest and ink while hiding
 for(const hz of [30,60,120]){
  const m=new Encounter(settings);m.state='fight';m.enemyX=330;m.hp=m.maxHp=100000;m.playerHp=100000;m.enemyCycle=-10000;m.ultimateCharge=100;m.ultimate();
  for(let i=0;i<hz*2.5;i++)m.tick(1/hz,origin);
- m.hitEnemy(1000000,'melee',505);const held=m.meleeAdvance;let hopped=false,traveled=false;
+ m.hitEnemy(1000000,'melee',505);const held=m.meleeAdvance;let animated=false,traveled=false;const waitingFrames=new Set();
  for(let i=0;i<hz*4;i++){m.tick(1/hz,origin);if(m.ultimatePhase==='melee'&&['reward','lower','travel'].includes(m.state)){
-  assert.equal(m.meleeAdvance,held,'Step Shell holds its defeated-enemy position');assert(!m.meleeWalking,'waiting does not play the walk');const s=sample(m);assert.equal(s.clip.kind,'punch');assert(s.hop>=0&&s.hop<=5);if(s.hop>.5)hopped=true;if(m.state==='travel')traveled=true;
+  assert.equal(m.meleeAdvance,held,'Step Shell holds its defeated-enemy position');assert(!m.meleeWalking,'waiting does not play the walk');const s=sample(m);if(!(m.meleeCycle>0&&m.meleeCycle<m.meleeDuration)){assert.equal(s.clip.kind,'walk');waitingFrames.add(s.frame);animated=true;}assert.equal(s.hop,undefined,'no synthetic vertical hop');if(m.state==='travel')traveled=true;
  }}
- assert(hopped&&traveled,'hops while a new enemy enters');m.paused=true;const before=sample(m).hop;m.tick(.1,origin);assert.equal(sample(m).hop,before,'pause freezes hop');m.paused=false;
- for(let i=0;i<hz*10;i++)m.tick(1/hz,origin);assert.equal(m.ultimatePhase,'normal');assert.equal(m.meleeAdvance,0,'normal form returns to its lane');assert.equal(sample(m).hop,0);
+ assert(animated&&traveled&&waitingFrames.size>10,'approved walk loops in place while a new enemy enters');m.paused=true;const before=sample(m).frame;m.tick(.1,origin);assert.equal(sample(m).frame,before,'pause freezes walk');m.paused=false;
+ for(let i=0;i<hz*10;i++)m.tick(1/hz,origin);assert.equal(m.ultimatePhase,'normal');assert.equal(m.meleeAdvance,0,'normal form returns to its lane');assert.equal(sample(m).hop,undefined);
 }
-console.log('PASS: Step Shell holds position and hops between enemies; pause and Ultimate expiry behave correctly.');
+console.log('PASS: Step Shell holds position and loops the approved walk between enemies; pause and Ultimate expiry behave correctly.');
