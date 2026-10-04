@@ -80,7 +80,7 @@ function enemy(){
  if(windup>0){ctx.fillStyle='#a1482d';ctx.font='bold 20px system-ui';ctx.fillText('!',x-45,572-h+12)}ctx.textAlign='left';
 }
 function effects(){
- if(model.ultimateActive&&model.meleeSince<.4){const t=model.meleeSince/.4;ctx.strokeStyle='#f5db99';ctx.lineWidth=6*(1-t)+1;ctx.beginPath();ctx.arc(model.enemyX-8,515,10+t*36,-1.8,1.8);ctx.stroke();for(let i=0;i<6;i++){const a=i*1.047;path([[model.enemyX+Math.cos(a)*(10+t*34),515+Math.sin(a)*(10+t*34)],[model.enemyX+Math.cos(a)*45,515+Math.sin(a)*45],[model.enemyX+Math.cos(a+.12)*24,515+Math.sin(a+.12)*24]],'#eabb72',null);}}
+ for(const e of model.effects)if(e.type==='hit'&&e.weapon==='melee')drawComicImpact(e);
 
  for(const s of model.enemyShots){if(s.kind==='slam'||s.kind==='burrow'){ctx.strokeStyle=s.kind==='slam'?'#b65332':'#746348';ctx.lineWidth=5;ctx.beginPath();ctx.arc(s.x,570,s.kind==='slam'?22:13,Math.PI,Math.PI*2);ctx.stroke();}else{ctx.save();ctx.translate(s.x,s.y);ctx.rotate(model.time*8);path([[-6,0],[0,-5],[6,1],[0,5]],s.kind==='burst'?'#426d68':'#ae6a48');ctx.restore();}}
 

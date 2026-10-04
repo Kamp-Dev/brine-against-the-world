@@ -18,7 +18,7 @@ namespace BrineGame
         Sprite solid;
         SpriteRenderer body;
         GunVisuals gunVisuals;
-        Transform weaponRoot, enemyRoot;StepShellVisuals stepShellVisuals; SpriteRenderer[] attachments; SpriteRenderer shield,mender,burrow,meleeRing;
+        Transform weaponRoot, enemyRoot;StepShellVisuals stepShellVisuals; SpriteRenderer[] attachments; SpriteRenderer shield,mender,burrow;ComicImpactVisuals comicImpact;
         SpriteRenderer enemyBody, healthFill;
         readonly List<Transform> roadMarks = new List<Transform>();
         Pose currentPose;
@@ -108,7 +108,7 @@ namespace BrineGame
             gunVisuals=new GameObject("Comic gun effects").AddComponent<GunVisuals>();gunVisuals.Build(weaponRoot,Model.Settings.weapons);
             stepShellVisuals=gameObject.AddComponent<StepShellVisuals>();stepShellVisuals.Build();
             attachments=new SpriteRenderer[3];for(int i=0;i<3;i++)attachments[i]=Box("Workshop barrel band",weaponRoot,18+i*6,-14,4,13,"#d5ae68",16);
-            meleeRing=Box("Melee impact",null,0,0,10,10,"#f5db99",20);
+            comicImpact=gameObject.AddComponent<ComicImpactVisuals>();comicImpact.Build();
         }
         void BuildEnemy()
         {
@@ -138,7 +138,7 @@ namespace BrineGame
             body.enabled=!stepShellVisuals.Render(Model);body.transform.position=World(124+Model.MeleeAdvance,572);
             if(Model.UltimatePhase=="enter"||Model.UltimatePhase=="exit"){var scale=body.transform.localScale;scale.y*=1-.06f*Mathf.Sin(Mathf.Clamp01(Model.TransformProgress)*Mathf.PI);body.transform.localScale=scale;}
             for(int i=0;i<3;i++)attachments[i].enabled=i<Model.ModRank;
-            meleeRing.enabled=Model.UltimateActive&&Model.MeleeSince<.35f;meleeRing.transform.position=World(Model.EnemyX-12,515);float strike=Mathf.Clamp01(Model.MeleeSince/.35f);meleeRing.transform.localScale=new Vector3(.05f+.4f*strike,.55f*(1-strike),1);meleeRing.transform.rotation=Quaternion.Euler(0,0,35-70*strike);
+            comicImpact.Render(Model);
             enemyRoot.position = World(Model.EnemyX, 572);
             enemyRoot.gameObject.SetActive(Model.State != EncounterState.Reward && Model.State != EncounterState.Lower);
             enemyBody.sprite=enemySprites[Model.EnemyIndex];

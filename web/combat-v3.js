@@ -11,7 +11,9 @@
   constructor(settings=defaults){this.settings=settings;this.reset()}
   get enemyIndex(){return this.stage%5===0?2:[0,1,3,4,5][(this.stage-1-Math.floor((this.stage-1)/5))%5]}
   get enemy(){return enemies[this.enemyIndex]}
-  get meleeReach(){const ratio=this.enemy.art==='salt-porter'?1195/849:this.enemy.art==='sluice-keeper'?1221/1074:739/1156;return Math.max(0,206-(this.settings.meleeReach||60)-12-this.enemy.height*.78*ratio/2)}
+  // Aim into the torso, not the full art bounds (which include weapons and shadows).
+  get meleeContactX(){const boss=this.enemy.art==='sluice-keeper',ratio=this.enemy.art==='salt-porter'?1195/849:boss?1221/1074:739/1156;return this.enemyX-this.enemy.height*.78*ratio*(boss?.12:.1)}
+  get meleeReach(){return Math.max(0,this.meleeContactX-124-(this.settings.meleeReach||102)+4)}
   get ultimateActive(){return this.ultimateTime>0}
   get ultimatePhase(){return !this.ultimateActive?'normal':this.ultimateTime>8.4?'enter':this.ultimateTime<=.4?'exit':'melee'}
   get transformProgress(){return this.ultimatePhase==='enter'?(8.8-this.ultimateTime)/.4:this.ultimatePhase==='exit'?( .4-this.ultimateTime)/.4:0}
@@ -51,7 +53,7 @@
     this.cycle+=dt;this.enemyCycle+=dt;
     const interval=this.burst>0?.15:this.interval;
     if(this.ultimatePhase==='melee'&&this.meleeAdvance>=this.meleeReach-3){this.meleeCycle+=dt;
-     if(!this.meleeLanded&&this.meleeCycle>=this.meleeImpact){this.meleeLanded=true;this.meleeSince=0;this.hitEnemy(this.damage*4,'melee',515);}
+     if(!this.meleeLanded&&this.meleeCycle>=this.meleeImpact){this.meleeLanded=true;this.meleeSince=0;this.hitEnemy(this.damage*4,'melee',505);}
      if(this.meleeCycle>=this.meleeDuration){this.meleeCycle%=this.meleeDuration;this.meleeLanded=false;}}
 
     if(!this.ultimateActive&&this.cycle>=interval){this.cycle=0;this.sinceShot=0;this.shotSerial++;if(this.burst>0)this.burst--;this.shots.push({x:origin.x,y:origin.y,damage:this.damage,weapon:this.weapon,startX:origin.x,speed:s.weapons.find(w=>w.id===this.weapon).speed});this.effects.push({type:'flash',x:origin.x,y:origin.y,weapon:this.weapon,life:.12,duration:.12})}
@@ -67,7 +69,7 @@
   }
   hitEnemy(damage,weapon,y){if(this.state!=='fight')return;const melee=weapon==='melee';if(this.submerged&&!melee){this.effects.push({type:'miss',x:this.enemyX,y,life:.5});return;}
    damage=Math.round(damage*(this.guarded&&!melee?.35:1));this.hp=Math.max(0,this.hp-damage);this.charge=Math.min(100,this.charge+8);if(!this.ultimateActive)this.ultimateCharge=Math.min(100,this.ultimateCharge+12);
-   this.effects.push({type:'hit',x:this.enemyX,y,damage,weapon,life:.6,duration:.6});
+   this.effects.push({type:'hit',x:melee?124+this.meleeAdvance+(this.settings.meleeReach||102)-4:this.enemyX,y,damage,weapon,life:.6,duration:.6});
    if(this.hp===0){this.kills++;this.lastReward=this.reward;this.gold=Math.min(1e9,this.gold+this.lastReward);this.best=Math.max(this.best,this.stage);this.xp+=this.boss?35:10;this.playerHp=Math.min(this.maxPlayerHp,this.playerHp+Math.round(this.maxPlayerHp*.12));this.enter('reward');this.enemyShots=[];this.burst=0;this.effects.push({type:'reward',x:this.enemyX,y:y-50,damage:this.lastReward,life:1.2});}}
   save(now=Date.now()){return{version:1,route:this.route,mods:{...this.mods},ultimateCharge:this.ultimateCharge,savedAt:now,weapon:this.weapon,gold:this.gold,kills:this.kills,best:this.best,xp:this.xp,upgrades:{...this.upgrades},charge:this.charge,stage:this.stage,playerHp:this.playerHp,farming:this.farming,defeated:this.state==='defeat'}}
   load(data,now=Date.now()){

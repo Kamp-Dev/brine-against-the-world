@@ -19,3 +19,12 @@ for(const kind of ['punch','walk']){const clip=data[kind],bytes=fs.readFileSync(
 assert.deepEqual(data,JSON.parse(fs.readFileSync('unity/BrineAgainstTheWorld/Assets/Brine/Resources/step-shell.json')));
 assert(!fs.readFileSync('web/game.js','utf8').includes("path([[-68"),'old shell overlay removed');
 console.log('PASS: approved Step Shell grids, matching Unity assets, covered single-model transitions, contact timing and gun restoration at 30/60/120 Hz.');
+
+for(const stage of [1,2,3,4,5,6])for(const hz of [30,60,120]){
+ const m=new Encounter(settings);m.stage=stage;m.state='fight';m.enemyX=330;m.hp=m.maxHp=100000;m.playerHp=100000;m.enemyCycle=-10000;m.ultimateCharge=100;m.ultimate();
+ let contact;for(let i=0;i<hz*3&&!contact;i++){m.tick(1/hz,origin);contact=m.effects.find(e=>e.weapon==='melee');}
+ assert(contact,'each enemy receives melee contact');assert(m.meleeAdvance>50,'Brine visibly closes distance');
+ const tip=124+m.meleeAdvance+settings.meleeReach;assert(tip>=m.meleeContactX&&tip<=m.meleeContactX+5,'fist reaches torso without excessive overlap');assert(Math.abs(contact.x-m.meleeContactX)<1,'burst stays at contact');assert.equal(contact.y,505);
+ const before=m.meleeReach;m.enemyX+=20;assert(Math.abs(m.meleeReach-before-20)<.001,'approach follows actual opponent position');
+}
+console.log('PASS: fist contact and burst position for six enemies at 30/60/120 Hz.');
