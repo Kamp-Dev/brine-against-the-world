@@ -90,7 +90,7 @@ function effects(){
   else path([[-9,-3],[2,-3],[6,0],[2,3],[-9,3]],'#f5e1b1','#302f24',2);ctx.restore();
  }
  for(const e of model.effects){
-  if(e.type==='hit'||e.type==='flash'){const t=1-e.life/e.duration,impact=e.type==='hit',k=impact?1:.42;ctx.save();ctx.translate(e.x,e.y);ctx.scale(k,k);ctx.globalAlpha=Math.max(0,1-t);
+  if(e.weapon!=='melee'&&(e.type==='hit'||e.type==='flash')){const t=1-e.life/e.duration,impact=e.type==='hit',k=impact?1:.42;ctx.save();ctx.translate(e.x,e.y);ctx.scale(k,k);ctx.globalAlpha=Math.max(0,1-t);
    if(e.weapon==='lowtide'||e.weapon==='melee'){
     for(let i=0;i<5;i++){const angle=i*1.256,r=8+t*23;ctx.fillStyle=i%2?'#a99674':'#e3c48c';ctx.strokeStyle='#514938';ctx.lineWidth=2;ctx.beginPath();ctx.arc(Math.cos(angle)*r,Math.sin(angle)*r,5+t*10,0,7);ctx.fill();ctx.stroke()}
     ctx.strokeStyle='#c66036';ctx.lineWidth=4*(1-t)+1;ctx.beginPath();ctx.arc(0,0,4+t*39,0,7);ctx.stroke();

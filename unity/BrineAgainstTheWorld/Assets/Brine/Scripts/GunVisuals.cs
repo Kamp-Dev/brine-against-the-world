@@ -23,7 +23,7 @@ namespace BrineGame {
   void Ring(float x,float y,float rx,float ry,string color,float alpha,float width){for(int i=0;i<20;i++){float a=i*Mathf.PI/10,b=(i+1)*Mathf.PI/10;Line(x+Mathf.Cos(a)*rx,y+Mathf.Sin(a)*ry,x+Mathf.Cos(b)*rx,y+Mathf.Sin(b)*ry,width,color,alpha);}}
   public void Render(EncounterModel m){used=0;
    foreach(var p in m.Shots){float travel=p.x-p.startX;if(p.weapon=="repeater"){Line(p.x-Math.Min(65,travel),p.y,p.x,p.y,5,"#244f54",1);Line(p.x-Math.Min(65,travel),p.y,p.x,p.y,2,"#a4ddd0",1);}else if(p.weapon=="lowtide"){for(int i=-2;i<=2;i++){float y=p.y+i*Math.Min(7,travel*.04f);Shape(p.x,y,13,6,"#322d26");Shape(p.x,y,10,3,i%2==0?"#f4d695":"#c86a3c");}}else{Shape(p.x,p.y,16,8,"#302f24");Shape(p.x,p.y,12,4,"#f5e1b1");}}
-   foreach(var e in m.Effects){float t=1-e.life/e.duration,a=Mathf.Clamp01(1-t),k=e.impact?1:.42f;
+   foreach(var e in m.Effects){if(e.weapon=="melee")continue;float t=1-e.life/e.duration,a=Mathf.Clamp01(1-t),k=e.impact?1:.42f;
     if(e.weapon=="lowtide"||e.weapon=="melee"){
      for(int i=0;i<5;i++){float angle=i*1.256f,r=(8+t*23)*k,size=(10+t*20)*k,x=e.x+Mathf.Cos(angle)*r,y=e.y+Mathf.Sin(angle)*r;Shape(x,y,size+2,size+2,"#514938",a,0,true);Shape(x,y,size,size,i%2==0?"#e3c48c":"#a99674",a,0,true);}
      Ring(e.x,e.y,(4+t*39)*k,(4+t*39)*k,"#c66036",a,(4*(1-t)+1)*k);
