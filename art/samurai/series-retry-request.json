@@ -1,0 +1,19 @@
+{
+  "request": {
+    "view_type": "side-scrolling",
+    "image_url": "https://bjqbwtqznzladztznntj.supabase.co/storage/v1/object/public/godmodeai-images/api-upload/76253963-c55c-414f-a39b-9feab601ae51.png",
+    "auto_repose": false,
+    "wait": false,
+    "negative_prompt": "front view, turning, spinning, visible sword, blade, weapon, extra limbs, stretching eyes, morphing shell, camera motion, zoom, translation, effects",
+    "action_id": "sidescrolling_series_slash_ffg",
+    "positive_prompt": "RIGHT-FACING SIDE VIEW throughout. The orange crab samurai executes three short controlled cuts with his closed right fist gripping an invisible sword, then returns to the exact starting pose. Character body only, no weapon. Preserve the broad orange shell and two stalk eyes, all armor, short stout limbs. Fixed camera. No rotation toward camera, no turns, no spinning, no travel. Grounded feet. Same scale and framing throughout."
+  },
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"request_id\": \"150edd03-6aca-4c2b-b244-d5aa51c614ec\",\n  \"response_url\": \"https://www.godmodeai.co/api/generation-api/v1/sprite/requests/150edd03-6aca-4c2b-b244-d5aa51c614ec\",\n  \"status_url\": \"https://www.godmodeai.co/api/generation-api/v1/sprite/requests/150edd03-6aca-4c2b-b244-d5aa51c614ec/status\"\n}"
+      }
+    ]
+  }
+}

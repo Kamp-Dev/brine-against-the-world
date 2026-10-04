@@ -1,0 +1,19 @@
+{
+  "request": {
+    "view_type": "side-scrolling",
+    "image_url": "https://bjqbwtqznzladztznntj.supabase.co/storage/v1/object/public/godmodeai-images/api-upload/76253963-c55c-414f-a39b-9feab601ae51.png",
+    "auto_repose": false,
+    "wait": false,
+    "negative_prompt": "visible weapon, sword, blade, scabbard, stick, effects, slash trails, duplicate limbs, extra arms, extra legs, missing limbs, morphing armor, spinning body, camera movement, zoom, sliding, translation, cropping, transparent chest, blur",
+    "action_id": "sidescrolling_series_slash_ffg",
+    "positive_prompt": "Samurai Brine performs a connected SERIES OF SWORD SLASHES aimed RIGHT, near hand tightly gripping an INVISIBLE sword. BODY-ONLY animation: NO visible sword, handle, blade or trails; game attaches replaceable sword separately. Clear controlled closed-hand wrist arcs for successive cuts; anticipation, readable contact moments, deliberate follow-through then recovery to EXACT original ready stance. Keep both feet grounded with short weight shifts and no net translation, no spinning away from camera. Constant reference camera, scale and centered body position. Preserve orange shell, two asymmetrical stalk eyes, cream chest, all indigo samurai armor and ochre cord details. Exactly two arms and two legs. Full body always visible, plain uniform backdrop, bold comic artwork."
+  },
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"request_id\": \"5d2b8e17-3628-46ba-9e5f-adf5e421a682\",\n  \"response_url\": \"https://www.godmodeai.co/api/generation-api/v1/sprite/requests/5d2b8e17-3628-46ba-9e5f-adf5e421a682\",\n  \"status_url\": \"https://www.godmodeai.co/api/generation-api/v1/sprite/requests/5d2b8e17-3628-46ba-9e5f-adf5e421a682/status\"\n}"
+      }
+    ]
+  }
+}

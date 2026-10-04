@@ -1,0 +1,19 @@
+{
+  "request": {
+    "view_type": "side-scrolling",
+    "image_url": "https://bjqbwtqznzladztznntj.supabase.co/storage/v1/object/public/godmodeai-images/api-upload/76253963-c55c-414f-a39b-9feab601ae51.png",
+    "auto_repose": false,
+    "wait": false,
+    "negative_prompt": "visible weapon, sword, blade, scabbard, stick, effects, slash trails, duplicate limbs, extra arms, extra legs, missing limbs, morphing armor, spinning body, camera movement, zoom, sliding, translation, cropping, transparent chest, blur",
+    "action_id": "sidescrolling_walk_ffg",
+    "positive_prompt": "Samurai Brine walks IN PLACE facing RIGHT. Two legs take alternating short planted steps, feet visibly lift and settle, restrained body bob. Near hand remains in a CLOSED GRIP at waist height holding an INVISIBLE game weapon; no sword or prop visible because weapon is a separate game layer. Far hand relaxed. Begin and end at exact input ready pose. Fixed orthographic camera, constant body scale and anchor, no travel across frame, all limbs fully visible. Preserve orange broad shell, two stalk eyes, cream chest, indigo samurai armor and ochre lacing. Only two arms and two legs. Plain uniform background, bold comic artwork."
+  },
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"request_id\": \"c2126d32-20e5-443b-97de-436b86314f9b\",\n  \"response_url\": \"https://www.godmodeai.co/api/generation-api/v1/sprite/requests/c2126d32-20e5-443b-97de-436b86314f9b\",\n  \"status_url\": \"https://www.godmodeai.co/api/generation-api/v1/sprite/requests/c2126d32-20e5-443b-97de-436b86314f9b/status\"\n}"
+      }
+    ]
+  }
+}

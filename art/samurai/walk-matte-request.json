@@ -1,0 +1,16 @@
+{
+  "request": {
+    "image_url": "https://bjqbwtqznzladztznntj.supabase.co/storage/v1/object/public/godmodeai-images/animations/sprite_sidescrolling_walk_ffg_9a1c11e3-ea05-4555-984c-08aa1d5d79c5_add7c2fb-fe27-40d8-8233-3087419eeaaa.png?",
+    "num_frames": 21,
+    "model": "RMBG-2.0",
+    "wait": false
+  },
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"request_id\": \"d410eb93-3450-4682-a5b3-e23922a3795b\",\n  \"response_url\": \"https://www.godmodeai.co/api/generation-api/v1/bg-removal/requests/d410eb93-3450-4682-a5b3-e23922a3795b\",\n  \"status_url\": \"https://www.godmodeai.co/api/generation-api/v1/bg-removal/requests/d410eb93-3450-4682-a5b3-e23922a3795b/status\"\n}"
+      }
+    ]
+  }
+}

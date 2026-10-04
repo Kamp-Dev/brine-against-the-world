@@ -1,0 +1,13 @@
+{
+  "budget": 5,
+  "expectedSpent": 5,
+  "remaining": 0,
+  "requests": [
+    "c2126d32-20e5-443b-97de-436b86314f9b",
+    "213b7aa2-7a40-4bd4-bfe0-f44b8eb92c14",
+    "5d2b8e17-3628-46ba-9e5f-adf5e421a682",
+    "d410eb93-3450-4682-a5b3-e23922a3795b",
+    "150edd03-6aca-4c2b-b244-d5aa51c614ec"
+  ],
+  "note": "Hard budget reached: three initial animations, one walk matte, one Series Slash retry. Initial Series Slash timed out; counted conservatively. No further paid jobs."
+}
