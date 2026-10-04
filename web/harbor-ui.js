@@ -2,7 +2,8 @@
 let harborTab='road';
 function openHarbor(tab){harborTab=tab;$('drawer').hidden=tab==='road';$('drawer-title').textContent=tab==='ultimate'?'STEP SHELL':tab.toUpperCase();for(const p of document.querySelectorAll('[data-panel]'))p.hidden=p.dataset.panel!==tab;for(const name of ['road','guns','kit','camp'])$('nav-'+name).setAttribute('aria-current',name===tab?'page':'false')}
 for(const name of ['road','guns','kit','camp'])$('nav-'+name).onclick=()=>openHarbor(name);
-$('swap').onclick=()=>openHarbor('guns');$('ultimate').onclick=()=>openHarbor('ultimate');$('go-kit').onclick=()=>openHarbor('kit');$('close-drawer').onclick=()=>openHarbor('road');
+$('swap').onclick=()=>openHarbor('guns');$('ultimate').onclick=()=>{model.ultimate();persist();refresh()};$('go-kit').onclick=()=>openHarbor('kit');$('close-drawer').onclick=()=>openHarbor('road');
+$('ultimate-quick').onclick=()=>{model.ultimate();persist();refresh()};
 $('defeat-refit').onclick=()=>{$('retry').click();openHarbor('road')};
 function plateRegion(x,y,w,h){ctx.drawImage(harborPlate,x/450*harborPlate.width,y/800*harborPlate.height,w/450*harborPlate.width,h/800*harborPlate.height,x,y,w,h)}
 function fill(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(x,y,w,h)}
@@ -14,9 +15,9 @@ function healthBar(x,y,w,h,current,maximum){
 }
 function harborBackdrop(){ctx.clearRect(0,0,450,800);ctx.drawImage(harborPlate,0,0,450,800);
  ctx.save();ctx.beginPath();ctx.roundRect(11,103,428,326,9);ctx.clip();
- // A slight drift makes the harbor move without exposing an empty edge.
- const drift=Math.sin(model.distance/250)*3;
- ctx.drawImage(harborClean,11/450*harborClean.width,103/800*harborClean.height,428/450*harborClean.width,326/800*harborClean.height,8+drift,102,434,328);ctx.restore();
+ ctx.translate(0,-212);
+ for(const l of parallaxData.layers){const offset=model.distance*l.speed%l.period;for(let tile=-1;tile<2;tile++){ctx.save();ctx.translate(tile*l.period-offset,0);for(const shape of l.shapes)path(shape.points.map(p=>[p.x,p.y]),shape.color,shape.stroke,1.5);ctx.restore();}}
+ ctx.restore();
 }
 function harborHUD(){
  const cream='#f1e2be',teal='#214b50',dark='#092329',orange='#bd572e';
@@ -29,7 +30,10 @@ function harborHUD(){
  fill(29,387,143,17,cream);healthBar(30,389,140,14,model.playerHp,model.maxPlayerHp);fill(29,404,135,15,cream);ink(model.playerHp+' / '+model.maxPlayerHp,31,406,16);
  const w=equipped();fill(18,443,180,70,cream);const img=weaponImages[w.id];const scale=Math.min(170/img.width,77/img.height);ctx.drawImage(img,100-img.width*scale/2,478-img.height*scale/2,img.width*scale,img.height*scale);
  fill(205,445,145,46,cream);ink(w.name.toUpperCase(),205,447,29,dark,'left',true,145);ink(w.id==='scrap'?'SALT SLUG':w.id==='repeater'?'TIDAL TRACER':'SCATTER BLAST',207,480,15,dark,'left',false,140);
- fill(203,574,215,18,'#bd572e');ink('IN DEVELOPMENT',309,575,14,'#f2e2bc','center',true,200);
+ fill(182,527,240,65,'#bd572e');ink('STEP SHELL',302,528,19,'#f2e2bc','center');ink(model.ultimateActive?'MELEE / 75% GUARD':'4× MELEE / 75% GUARD',302,550,12,'#f2e2bc','center',true,205);ink(model.ultimateActive?Math.ceil(model.ultimateTime)+'s REMAINING':model.ultimateCharge>=100?(model.state==='fight'?'READY — TAP TO UNLEASH':'READY — NEXT BATTLE'):'CHARGING '+model.ultimateCharge+'%',302,566,12,'#f2e2bc','center',true,205);fill(205,581,207,7,'#092329');fill(206,582,205*(model.ultimateActive?model.ultimateTime/8:model.ultimateCharge/100),5,'#e7be72');
+ fill(22,110,190,18,teal);ink(BrineCombat.routes[model.route].name.toUpperCase(),28,112,12,cream);
+ if(model.state==='fight'){fill(242,179,181,18,teal);ink(model.submerged?'BURROWED · MELEE HITS':model.guarded?'SHIELD UP · MELEE BREAKS':model.enemy.action==='repair'?'MENDER · REPAIRS 12%':model.enemyCycle>model.enemy.interval*.75?'INCOMING '+model.enemy.action.toUpperCase():model.enemy.action.toUpperCase(),331,182,10,cream,'center');}
+
  ['damage','shell','speed'].forEach((kind,i)=>{
   const x=19+i*144,cost=model.cost(kind),rank=model.upgrades[kind],maxed=rank>=30;
   fill(x+40,627,79,17,cream);ink(maxed?'MAX':(kind==='damage'?'+4':kind==='shell'?'+25':'+8%')+' / '+cost,x+117,628,17,dark,'right',false,100);
@@ -41,6 +45,3 @@ function harborHUD(){
  fill(357,685,66,21,cream);ink(model.gold.toLocaleString(),425,686,23,dark,'right',false,83);
  if(model.paused){fill(143,107,162,20,teal);ink('PAUSED · CAMP TO RESUME',224,110,12,cream,'center');}
 }
-
-
-

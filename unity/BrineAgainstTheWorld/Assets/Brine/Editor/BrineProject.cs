@@ -85,7 +85,7 @@ public static class BrineProject
     }
     public static void BuildAndTest()
     {
-        try { CreateScene(); CheckModel(); AnimationChecks.Run(); SessionState.SetBool("Brine.Test", true); EditorApplication.EnterPlaymode(); }
+        try { CreateScene(); CheckModel(); AnimationChecks.Run(); ExpansionChecks.Run(); SessionState.SetBool("Brine.Test", true); EditorApplication.EnterPlaymode(); }
         catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
     }
     public static void OpenAndPlay()
@@ -131,4 +131,3 @@ public sealed class BrineTextureImport : AssetPostprocessor
         importer.maxTextureSize = 4096; importer.npotScale = TextureImporterNPOTScale.None;
     }
 }
-
