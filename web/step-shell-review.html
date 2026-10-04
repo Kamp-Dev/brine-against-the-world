@@ -1,0 +1,39 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Brine — Step Shell animation review</title><style>body{background:#092329;color:#f1e2be;font:16px system-ui;max-width:920px;margin:24px auto;padding:16px}h1{font-size:28px}canvas{width:100%;border:2px solid #d96738;background:#557d77}button,select{background:#f1e2be;color:#092329;border:0;border-radius:4px;padding:12px;font:inherit;margin:4px}input{width:100%}a{color:#f1e2be}#status{min-height:24px}</style><h1>Step Shell / transformation & melee</h1><p>Your approved model. Normal form → brace & transform → punch & recover → return to normal. This sampler does not change your game save.</p><canvas id="review" width="1000" height="650"></canvas><p id="status">Loading frames…</p><button id="restart">Replay transformation</button><button id="toggle">Pause</button><label>Speed <select id="speed"><option value="1">Normal</option><option value="0.25">Quarter speed</option></select></label><label>Backdrop <select id="backdrop"><option value="#557d77">Harbor teal</option><option value="#ac6293">Purple transparency check</option><option value="#eee1c5">Cream</option></select></label><p><input id="seek" aria-label="Sequence position" type="range" min="0" max="11.2" step="0.01" value="0"></p><a href="./">Return to game</a><script src="combat-v3.js"></script><script src="step-shell.js"></script><script>
+const canvas=document.querySelector('#review'),ctx=canvas.getContext('2d'),walk=new Image(),fire=new Image(),weaponImages={},stepShellImages={punch:new Image(),walk:new Image()};let config,stepShellConfig,settings,ready=false,model,origin={},elapsed=0,last=0,playing=true,triggered=false;
+function path(points,fill,stroke='#19251d',width=3){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.lineJoin='round';ctx.stroke()}}
+
+function equipped(){return model.settings.weapons.find(w=>w.id===model.weapon)}
+function muzzle(p){const w=equipped(),x=(w.muzzleX-w.gripX)*w.scale*.8,y=(w.muzzleY-w.gripY)*w.scale*.8;return{x:p.x+Math.cos(p.angle)*x-Math.sin(p.angle)*y,y:p.y+Math.sin(p.angle)*x+Math.cos(p.angle)*y}}
+function gun(p,layer){if(model.ultimateActive)return;const w=equipped(),img=weaponImages[w.id];ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.angle);ctx.scale(w.scale*.8,w.scale*.8);ctx.translate(-w.gripX,-w.gripY);
+ const region=(x,y,width,height)=>ctx.drawImage(img,x,y,width,height,x,y,width,height);
+ if(layer==='grip')region(0,w.splitY,w.splitX,w.height-w.splitY);
+ else{region(0,0,w.splitX,w.splitY);region(w.splitX,0,w.width-w.splitX,w.height)}ctx.restore();if(layer==='barrel'&&model.modRank){ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.angle);for(let i=0;i<model.modRank;i++){ctx.fillStyle='#102d30';ctx.fillRect(13+i*5,-15,4,11);ctx.fillStyle='#d5ae68';ctx.fillRect(14+i*5,-14,2,8)}ctx.restore();}}
+
+function pose(){const firing=model.state!=='travel',a=firing?config.fire:config.walk;
+ let phase=6;if(!firing)phase=(model.age*a.fps)%a.frames;
+ else if(model.state==='raise')phase=Math.min(6,model.age/model.settings.raiseDuration*7);
+ else if(model.state==='lower')phase=Math.min(6,model.age/model.settings.lowerDuration*7);
+ const lowering=model.state==='lower',f=lowering?6-Math.floor(phase):Math.floor(phase),img=firing&&f!==0?fire:walk,b=a.renderBounds||{x:190,y:20,w:413,h:405},k=120/b.h,left=124-b.w*k/2,top=452,p=a.grips[f],next=a.grips[lowering?Math.max(0,f-1):firing?Math.min(6,f+1):(f+1)%a.frames];
+ const t=phase-Math.floor(phase),w=equipped(),u=Math.min(1,model.sinceShot/model.settings.recoilDuration);
+ const kick=firing?Math.sin(Math.PI*u)*Math.exp(-3*u)*3*w.recoil:0,lean=-kick*.012;
+ const hx=left+(p.x-b.x)*k,hy=top+(p.y-b.y)*k,dx=hx-124,dy=hy-572;
+ const bearing=0; // Weapon barrel artwork is horizontal; grip-to-muzzle offset is not its angle.
+ return{a,img,f,b,k,left,top,lean,grip:{x:124+dx*Math.cos(lean)-dy*Math.sin(lean),y:572+dx*Math.sin(lean)+dy*Math.cos(lean),angle:p.angle+(next.angle-p.angle)*t+bearing+lean-kick*.025,scale:.85}}}
+// The weapon follows the displayed hand, with no independent crossfade.
+function blendedPose(){return pose()}
+function body(p,alpha){const{a,img,f,b,k,left,top}=p;ctx.save();ctx.translate(124,572);ctx.rotate(p.lean||0);ctx.translate(-124,-572);ctx.globalAlpha=alpha;ctx.drawImage(img,(f%a.columns)*a.cellWidth+b.x,Math.floor(f/a.columns)*a.cellHeight+b.y,b.w,b.h,left,top,b.w*k,120);ctx.restore();ctx.globalAlpha=1}
+function actor(){const p=blendedPose(),u=model.ultimateActive?sampleStepShell(model,stepShellConfig):null;
+ ctx.save();ctx.translate(model.meleeAdvance||0,0);
+ ctx.save();ctx.translate(124,572);ctx.scale(1,u?u.squash:1);ctx.translate(-124,-572);
+ if(u&&u.show)drawStepShell(u);else{gun(p.grip,'grip');body(p,1);gun(p.grip,'barrel');}
+ ctx.restore();
+ if(model.playerHit>0){ctx.strokeStyle='#a1482d';ctx.lineWidth=3;ctx.beginPath();ctx.arc(124,492,75,-1,1);ctx.stroke();}
+ if(u)drawTransformation(u);origin=muzzle(p.grip);origin.x+=model.meleeAdvance||0;ctx.restore();}
+
+function reset(){model=new BrineCombat.Encounter(settings);model.state='fight';model.age=0;model.enemyX=330;model.hp=model.maxHp=1000000;model.playerHp=1000000;model.enemyCycle=-1000;model.ultimateCharge=100;elapsed=0;triggered=false;}
+function step(dt){if(elapsed>=.8&&!triggered){model.ultimate();triggered=true;}model.tick(dt,{x:180,y:500});elapsed+=dt;}
+function seek(t){reset();while(elapsed+1/120<t)step(1/120);step(Math.max(0,t-elapsed));}
+function render(now){const dt=last?Math.min(.05,(now-last)/1000):0;last=now;if(ready){if(playing){step(dt*Number(document.querySelector('#speed').value));if(elapsed>=11.2)reset();}ctx.setTransform(2,0,0,2,0,0);ctx.fillStyle=document.querySelector('#backdrop').value;ctx.fillRect(0,0,500,325);ctx.fillStyle='#203c3b';ctx.fillRect(0,270,500,2);ctx.save();ctx.translate(70,-302);actor();ctx.restore();const phase=model.ultimatePhase;document.querySelector('#status').textContent=phase.toUpperCase()+' · '+elapsed.toFixed(2)+' s · '+(model.ultimateActive?'Step Shell':'Normal form');document.querySelector('#seek').value=elapsed;}requestAnimationFrame(render);}
+document.querySelector('#restart').onclick=()=>{reset();playing=true;document.querySelector('#toggle').textContent='Pause'};document.querySelector('#toggle').onclick=()=>{playing=!playing;document.querySelector('#toggle').textContent=playing?'Pause':'Play'};document.querySelector('#seek').oninput=e=>{seek(Number(e.target.value));playing=false;document.querySelector('#toggle').textContent='Play'};
+Promise.all([fetch('animation.json').then(r=>r.json()),fetch('step-shell.json').then(r=>r.json()),fetch('gameplay.json').then(r=>r.json())]).then(async([a,u,s])=>{config=a;stepShellConfig=u;settings=s;walk.src=a.walk.sheet;fire.src=a.fire.sheet;const pending=[walk.decode(),fire.decode()];for(const kind of ['punch','walk']){stepShellImages[kind].src=u[kind].sheet;pending.push(stepShellImages[kind].decode())}for(const w of s.weapons){const img=weaponImages[w.id]=new Image();img.src='weapons/'+w.art+'.png';pending.push(img.decode())}await Promise.all(pending);reset();ready=true;}).catch(e=>document.querySelector('#status').textContent=e.message);requestAnimationFrame(render);
+</script></html>

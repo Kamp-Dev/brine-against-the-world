@@ -1,5 +1,5 @@
 const canvas=document.getElementById('game'),ctx=canvas.getContext('2d'),$=id=>document.getElementById(id),model=new BrineCombat.Encounter();
-const walk=new Image(),fire=new Image(),enemyImages={},weaponImages={},harborPlate=new Image(),harborClean=new Image();let enemyBounds={},parallaxData;const SAVE_KEY='brine-rpg-v1';let saveNote='Progress saved on this device.';let config,ready=false,last=0,clock=0,origin={x:200,y:460};
+const walk=new Image(),fire=new Image(),enemyImages={},weaponImages={},harborPlate=new Image(),harborClean=new Image();const stepShellImages={punch:new Image(),walk:new Image()};let stepShellConfig;let enemyBounds={},parallaxData;const SAVE_KEY='brine-rpg-v1';let saveNote='Progress saved on this device.';let config,ready=false,last=0,clock=0,origin={x:200,y:460};
 function persist(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(model.save()));saveNote='Progress saved on this device.'}catch{saveNote='Saving unavailable in this browser session.'}}
 function refresh(){
  for(const id of ['scrap','repeater','lowtide']){$(id).setAttribute('aria-pressed',model.weapon===id);$(id).disabled=model.best<model.settings.weapons.find(w=>w.id===id).unlock}
@@ -12,8 +12,8 @@ function refresh(){
  const canVolley=!model.ultimateActive&&model.charge>=100&&model.state==='fight'&&!model.paused;$('volley').disabled=!canVolley;$('volley').dataset.ready=canVolley;$('volley').textContent='3-SHOT VOLLEY\n'+(model.state==='defeat'?'REFIT FIRST':model.paused?'PAUSED':canVolley?'READY — FIRE':model.charge>=100?'NEXT BATTLE':'CHARGING '+model.charge+'%');$('volley').title='Hits charge three rapid shots. Fire when ready during battle.';
  $('farm').disabled=model.ultimateActive||model.best===0||model.state==='defeat';$('farm').textContent=model.state==='defeat'?'ROAD BLOCKED\nREFIT FIRST':model.farming?'PUSH FORWARD\nNEXT STRETCH':model.best===0?'GATHER SALVAGE\nCLEAR STRETCH 1':'GATHER SALVAGE\nREPEAT ROAD';$('farm').title=model.farming?'Leave farming and challenge the next uncleared stretch':'Repeat cleared ground to earn salvage';
  $('retry').hidden=model.state!=='defeat';$('pause').textContent=model.paused?'Resume':'Pause';$('save-note').textContent=saveNote;
- const ult=$('ultimate');ult.disabled=model.paused||model.state!=='fight'||model.ultimateCharge<100||model.ultimateActive;ult.setAttribute('aria-label',model.ultimateActive?'Step Shell active, '+Math.ceil(model.ultimateTime)+' seconds remaining':'Step Shell melee Ultimate, '+model.ultimateCharge+'% charged');
- const quick=$('ultimate-quick');quick.disabled=ult.disabled;quick.dataset.ready=!ult.disabled;quick.textContent=model.ultimateActive?'MELEE · '+Math.ceil(model.ultimateTime)+'s':model.ultimateCharge>=100?'STEP SHELL · '+(model.state==='fight'?'UNLEASH':'READY'):'STEP SHELL · '+model.ultimateCharge+'%';
+ const ult=$('ultimate');ult.disabled=model.paused||model.state!=='fight'||model.ultimateCharge<100||model.ultimateActive;ult.setAttribute('aria-label',model.ultimateActive?'Step Shell active, '+model.ultimateSeconds+' seconds remaining':'Step Shell melee Ultimate, '+model.ultimateCharge+'% charged');
+ const quick=$('ultimate-quick');quick.disabled=ult.disabled;quick.dataset.ready=!ult.disabled;quick.textContent=model.ultimateActive?'MELEE · '+model.ultimateSeconds+'s':model.ultimateCharge>=100?'STEP SHELL · '+(model.state==='fight'?'UNLEASH':'READY'):'STEP SHELL · '+model.ultimateCharge+'%';
  $('workshop').disabled=model.modRank>=3||model.gold<model.modCost();$('workshop').textContent=model.modRank>=3?'ATTACHMENT MAXED':equipped().name+' attachment '+(model.modRank+1)+'/3 · '+model.modCost()+' salvage';
  $('mod-info').textContent='Rank '+model.modRank+'/3 · +'+(model.modRank*5)+' damage. Fitted to this gun; visible on its barrel.';
  for(let i=0;i<3;i++){const r=$('route-'+i);r.disabled=model.best<i*5||model.ultimateActive||model.state==='defeat';r.setAttribute('aria-pressed',model.route===i);r.textContent=BrineCombat.routes[i].name+(model.best<i*5?' · clear '+i*5:' · '+Math.round((BrineCombat.routes[i].reward-1)*100)+'% extra salvage');}
@@ -56,11 +56,13 @@ function pose(){const firing=model.state!=='travel',a=firing?config.fire:config.
 // The weapon follows the displayed hand, with no independent crossfade.
 function blendedPose(){return pose()}
 function body(p,alpha){const{a,img,f,b,k,left,top}=p;ctx.save();ctx.translate(124,572);ctx.rotate(p.lean||0);ctx.translate(-124,-572);ctx.globalAlpha=alpha;ctx.drawImage(img,(f%a.columns)*a.cellWidth+b.x,Math.floor(f/a.columns)*a.cellHeight+b.y,b.w,b.h,left,top,b.w*k,120);ctx.restore();ctx.globalAlpha=1}
-function actor(){const p=blendedPose();const power=model.ultimateActive?Math.min(1,(8-model.ultimateTime)/.3,model.ultimateTime/.35):0;
- const close=['fight','raise'].includes(model.state)?112:0,punch=model.ultimateActive?Math.sin(Math.min(1,model.meleeSince/.32)*Math.PI)*16:0;
- ctx.save();ctx.translate((model.meleeAdvance||0)+power*punch,0);
- if(power>0){ctx.save();ctx.translate(124,490);ctx.scale(power,power);path([[-68,-4],[-61,-23],[-50,-41],[-29,-50],[-11,-47],[12,-21],[10,0],[-22,6]],'#d96738','#101f20',3);ctx.restore();}
- gun(p.grip,'grip');body(p,1);if(model.playerHit>0){ctx.strokeStyle='#a1482d';ctx.lineWidth=3;ctx.beginPath();ctx.arc(124,492,75,-1,1);ctx.stroke()}gun(p.grip,'barrel');origin=muzzle(p.grip);origin.x+=model.meleeAdvance||0;ctx.restore();}
+function actor(){const p=blendedPose(),u=model.ultimateActive?sampleStepShell(model,stepShellConfig):null;
+ ctx.save();ctx.translate(model.meleeAdvance||0,0);
+ ctx.save();ctx.translate(124,572);ctx.scale(1,u?u.squash:1);ctx.translate(-124,-572);
+ if(u&&u.show)drawStepShell(u);else{gun(p.grip,'grip');body(p,1);gun(p.grip,'barrel');}
+ ctx.restore();
+ if(model.playerHit>0){ctx.strokeStyle='#a1482d';ctx.lineWidth=3;ctx.beginPath();ctx.arc(124,492,75,-1,1);ctx.stroke();}
+ if(u)drawTransformation(u);origin=muzzle(p.grip);origin.x+=model.meleeAdvance||0;ctx.restore();}
 function enemy(){
  if(['reward','lower'].includes(model.state))return;
  const e=model.enemy,img=enemyImages[e.art],b=enemyBounds[e.art],x=model.enemyX;
@@ -111,9 +113,9 @@ function hud(){
  ctx.fillText(model.damage+' DMG  ·  '+model.interval.toFixed(2)+'s',26,160);
  if(model.state==='defeat'||model.paused){ctx.fillStyle='#17221ee8';ctx.fillRect(26,237,398,122);ctx.fillStyle='#f6ead2';ctx.font='bold 24px system-ui';ctx.fillText(model.paused?'TAKE A BREATHER.':'SHELL CRACKED.',46,278);ctx.font='13px system-ui';ctx.fillText(model.paused?'Resume when you’re ready.':'Refit below. Your upgrades stay with you.',46,311)}
 }
-Promise.all([fetch('animation.json').then(r=>r.json()),fetch('gameplay.json').then(r=>r.json()),fetch('enemies/bounds.json').then(r=>r.json()),fetch('parallax.json').then(r=>r.json())]).then(async([d,s,b,parallax])=>{
- config=d;enemyBounds=b;parallaxData=parallax;model.settings=s;model.reset();try{model.load(JSON.parse(localStorage.getItem(SAVE_KEY)))}catch{saveNote='Could not read the saved game. This session starts fresh.'}
+Promise.all([fetch('animation.json').then(r=>r.json()),fetch('gameplay.json').then(r=>r.json()),fetch('enemies/bounds.json').then(r=>r.json()),fetch('parallax.json').then(r=>r.json()),fetch('step-shell.json').then(r=>r.json())]).then(async([d,s,b,parallax,ultimate])=>{
+ stepShellConfig=ultimate;config=d;enemyBounds=b;parallaxData=parallax;model.settings=s;model.reset();try{model.load(JSON.parse(localStorage.getItem(SAVE_KEY)))}catch{saveNote='Could not read the saved game. This session starts fresh.'}
  showOffline();persist();walk.src=d.walk.sheet;fire.src=d.fire.sheet;
  harborPlate.src="ui/harbor-reference.png";harborClean.src="ui/harbor-clean.png";const pending=[walk.decode(),fire.decode(),harborPlate.decode(),harborClean.decode()];for(const w of s.weapons){const img=weaponImages[w.id]=new Image();img.src="weapons/"+w.art+".png";pending.push(img.decode())}for(const enemy of BrineCombat.enemies){const img=enemyImages[enemy.art]=new Image();img.src='enemies/'+enemy.art+'.png';pending.push(img.decode())}
- await Promise.all(pending);ctx.setTransform(4.8,0,0,4.8,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ready=true;$("loading").hidden=true;refresh();
+ for(const kind of ['punch','walk']){stepShellImages[kind].src=stepShellConfig[kind].sheet;pending.push(stepShellImages[kind].decode());}await Promise.all(pending);ctx.setTransform(4.8,0,0,4.8,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ready=true;$("loading").hidden=true;refresh();
 }).catch(e=>{$('status').textContent='Could not load the game: '+e.message;$('status').classList.add('error');$('loading').textContent='Could not load harbor. Reload to retry.'});requestAnimationFrame(render);

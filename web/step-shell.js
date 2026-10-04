@@ -1,0 +1,25 @@
+// One opaque character at a time. The local shell burst masks the model change.
+function sampleStepShell(m, data) {
+ const phase=m.ultimatePhase||'normal',t=Math.max(0,Math.min(1,m.transformProgress||0));
+ const transition=phase==='enter'||phase==='exit';
+ const show=phase==='melee'||(phase==='enter'&&t>=.5)||(phase==='exit'&&t<.5);
+ const moving=m.state==='travel'||Math.abs((phase==='melee'&&['fight','raise'].includes(m.state)?m.meleeReach:0)-(m.meleeAdvance||0))>3;
+ const attacking=phase==='melee'&&m.meleeCycle>0&&m.meleeCycle<m.meleeDuration;
+ const clip=moving&&!attacking?data.walk:data.punch;
+ let frame=0;
+ if(phase==='melee'&&moving&&!attacking)frame=Math.floor(m.time*clip.fps)%clip.frames;
+ else if(attacking)frame=Math.min(clip.frames-1,Math.floor(m.meleeCycle/m.meleeDuration*clip.frames));
+ const cover=transition?Math.min(1,Math.pow(Math.sin(t*Math.PI),4)*1.5):0;
+ return {show,clip,frame,cover,squash:transition?1-.06*Math.sin(t*Math.PI):1};
+}
+function drawStepShell(sample) {
+ const a=sample.clip,b=a.renderBounds,k=stepShellConfig.height/b.h,img=stepShellImages[a.kind];
+ ctx.drawImage(img,(sample.frame%a.columns)*a.cellWidth+b.x,Math.floor(sample.frame/a.columns)*a.cellHeight+b.y,b.w,b.h,124-b.w*k/2,572-stepShellConfig.height,b.w*k,stepShellConfig.height);
+}
+function drawTransformation(sample) {
+ if(sample.cover<=.005)return;
+ const points=[];
+ for(let i=0;i<20;i++){const angle=i*Math.PI/10,r=i%2?1:.86;points.push([124+Math.cos(angle)*94*r*sample.cover,506+Math.sin(angle)*92*r*sample.cover]);}
+ path(points,'#d96738','#182627',3);
+ for(let i=0;i<7;i++){const angle=i*Math.PI*2/7;ctx.save();ctx.translate(124+Math.cos(angle)*104*sample.cover,506+Math.sin(angle)*97*sample.cover);ctx.rotate(angle);path([[-5,-2],[4,-4],[8,2],[-3,4]],'#eed8a6','#25332e',1.5);ctx.restore();}
+}

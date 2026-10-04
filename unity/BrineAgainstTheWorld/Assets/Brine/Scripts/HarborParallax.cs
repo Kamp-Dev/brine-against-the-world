@@ -33,13 +33,6 @@ namespace BrineGame {
    }
   }
   public void Render(float distance){foreach(var tile in tiles)tile.transform.localPosition=new Vector3((tile.index*tile.layer.period-distance*tile.layer.speed%tile.layer.period)/100,0,0);}
-  public void ShellPlate(Transform parent){
-   var points=new[]{new Vector3(-68,4),new Vector3(-61,23),new Vector3(-50,41),new Vector3(-29,50),new Vector3(-11,47),new Vector3(12,21),new Vector3(10,0),new Vector3(-22,-6)};
-   var colors=new Color[points.Length];for(int i=0;i<points.Length;i++){points[i]/=100;colors[i]=ColorOf("#d96738");}
-   var mesh=new Mesh{vertices=points,colors=colors,triangles=new[]{0,1,2,0,2,3,0,3,4,0,4,5,0,5,6,0,6,7}};mesh.RecalculateBounds();meshes.Add(mesh);
-   var go=new GameObject("Raised rear shell plate");go.transform.SetParent(parent,false);go.AddComponent<MeshFilter>().sharedMesh=mesh;var r=go.AddComponent<MeshRenderer>();r.sharedMaterial=material;r.sortingOrder=9;
-   var line=go.AddComponent<LineRenderer>();line.sharedMaterial=material;line.useWorldSpace=false;line.loop=true;line.positionCount=points.Length;line.SetPositions(points);line.startWidth=line.endWidth=.03f;line.startColor=line.endColor=ColorOf("#101f20");line.sortingOrder=9;
-  }
   void OnDestroy(){foreach(var mesh in meshes)Destroy(mesh);if(material)Destroy(material);}
  }
 }

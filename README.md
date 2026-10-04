@@ -53,3 +53,9 @@ Walk playback uses 28 approved frames at 21 fps. The seven safe aiming frames sh
 Browser progress is saved locally per browser and site address. A new published URL starts a separate save from localhost. Unity saves are separate. Step Shell is an eight-second melee Ultimate: 4x strike damage, 75% damage resistance, and shield/burrow penetration. Hits and damage taken charge it separately from the volley. The gun is stowed and restored automatically.
 
 This repository is a prototype for testing. No open-source license is granted by this package; code and artwork licensing can be chosen by the project owner. Runtime images are pre-generated assets, and no generation API keys are included.
+
+## Approved Step Shell replacement
+
+Step Shell now uses the supplied Ultimate design, replacing the temporary polygon armor. It has a 29-frame punch and 28-frame walk. Each activation includes a 0.4-second local comic transformation, eight seconds of melee, and a 0.4-second return. Punch damage lands on frame 15; guns are stowed during the power-up. Original normal-form animation is preserved.
+
+Open `step-shell-review.html` for a replayable, slow-motion preview with a transparency-check backdrop; it does not read or modify your save. GodModeAI generation and cleanup used four requests at an expected one credit each, within the five-credit limit.

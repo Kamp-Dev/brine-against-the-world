@@ -28,7 +28,7 @@
       "scale": 0.047,
       "width": 1536,
       "height": 1024,
-      "description": "Salt slug · sharp chip burst"
+      "description": "Salt slug \u00b7 sharp chip burst"
     },
     {
       "id": "repeater",
@@ -49,7 +49,7 @@
       "scale": 0.051,
       "width": 1536,
       "height": 1024,
-      "description": "Fast teal tracer · piercing splash"
+      "description": "Fast teal tracer \u00b7 piercing splash"
     },
     {
       "id": "lowtide",
@@ -70,8 +70,11 @@
       "scale": 0.052,
       "width": 1254,
       "height": 1254,
-      "description": "Spreading blast · dust explosion"
+      "description": "Spreading blast \u00b7 dust explosion"
     }
   ],
-  "walkCycleDuration": 1.3333333333333333
+  "walkCycleDuration": 1.3333333333333333,
+  "meleeDuration": 1.2083333333333333,
+  "meleeImpact": 0.625,
+  "meleeReach": 102
 }

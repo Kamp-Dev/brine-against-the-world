@@ -18,7 +18,7 @@ namespace BrineGame
         Sprite solid;
         SpriteRenderer body;
         GunVisuals gunVisuals;
-        Transform weaponRoot, enemyRoot,stepShell; SpriteRenderer[] attachments; SpriteRenderer shield,mender,burrow,meleeRing;
+        Transform weaponRoot, enemyRoot;StepShellVisuals stepShellVisuals; SpriteRenderer[] attachments; SpriteRenderer shield,mender,burrow,meleeRing;
         SpriteRenderer enemyBody, healthFill;
         readonly List<Transform> roadMarks = new List<Transform>();
         Pose currentPose;
@@ -106,7 +106,7 @@ namespace BrineGame
             body.transform.position = World(124, 572); body.transform.localScale = Vector3.one * (120 / BrineAnimation.Common.h);
             weaponRoot = new GameObject("Weapon grip socket").transform; weaponRoot.SetParent(actor);
             gunVisuals=new GameObject("Comic gun effects").AddComponent<GunVisuals>();gunVisuals.Build(weaponRoot,Model.Settings.weapons);
-            stepShell=new GameObject("Step Shell armor").transform;parallax.ShellPlate(stepShell);
+            stepShellVisuals=gameObject.AddComponent<StepShellVisuals>();stepShellVisuals.Build();
             attachments=new SpriteRenderer[3];for(int i=0;i<3;i++)attachments[i]=Box("Workshop barrel band",weaponRoot,18+i*6,-14,4,13,"#d5ae68",16);
             meleeRing=Box("Melee impact",null,0,0,10,10,"#f5db99",20);
         }
@@ -135,10 +135,8 @@ namespace BrineGame
             weaponRoot.position = World(currentPose.hand.x+Model.MeleeAdvance, currentPose.hand.y);
             weaponRoot.rotation = Quaternion.Euler(0, 0, -currentPose.angle * Mathf.Rad2Deg); weaponRoot.localScale = Vector3.one*.8f;
             gunVisuals.Equip(Model.Weapon);gunVisuals.Render(Model);weaponRoot.gameObject.SetActive(!Model.UltimateActive);
-            float power=Model.UltimateActive?Mathf.Min(1,(8-Model.UltimateTime)/.3f,Model.UltimateTime/.35f):0;
-            float close=Model.State==EncounterState.Fight||Model.State==EncounterState.Raise?112:0;
-            float punch=Model.UltimateActive?Mathf.Sin(Mathf.Min(1,Model.MeleeSince/.32f)*Mathf.PI)*16:0;
-            body.transform.position=World(124+Model.MeleeAdvance+power*punch,572);stepShell.position=World(124+Model.MeleeAdvance+power*punch,490);stepShell.localScale=Vector3.one*power;
+            body.enabled=!stepShellVisuals.Render(Model);body.transform.position=World(124+Model.MeleeAdvance,572);
+            if(Model.UltimatePhase=="enter"||Model.UltimatePhase=="exit"){var scale=body.transform.localScale;scale.y*=1-.06f*Mathf.Sin(Mathf.Clamp01(Model.TransformProgress)*Mathf.PI);body.transform.localScale=scale;}
             for(int i=0;i<3;i++)attachments[i].enabled=i<Model.ModRank;
             meleeRing.enabled=Model.UltimateActive&&Model.MeleeSince<.35f;meleeRing.transform.position=World(Model.EnemyX-12,515);float strike=Mathf.Clamp01(Model.MeleeSince/.35f);meleeRing.transform.localScale=new Vector3(.05f+.4f*strike,.55f*(1-strike),1);meleeRing.transform.rotation=Quaternion.Euler(0,0,35-70*strike);
             enemyRoot.position = World(Model.EnemyX, 572);
