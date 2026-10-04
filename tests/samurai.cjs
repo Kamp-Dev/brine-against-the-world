@@ -31,3 +31,9 @@ for(const clip of data.clips)for(const frame of clip.frames){assert.equal(frame.
 const eyePixels=new Uint8ClampedArray(8*12*4);for(let i=0;i<eyePixels.length;i+=4)eyePixels.set([245,245,245,255],i);eyePixels.set([230,80,20,255],(2*8+4)*4);eyePixels.set([0,0,0,0],(3*8+4)*4);api.restoreEyes(eyePixels,null,8,{scale:36,frames:[{x:0,y:0,w:8,h:12,anchorY:12,pupils:[{x:4,y:3,rx:2,ry:3}]}]});assert.deepEqual([...eyePixels.slice((3*8+3)*4,(3*8+3)*4+4)],[12,12,12,255]);assert.equal(eyePixels[(3*8+4)*4+3],0);assert.equal(eyePixels[(2*8+4)*4],230);
 console.log('PASS: three contacts at 10/30/60/120 Hz, unchanged total damage, finishing impact, pause/death guards, and two opaque tracked pupils per frame.');
 
+
+const sealed=new Uint8ClampedArray(8*12*4),sealedRaw=new Uint8ClampedArray(sealed.length);sealedRaw.set([8,8,8,255],(3*8+4)*4);
+api.restoreEyes(sealed,sealedRaw,8,{scale:36,frames:[{x:0,y:0,w:8,h:12,anchorY:12,pupils:[{x:4,y:3,rx:2,ry:3,seal:[{y:3,left:4,right:4}]}]}]});
+assert.deepEqual([...sealed.slice((3*8+4)*4,(3*8+4)*4+4)],[12,12,12,255],'A completely transparent black pupil is restored');assert.equal(sealed[(3*8+3)*4+3],0,'Exterior outside the eye seal remains transparent');
+for(const c of data.clips)for(const f of c.frames)for(const eye of f.pupils){assert(eye.seal.length>0);for(const r of eye.seal)assert(r.y>=0&&r.y<f.h&&r.left>=0&&r.right<f.w&&r.left<=r.right);}
+console.log('PASS: fully missing pupil opacity is repaired within bounded eye interiors; transparent exterior is preserved.');

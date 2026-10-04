@@ -34,11 +34,19 @@
      if(pixels[p+3]<255)count++;pixels[p]=r;pixels[p+1]=g;pixels[p+2]=b;pixels[p+3]=255;
     }
    }
+   // Recover keyed-out black eye interiors inside the surviving eye outline.
+   const eyeSource=original||snapshot;
+   for(const eye of f.pupils||[])for(const row of eye.seal||[]){
+    for(let x=row.left;x<=row.right;x++){const p=((f.y+row.y)*width+f.x+x)*4;
+     pixels[p]=eyeSource[p];pixels[p+1]=eyeSource[p+1];pixels[p+2]=eyeSource[p+2];pixels[p+3]=255;
+     if(Math.max(eyeSource[p],eyeSource[p+1],eyeSource[p+2])<110)pixels[p]=pixels[p+1]=pixels[p+2]=12;
+    }
+   }
    for(const eye of f.pupils||[]){
     for(let y=Math.max(f.y,Math.floor(f.y+eye.y-eye.ry));y<Math.min(f.y+f.h,Math.ceil(f.y+eye.y+eye.ry));y++)for(let x=Math.max(f.x,Math.floor(f.x+eye.x-eye.rx));x<Math.min(f.x+f.w,Math.ceil(f.x+eye.x+eye.rx));x++){
      if(((x-f.x-eye.x)/eye.rx)**2+((y-f.y-eye.y)/eye.ry)**2>1)continue;const p=(y*width+x)*4;
      // Pupil masks follow each eye. Keep the orange eyelid and exterior silhouette intact.
-     if(snapshot[p+3]>20&&Math.max(snapshot[p],snapshot[p+1],snapshot[p+2])-Math.min(snapshot[p],snapshot[p+1],snapshot[p+2])<80){pixels[p]=pixels[p+1]=pixels[p+2]=12;pixels[p+3]=255;}
+     if(pixels[p+3]>20&&Math.max(pixels[p],pixels[p+1],pixels[p+2])-Math.min(pixels[p],pixels[p+1],pixels[p+2])<80){pixels[p]=pixels[p+1]=pixels[p+2]=12;pixels[p+3]=255;}
     }
    }
   }return count;
