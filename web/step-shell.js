@@ -26,7 +26,7 @@ function drawStepShellRig(phase){
  const rig=stepShellConfig.rig,img=stepShellImages.rig;
  const part=(id,x,y,angle,scale)=>{const p=rig.parts.find(p=>p.id===id);ctx.save();ctx.translate(124+x,572+y);ctx.rotate(angle);ctx.scale(scale,scale);ctx.drawImage(img,p.x,p.y,p.w,p.h,-p.px,-p.py,p.w,p.h);ctx.restore();};
  const bone=(id,a,b)=>{const p=rig.parts.find(p=>p.id===id),dx=p.ex-p.px,dy=p.ey-p.py;part(id,a.x,a.y,Math.atan2(b.y-a.y,b.x-a.x)-Math.atan2(dy,dx),Math.hypot(b.x-a.x,b.y-a.y)/Math.hypot(dx,dy));};
- for(const far of [true,false]){const l=stepShellLeg(phase,far),prefix=far?'far':'near';bone(prefix+'Thigh',l.hip,l.knee);bone(prefix+'Shin',l.knee,l.ankle);part(prefix+'Foot',l.ankle.x,l.ankle.y,0,far?.124:.15);}
+ for(const far of [true,false]){const l=stepShellLeg(phase,far),prefix=far?'far':'near';bone(prefix+'Thigh',l.hip,l.knee);part(prefix+'Ankle',l.ankle.x,l.ankle.y,0,far?.14:.16);bone(prefix+'Shin',l.knee,l.ankle);part(prefix+'Foot',l.ankle.x,l.ankle.y,0,far?.124:.15);}
  part('body',0,-140+Math.cos(phase*Math.PI*4)*1.1,0,.22);
 }
 function drawStepShell(sample) {
