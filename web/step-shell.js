@@ -5,9 +5,11 @@ function sampleStepShell(m, data) {
  const show=phase==='melee'||(phase==='enter'&&t>=.5)||(phase==='exit'&&t<.5);
  const moving=phase==='melee'&&(m.meleeWalking||m.state==='travel');
  const attacking=phase==='melee'&&!moving&&m.meleeCycle>0&&m.meleeCycle<m.meleeDuration;
- const clip=data.punch;
+ const clip=moving?data.walk:data.punch;
  let frame=0;
- if(attacking)frame=Math.min(clip.frames-1,Math.floor(m.meleeCycle/m.meleeDuration*clip.frames));
+ // Position-driven steps show a whole gait during the short approach, starting at frame zero.
+ if(moving)frame=m.meleeWalking?Math.min(clip.frames-1,Math.floor(Math.max(0,Math.min(1,(m.meleeAdvance||0)/Math.max(1,m.meleeReach)))*(clip.frames-1))):Math.floor(m.age*clip.fps)%clip.frames;
+ else if(attacking)frame=Math.min(clip.frames-1,Math.floor(m.meleeCycle/m.meleeDuration*clip.frames));
  const cover=transition?Math.min(1,Math.pow(Math.sin(t*Math.PI),4)*1.5):0;
  return {show,clip,frame,cover,squash:transition?1-.06*Math.sin(t*Math.PI):1};
 }
