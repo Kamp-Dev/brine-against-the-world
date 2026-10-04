@@ -34,11 +34,11 @@ namespace BrineGame {
     GUI.enabled=tab=="road"&&m.Gold>=m.Cost(kind)&&!maxed;if(Hot(13+i*144,602,137,66,maxed?kind+" fully upgraded":"Upgrade "+kind+", rank "+rank+" of 30"))Act(()=>m.Buy(kind));GUI.enabled=true;
    }
    Fill(357,685,66,21,Cream);Text(m.Gold.ToString("N0"),342,682,83,29,23,Dark,false,TextAnchor.UpperRight);
-   if(tab=="road"&&Hot(351,454,81,41,"Swap gun"))tab="guns";if(tab=="road"&&Hot(9,522,432,76,"Unleash Step Shell melee Ultimate"))Act(()=>m.Ultimate());
+   if(tab=="road"&&Hot(351,454,81,41,"Swap gun"))tab="guns";if(tab=="road"&&Hot(9,555,432,43,"Unleash selected melee form"))Act(()=>m.Ultimate());
    string[] tabs={"road","guns","kit","camp"};for(int i=0;i<4;i++){if(Hot(4+i*113,720,108,76,tabs[i]))tab=tabs[i];if(tab==tabs[i]&&i>0)Fill(4+i*113,790,108,4,"#e0ae61");}
    if(m.Paused){Fill(143,107,162,20,Teal);Text("PAUSED · CAMP TO RESUME",143,107,162,20,12,Cream,false,TextAnchor.MiddleCenter);}
    if(m.State==EncounterState.Defeat&&tab=="road"){Fill(63,216,324,79,Dark);Fill(67,220,316,71,Cream);Text("SHELL CRACKED",71,228,308,30,25,Dark,true,TextAnchor.UpperCenter);Text("REFIT & RETRY · KEEP UPGRADES",71,264,308,22,13,Dark,false,TextAnchor.UpperCenter);if(Hot(63,216,324,79,"Refit and retry"))Act(()=>m.Retry());}
-   GUI.enabled=!m.Paused&&m.State==EncounterState.Fight&&!m.UltimateActive&&m.UltimateCharge>=100;if(Button(m.UltimateActive?"MELEE / "+m.UltimateSeconds+"s":(m.SelectedForm=="samurai"?"SAMURAI / ":"STEP SHELL / ")+(m.UltimateCharge>=100?"UNLEASH":m.UltimateCharge+"%"),22,139,180,33))Act(()=>m.Ultimate());GUI.enabled=!m.UltimateActive;if(Button(m.SelectedForm=="samurai"?"FORM: SAMURAI":"FORM: STEP SHELL",225,139,202,33))Act(()=>m.ChooseForm(m.SelectedForm=="samurai"?"step-shell":"samurai"));GUI.enabled=true;BattleActions();if(tab!="road"){var saved=GUI.matrix;GUI.matrix=saved*Matrix4x4.TRS(new Vector3(0,343,0),Quaternion.identity,new Vector3(1,.86f,1));Drawer();GUI.matrix=saved;}GUI.enabled=true;GUI.matrix=Matrix4x4.identity;
+   GUI.enabled=!m.Paused&&m.State==EncounterState.Fight&&!m.UltimateActive&&m.UltimateCharge>=100;if(Button(m.UltimateActive?"MELEE / "+m.UltimateSeconds+"s":(m.SelectedForm=="samurai"?"SAMURAI / ":"STEP SHELL / ")+(m.UltimateCharge>=100?"UNLEASH":m.UltimateCharge+"%"),22,139,180,33))Act(()=>m.Ultimate());GUI.enabled=!m.UltimateActive;if(Button(m.SelectedForm=="samurai"?"FORM: SAMURAI":"FORM: STEP SHELL",182,526,240,22))Act(()=>m.ChooseForm(m.SelectedForm=="samurai"?"step-shell":"samurai"));GUI.enabled=true;BattleActions();if(tab!="road"){var saved=GUI.matrix;GUI.matrix=saved*Matrix4x4.TRS(new Vector3(0,343,0),Quaternion.identity,new Vector3(1,.86f,1));Drawer();GUI.matrix=saved;}GUI.enabled=true;GUI.matrix=Matrix4x4.identity;
   }
   void BattleActions(){var m=game.Model;bool ready=!m.UltimateActive&&m.Charge>=100&&m.State==EncounterState.Fight&&!m.Paused;
    GUI.enabled=!m.UltimateActive&&m.Best>0&&m.State!=EncounterState.Defeat;
@@ -55,3 +55,4 @@ namespace BrineGame {
   }
  }
 }
+
