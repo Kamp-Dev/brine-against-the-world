@@ -51,11 +51,11 @@
    const step=Math.sign(target-this.meleeAdvance)*Math.min(Math.abs(target-this.meleeAdvance),(s.meleeMoveSpeed||84)*dt);
    this.meleeWalking=Math.abs(step)>.00001;this.meleeAdvance+=step;if(this.meleeWalking)this.meleeWalkTime+=dt;
    const waiting=phase==='melee'&&['reward','lower','travel'].includes(this.state)&&!recovering;
-   if(waiting){this.meleeIdleActive=true;this.meleeIdleTime+=dt;}
-   else if(phase==='melee'&&this.meleeIdleActive){const landing=Math.ceil((this.meleeIdleTime-1e-7)*3)/3;this.meleeIdleTime=Math.min(landing,this.meleeIdleTime+dt);if(this.meleeIdleTime>=landing-1e-7)this.meleeIdleActive=false;}
+   if(waiting){this.meleeIdleActive=true;this.meleeIdleTime+=dt*.7;}
+   else if(phase==='melee'&&this.meleeIdleActive){const landing=Math.ceil((this.meleeIdleTime-1e-7)*3)/3;this.meleeIdleTime=Math.min(landing,this.meleeIdleTime+dt*.7);if(this.meleeIdleTime>=landing-1e-7)this.meleeIdleActive=false;}
    else {this.meleeIdleTime=0;this.meleeIdleActive=false;}
    this.enemyDepth+=((this.submerged?44:0)-this.enemyDepth)*(1-Math.exp(-dt*18));if(this.state!=='fight'&&this.meleeCycle>0)this.meleeCycle=Math.min(this.meleeDuration,this.meleeCycle+dt);this.meleeSince+=dt;this.enemyAttack+=dt;this.effects=this.effects.filter(e=>(e.life-=dt)>0);
-   if(this.state==='travel'){const speed=Math.min(s.enemySpeed,25+(this.enemyX-330)*2.5);this.distance+=dt*speed*.6;this.enemyX=Math.max(330,this.enemyX-dt*speed);if(this.enemyX<=330 && this.age%(s.walkCycleDuration||1.75)<Math.max(dt,(s.walkCycleDuration||1.75)/28))this.enter('raise')}
+   if(this.state==='travel'){const speed=Math.min(s.enemySpeed,25+(this.enemyX-330)*2.5);this.distance+=dt*speed*.6;this.enemyX=Math.max(330,this.enemyX-dt*speed*(phase==='melee'?1.2:1));if(this.enemyX<=330 && (phase==='melee'||this.age%(s.walkCycleDuration||1.75)<Math.max(dt,(s.walkCycleDuration||1.75)/28)))this.enter('raise')}
    else if(this.state==='raise'&&this.age>=s.raiseDuration){this.enter('fight');this.cycle=this.interval-.12}
    else if(this.state==='fight'){
     this.cycle+=dt;this.enemyCycle+=dt;
