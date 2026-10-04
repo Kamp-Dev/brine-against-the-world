@@ -21,17 +21,19 @@
     "kind": "walk",
     "sheet": "step-shell-walk.png",
     "columns": 4,
-    "rows": 7,
+    "rows": 6,
     "cellWidth": 768,
     "cellHeight": 448,
-    "frames": 28,
-    "fps": 21,
-    "duration": 1.3333333333333333,
+    "frames": 21,
+    "fps": 24,
+    "duration": 0.875,
     "renderBounds": {
       "x": 110,
-      "y": 80,
+      "y": 40,
       "w": 540,
-      "h": 356
-    }
+      "h": 396
+    },
+    "backgroundKey": true,
+    "height": 155.73033707865167
   }
 }

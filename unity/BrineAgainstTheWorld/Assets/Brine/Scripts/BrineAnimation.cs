@@ -8,6 +8,7 @@ namespace BrineGame
     [Serializable] public class ClipData
     {
         public string sheet;
+        public bool backgroundKey;
         public int columns, rows, cellWidth, cellHeight, frames;
         public float fps, duration, height;
         public Crop[] frameBounds;

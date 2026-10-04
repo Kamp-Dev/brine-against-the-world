@@ -44,3 +44,14 @@ for(const hz of [30,60,120])for(const stage of [1,2,3,4,5,6]){
 console.log('PASS: visible position-driven walking on approach and retreat, no attacks while moving, bounded travel speed at 30/60/120 Hz.');
 
 for(const clip of [data.walk,data.punch]){if(clip.frameBounds){assert.equal(clip.frameBounds.length,clip.frames);for(const b of clip.frameBounds){assert(b.x>=0&&b.y>=0);assert(b.x+b.w<=clip.cellWidth&&b.y+b.h<=clip.cellHeight);assert.equal(b.h,clip.renderBounds.h);}}}
+const maskPixels=new Uint8ClampedArray(768*448*4);
+for(let i=0;i<maskPixels.length;i+=4)maskPixels.set([249,244,226,255],i);
+function outlinedBox(x,y,w,h){for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++)if(xx===x||xx===x+w-1||yy===y||yy===y+h-1)maskPixels.set([20,20,20,255],(yy*768+xx)*4);}
+outlinedBox(350,220,100,130); // The pale chest must remain opaque.
+outlinedBox(350,375,80,40); // An enclosed cream gap between the feet must disappear.
+outlinedBox(280,260,35,45); // Same for the gap next to the near arm.
+scope.keyStepShellBackground(maskPixels,768,448,768,448);
+assert.equal(maskPixels[(260*768+400)*4+3],255,'chest stays solid');
+for(const [x,y] of [[10,10],[390,390],[295,280]])assert.equal(maskPixels[(y*768+x)*4+3],0,'backdrop and enclosed limb gaps are hidden');
+assert.equal(maskPixels[(220*768+350)*4+3],255,'ink outline stays solid');
+console.log('PASS: runtime backdrop key preserves the chest and ink while hiding exterior and limb-gap backgrounds.');

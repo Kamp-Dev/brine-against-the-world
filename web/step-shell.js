@@ -1,3 +1,22 @@
+// Runtime color key: only cream pixels connected to the frame border are hidden.
+// Closed outlines protect the similarly colored chest and eyes; original art stays intact.
+function keyStepShellBackground(pixels,width,height,cw,ch){
+ const seen=new Uint8Array(width*height),queue=new Int32Array(cw*ch);
+ for(let oy=0;oy<height;oy+=ch)for(let ox=0;ox<width;ox+=cw){
+  let head=0,tail=0;
+  const push=(x,y)=>{const i=y*width+x,p=i*4,r=pixels[p],g=pixels[p+1],b=pixels[p+2];if(!seen[i]&&r>210&&g>198&&b>165&&r-g<30&&r-b<65){seen[i]=1;queue[tail++]=i;}};
+  for(let x=ox;x<ox+cw;x++){push(x,oy);push(x,oy+ch-1);}for(let y=oy;y<oy+ch;y++){push(ox,y);push(ox+cw-1,y);}
+  // Enclosed gaps beside the arms and between the feet need their own backdrop seeds.
+  for(let y=oy+230;y<oy+ch;y++)for(let x=ox;x<ox+cw;x++){const p=(y*width+x)*4;if((x-ox<330||x-ox>480||y-oy>365)&&pixels[p]>239&&pixels[p+1]>231&&pixels[p+2]>216)push(x,y);}
+  while(head<tail){const i=queue[head++],x=i%width,y=Math.floor(i/width);pixels[i*4+3]=0;if(x>ox)push(x-1,y);if(x<ox+cw-1)push(x+1,y);if(y>oy)push(x,y-1);if(y<oy+ch-1)push(x,y+1);}
+ }
+}
+function prepareStepShellImage(image,clip){
+ if(!clip.backgroundKey)return image;
+ const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
+ const c=canvas.getContext('2d',{willReadFrequently:true});c.drawImage(image,0,0);const pixels=c.getImageData(0,0,canvas.width,canvas.height);
+ keyStepShellBackground(pixels.data,canvas.width,canvas.height,clip.cellWidth,clip.cellHeight);c.putImageData(pixels,0,0);return canvas;
+}
 // One opaque character at a time. The local shell burst masks the model change.
 function sampleStepShell(m, data) {
  const phase=m.ultimatePhase||'normal',t=Math.max(0,Math.min(1,m.transformProgress||0));
