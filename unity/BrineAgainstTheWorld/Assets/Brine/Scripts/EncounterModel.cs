@@ -32,7 +32,7 @@ namespace BrineGame
   public float Age,EnemyX,Time,Cycle,Distance,SinceShot,HitFlash,PlayerHit,EnemyCycle;
   public bool Paused,Farming;
   public UpgradeData Upgrades=new UpgradeData();
-  public bool MeleeWalking;public float MeleeWalkTime;bool meleeLanded; int burst; public int Route,UltimateCharge; public UpgradeData Mods=new UpgradeData(); public float EnemyDepth,MeleeAdvance,UltimateTime,MeleeCycle,MeleeSince=99,EnemyAttack=99;
+  public float MeleeHopBlend;public bool MeleeWalking;public float MeleeWalkTime;bool meleeLanded; int burst; public int Route,UltimateCharge; public UpgradeData Mods=new UpgradeData(); public float EnemyDepth,MeleeAdvance,UltimateTime,MeleeCycle,MeleeSince=99,EnemyAttack=99;
   public float MeleeContactX { get {var v=Settings.enemyVisuals==null?null:Array.Find(Settings.enemyVisuals,x=>x.id==Enemy.Art);return EnemyX-Enemy.Height*.78f*(v==null?1:v.ratio)*(v==null?.12f:v.contactFraction);}}
   public float MeleeReach=>Math.Max(0,MeleeContactX-124-Settings.meleeReach+4);
   public bool UltimateActive=>UltimateTime>0;
@@ -65,7 +65,7 @@ namespace BrineGame
   public int Cost(string kind)=> (int)((kind=="damage"?18:kind=="shell"?16:30)*Math.Pow(1.5,Rank(kind)));
   public int Rank(string kind)=>kind=="damage"?Upgrades.damage:kind=="shell"?Upgrades.shell:Upgrades.speed;
   public EncounterModel(GameplayData settings){Settings=settings;Reset();}
-  public void Reset(){Route=UltimateCharge=0;MeleeAdvance=UltimateTime=MeleeCycle=0;MeleeWalking=false;MeleeWalkTime=0;MeleeSince=EnemyAttack=99;Mods=new UpgradeData();Weapon="scrap";Gold=Kills=ShotSerial=Best=Xp=Charge=OfflineEarned=0;Stage=1;Upgrades=new UpgradeData();Farming=Paused=false;Time=Distance=0;PlayerHealth=MaxPlayerHealth;StartEncounter();}
+  public void Reset(){Route=UltimateCharge=0;MeleeHopBlend=MeleeAdvance=UltimateTime=MeleeCycle=0;MeleeWalking=false;MeleeWalkTime=0;MeleeSince=EnemyAttack=99;Mods=new UpgradeData();Weapon="scrap";Gold=Kills=ShotSerial=Best=Xp=Charge=OfflineEarned=0;Stage=1;Upgrades=new UpgradeData();Farming=Paused=false;Time=Distance=0;PlayerHealth=MaxPlayerHealth;StartEncounter();}
   void StartEncounter(){MeleeCycle=0;meleeLanded=false;State=EncounterState.Travel;Age=0;EnemyX=520;Health=MaxHealth=(int)Math.Floor((Settings.enemyHealth+(Stage-1)*9)*Enemy.Health+.5f);Cycle=EnemyCycle=0;Shots.Clear();EnemyShots.Clear();Effects.Clear();SinceShot=99;PlayerHit=HitFlash=0;burst=LastReward=0;EnemyDepth=0;EnemyAttack=99;}
   public bool Equip(string id){if(!Array.Exists(Settings.weapons,w=>w.id==id))throw new ArgumentException("Unknown weapon");if(Best<Array.Find(Settings.weapons,w=>w.id==id).unlock)return false;Weapon=id;return true;}
   public bool Buy(string kind){if(kind!="damage"&&kind!="shell"&&kind!="speed")return false;int cost=Cost(kind);if(Gold<cost||Rank(kind)>=30)return false;Gold-=cost;if(kind=="damage")Upgrades.damage++;else if(kind=="speed")Upgrades.speed++;else {Upgrades.shell++;if(State!=EncounterState.Defeat)PlayerHealth=Math.Min(MaxPlayerHealth,PlayerHealth+25);}return true;}
@@ -77,7 +77,8 @@ namespace BrineGame
   public void Tick(float delta,float muzzleX,float muzzleY){
    if(Paused||State==EncounterState.Defeat)return;float dt=Math.Max(0,Math.Min(delta,.1f));for(int i=Effects.Count-1;i>=0;i--){Effects[i].life-=dt;if(Effects[i].life<=0)Effects.RemoveAt(i);}
    UltimateTime=Math.Max(0,UltimateTime-dt);string phase=UltimatePhase;bool recovering=State!=EncounterState.Fight&&MeleeCycle>0&&MeleeCycle<Settings.meleeDuration;
-   float target=phase=="enter"||phase=="exit"||recovering?MeleeAdvance:phase=="melee"&&(State==EncounterState.Fight||State==EncounterState.Raise)?MeleeReach:0;
+   float target=phase=="enter"||phase=="exit"||recovering?MeleeAdvance:phase=="melee"?((State==EncounterState.Fight||State==EncounterState.Raise)?MeleeReach:MeleeAdvance):0;
+   bool waiting=phase=="melee"&&(State==EncounterState.Reward||State==EncounterState.Lower||State==EncounterState.Travel)&&!recovering;MeleeHopBlend=Math.Max(0,Math.Min(1,MeleeHopBlend+(waiting?1:-1)*dt*8));
    float step=Math.Sign(target-MeleeAdvance)*Math.Min(Math.Abs(target-MeleeAdvance),Settings.meleeMoveSpeed*dt);MeleeWalking=Math.Abs(step)>.00001f;MeleeAdvance+=step;if(MeleeWalking)MeleeWalkTime+=dt;
    EnemyDepth+=((Submerged?44:0)-EnemyDepth)*(1-(float)Math.Exp(-dt*18));if(State!=EncounterState.Fight&&MeleeCycle>0)MeleeCycle=Math.Min(Settings.meleeDuration,MeleeCycle+dt);MeleeSince+=dt;EnemyAttack+=dt;Time+=dt;Age+=dt;SinceShot+=dt;HitFlash=Math.Max(0,HitFlash-dt);PlayerHit=Math.Max(0,PlayerHit-dt);
    switch(State){

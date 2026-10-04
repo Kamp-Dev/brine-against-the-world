@@ -55,3 +55,14 @@ assert.equal(maskPixels[(260*768+400)*4+3],255,'chest stays solid');
 for(const [x,y] of [[10,10],[390,390],[295,280]])assert.equal(maskPixels[(y*768+x)*4+3],0,'backdrop and enclosed limb gaps are hidden');
 assert.equal(maskPixels[(220*768+350)*4+3],255,'ink outline stays solid');
 console.log('PASS: runtime backdrop key preserves the chest and ink while hiding exterior and limb-gap backgrounds.');
+for(const hz of [30,60,120]){
+ const m=new Encounter(settings);m.state='fight';m.enemyX=330;m.hp=m.maxHp=100000;m.playerHp=100000;m.enemyCycle=-10000;m.ultimateCharge=100;m.ultimate();
+ for(let i=0;i<hz*2.5;i++)m.tick(1/hz,origin);
+ m.hitEnemy(1000000,'melee',505);const held=m.meleeAdvance;let hopped=false,traveled=false;
+ for(let i=0;i<hz*4;i++){m.tick(1/hz,origin);if(m.ultimatePhase==='melee'&&['reward','lower','travel'].includes(m.state)){
+  assert.equal(m.meleeAdvance,held,'Step Shell holds its defeated-enemy position');assert(!m.meleeWalking,'waiting does not play the walk');const s=sample(m);assert.equal(s.clip.kind,'punch');assert(s.hop>=0&&s.hop<=5);if(s.hop>.5)hopped=true;if(m.state==='travel')traveled=true;
+ }}
+ assert(hopped&&traveled,'hops while a new enemy enters');m.paused=true;const before=sample(m).hop;m.tick(.1,origin);assert.equal(sample(m).hop,before,'pause freezes hop');m.paused=false;
+ for(let i=0;i<hz*10;i++)m.tick(1/hz,origin);assert.equal(m.ultimatePhase,'normal');assert.equal(m.meleeAdvance,0,'normal form returns to its lane');assert.equal(sample(m).hop,0);
+}
+console.log('PASS: Step Shell holds position and hops between enemies; pause and Ultimate expiry behave correctly.');

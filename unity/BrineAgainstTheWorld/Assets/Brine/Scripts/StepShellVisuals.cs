@@ -15,11 +15,12 @@ namespace BrineGame {
   public bool Render(EncounterModel m){
    string phase=m.UltimatePhase;float t=Mathf.Clamp01(m.TransformProgress);bool transition=phase=="enter"||phase=="exit";
    bool show=phase=="melee"||(phase=="enter"&&t>=.5f)||(phase=="exit"&&t<.5f);
-   bool walking=phase=="melee"&&(m.MeleeWalking||m.State==EncounterState.Travel);
+   bool walking=phase=="melee"&&m.MeleeWalking;
    bool attacking=phase=="melee"&&!walking&&m.MeleeCycle>0&&m.MeleeCycle<m.Settings.meleeDuration;
    var clip=walking?data.walk:data.punch;int frame=0;
    if(walking)frame=m.MeleeWalking?Mathf.Min(clip.frames-1,Mathf.FloorToInt(Mathf.Clamp01(m.MeleeAdvance/Mathf.Max(1,m.MeleeReach))*(clip.frames-1))):Mathf.FloorToInt(m.Age*clip.fps)%clip.frames;else if(attacking)frame=Mathf.Min(clip.frames-1,Mathf.FloorToInt(m.MeleeCycle/m.Settings.meleeDuration*clip.frames));
-   actor.enabled=show;actor.sprite=(walking?walk:punch)[frame];actor.transform.position=BrineGameController.World(124+m.MeleeAdvance,572);float k=(clip.height>0?clip.height:data.height)/clip.renderBounds.h;actor.transform.localScale=new Vector3(k,k*(transition?1-.06f*Mathf.Sin(t*Mathf.PI):1),1);
+   float hop=phase=="melee"?5*m.MeleeHopBlend*Mathf.Pow(Mathf.Sin(m.Time*Mathf.PI/.6f),2):0;
+   actor.enabled=show;actor.sprite=(walking?walk:punch)[frame];actor.transform.position=BrineGameController.World(124+m.MeleeAdvance,572-hop);float k=(clip.height>0?clip.height:data.height)/clip.renderBounds.h;actor.transform.localScale=new Vector3(k,k*(transition?1-.06f*Mathf.Sin(t*Mathf.PI):1),1);
    float cover=transition?Mathf.Min(1,Mathf.Pow(Mathf.Sin(t*Mathf.PI),4)*1.5f):0;burst.enabled=border.enabled=cover>.005f;
    if(burst.enabled){var v=new Vector3[21];var c=new Color[21];var triangles=new int[60];v[20]=BrineGameController.World(124+m.MeleeAdvance,506);c[20]=new Color32(217,103,56,255);var outline=new Vector3[20];for(int i=0;i<20;i++){float a=i*Mathf.PI/10,r=i%2==0?.86f:1;v[i]=BrineGameController.World(124+m.MeleeAdvance+Mathf.Cos(a)*94*r*cover,506+Mathf.Sin(a)*92*r*cover);outline[i]=v[i];c[i]=c[20];triangles[i*3]=20;triangles[i*3+1]=i;triangles[i*3+2]=(i+1)%20;}burstMesh.Clear();burstMesh.vertices=v;burstMesh.colors=c;burstMesh.triangles=triangles;burstMesh.RecalculateBounds();border.SetPositions(outline);}
    return show;

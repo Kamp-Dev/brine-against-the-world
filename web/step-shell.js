@@ -22,7 +22,7 @@ function sampleStepShell(m, data) {
  const phase=m.ultimatePhase||'normal',t=Math.max(0,Math.min(1,m.transformProgress||0));
  const transition=phase==='enter'||phase==='exit';
  const show=phase==='melee'||(phase==='enter'&&t>=.5)||(phase==='exit'&&t<.5);
- const moving=phase==='melee'&&(m.meleeWalking||m.state==='travel');
+ const moving=phase==='melee'&&m.meleeWalking;
  const attacking=phase==='melee'&&!moving&&m.meleeCycle>0&&m.meleeCycle<m.meleeDuration;
  const clip=moving?data.walk:data.punch;
  let frame=0;
@@ -30,11 +30,12 @@ function sampleStepShell(m, data) {
  if(moving)frame=m.meleeWalking?Math.min(clip.frames-1,Math.floor(Math.max(0,Math.min(1,(m.meleeAdvance||0)/Math.max(1,m.meleeReach)))*(clip.frames-1))):Math.floor(m.age*clip.fps)%clip.frames;
  else if(attacking)frame=Math.min(clip.frames-1,Math.floor(m.meleeCycle/m.meleeDuration*clip.frames));
  const cover=transition?Math.min(1,Math.pow(Math.sin(t*Math.PI),4)*1.5):0;
- return {show,clip,frame,cover,squash:transition?1-.06*Math.sin(t*Math.PI):1};
+ const hop=phase==='melee'?5*(m.meleeHopBlend||0)*Math.pow(Math.sin((m.time||0)*Math.PI/.6),2):0;
+ return {show,clip,frame,cover,hop,squash:transition?1-.06*Math.sin(t*Math.PI):1};
 }
 function drawStepShell(sample) {
  const a=sample.clip,b=a.frameBounds?.[sample.frame]||a.renderBounds,height=a.height||stepShellConfig.height,k=height/b.h,img=stepShellImages[a.kind];
- ctx.drawImage(img,(sample.frame%a.columns)*a.cellWidth+b.x,Math.floor(sample.frame/a.columns)*a.cellHeight+b.y,b.w,b.h,124-b.w*k/2,572-height,b.w*k,height);
+ ctx.drawImage(img,(sample.frame%a.columns)*a.cellWidth+b.x,Math.floor(sample.frame/a.columns)*a.cellHeight+b.y,b.w,b.h,124-b.w*k/2,572-height-sample.hop,b.w*k,height);
 }
 function drawTransformation(sample) {
  if(sample.cover<=.005)return;
