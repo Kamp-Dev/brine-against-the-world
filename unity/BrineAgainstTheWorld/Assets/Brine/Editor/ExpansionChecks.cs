@@ -12,6 +12,9 @@ public static class ExpansionChecks {
   m=Battle(data,4);m.Health=5000;m.EnemyCycle=m.Enemy.Interval-.01f;m.Cycle=-100;m.Tick(.02f,215,500);Require(m.Health==6200,"repair action");
   m=Battle(data,2);m.EnemyCycle=m.Enemy.Interval-.01f;m.Cycle=-100;m.Tick(.02f,215,500);Require(m.EnemyShots.Count==3,"enemy burst");
   m.Best=10;m.Gold=1000;Require(m.ChooseRoute(2)&&m.BuyMod()&&m.ModRank==1,"route and workshop");m.UltimateCharge=83;var saved=m.Save(1000);var copy=new EncounterModel(data);copy.Load(saved,1000);Require(copy.ModRank==1&&copy.Route==2&&copy.UltimateCharge==83,"save new progression");
+  Require(StepShellWalkRig.Leg(0,false).ankle.x>StepShellWalkRig.Leg(0,true).ankle.x,"near foot leads first");
+  Require(StepShellWalkRig.Leg(.5f,true).ankle.x>StepShellWalkRig.Leg(.5f,false).ankle.x,"far foot leads second");
+  for(int i=0;i<120;i++){float phase=i/120f;var near=StepShellWalkRig.Leg(phase,false);var far=StepShellWalkRig.Leg(phase,true);Require(near.stance!=far.stance,"alternating support");Require(Mathf.Abs(Vector2.Distance(near.hip,near.knee)-27)<.001f&&Mathf.Abs(Vector2.Distance(near.knee,near.ankle)-22)<.001f,"fixed leg lengths");}
   Debug.Log("BRINE_EXPANSION_CHECKS_PASS");
  }
 }

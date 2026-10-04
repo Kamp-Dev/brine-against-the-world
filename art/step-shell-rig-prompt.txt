@@ -1,0 +1,9 @@
+Mode: built-in image generation; no GodModeAI credits used.
+Create a production CUTOUT ANIMATION PARTS ATLAS for the attached orange Brine character, NOT a sprite animation sheet. Preserve its exact ink comic design and texture. Transparent alpha background. Precisely THREE columns TWO rows equal square cells. SIX slots as follows, read left to right:
+TOP LEFT: Complete upper body ONLY, from eye stalks to bottom of cream belly/pelvis, with orange shell, green patch, both arms and black fists in relaxed pose. ABSOLUTELY NO LEGS OR FEET on this upper body, cut off at hips. Large centered body with generous margin.
+TOP MIDDLE: ONE isolated near THIGH, orange chunky rounded armor capsule, vertical from round hip joint at top to round knee joint at bottom, no foot, no body.
+TOP RIGHT: ONE isolated near LOWER LEG WITH FOOT, orange short chunky shin from round knee joint at top to large broad orange boot with two black toe claws pointing RIGHT at bottom. Entire part vertical, flat sole.
+BOTTOM LEFT: ONE isolated far THIGH same design as near thigh but slightly darker orange and slightly narrower, vertical round hip joint top and knee bottom.
+BOTTOM MIDDLE: ONE isolated far LOWER LEG WITH FOOT same design as near shin/foot but slightly darker and narrower, knee top flat sole bottom, black toe claws point RIGHT.
+BOTTOM RIGHT: completely EMPTY transparent.
+Every part disconnected and isolated in its own cell. No extra pieces, no duplicates, no complete characters except upper body. Uniform bold black outline, flat colors with restrained shading, no glow. No text, labels, lines, grid, shadows or background. These pieces will be joined at hip/knee pivots and procedurally animated. Thighs must NOT include lower legs; lower legs must NOT include thighs. Rounded overlapping joint ends conceal seams. Right-facing three-quarter perspective.

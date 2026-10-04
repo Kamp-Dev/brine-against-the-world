@@ -44,3 +44,17 @@ for(const hz of [30,60,120])for(const stage of [1,2,3,4,5,6]){
 console.log('PASS: visible position-driven walking on approach and retreat, no attacks while moving, bounded travel speed at 30/60/120 Hz.');
 
 for(const clip of [data.walk,data.punch]){if(clip.frameBounds){assert.equal(clip.frameBounds.length,clip.frames);for(const b of clip.frameBounds){assert(b.x>=0&&b.y>=0);assert(b.x+b.w<=clip.cellWidth&&b.y+b.h<=clip.cellHeight);assert.equal(b.h,clip.renderBounds.h);}}}
+
+// Both feet must lead on opposite half-cycles; stance contact must not slide.
+for(let i=0;i<120;i++){
+ const phase=i/120,n=scope.stepShellLeg(phase,false),f=scope.stepShellLeg(phase,true);
+ assert.notEqual(n.stance,f.stance,'one supporting foot in each half cycle');
+ for(const leg of [n,f]){assert(Math.abs(Math.hypot(leg.knee.x-leg.hip.x,leg.knee.y-leg.hip.y)-27)<1e-6);assert(Math.abs(Math.hypot(leg.knee.x-leg.ankle.x,leg.knee.y-leg.ankle.y)-22)<1e-6);}
+ if(phase<.49){const next=scope.stepShellLeg(phase+.001,false);assert(Math.abs((next.ankle.x+84*(phase+.001))-(n.ankle.x+84*phase))<1e-6,'planted foot stays fixed while body advances');}
+}
+assert(scope.stepShellLeg(0,false).ankle.x>scope.stepShellLeg(0,true).ankle.x,'near foot leads');
+assert(scope.stepShellLeg(.5,true).ankle.x>scope.stepShellLeg(.5,false).ankle.x,'far foot leads');
+for(const far of [false,true])assert.deepEqual(scope.stepShellLeg(0,far),scope.stepShellLeg(1,far),'loop closes');
+const rigBytes=fs.readFileSync('web/'+data.rig.sheet),rw=rigBytes.readUInt32BE(16),rh=rigBytes.readUInt32BE(20);
+assert.equal(rigBytes[25],6);for(const p of data.rig.parts)assert(p.x>=0&&p.y>=0&&p.x+p.w<=rw&&p.y+p.h<=rh);
+console.log('PASS: independent alternating feet, fixed stance contact, constant bone lengths, closed loop and cutout bounds.');
