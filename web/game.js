@@ -1,5 +1,5 @@
 const canvas=document.getElementById('game'),ctx=canvas.getContext('2d'),$=id=>document.getElementById(id),model=new BrineCombat.Encounter();
-const walk=new Image(),fire=new Image(),enemyImages={},weaponImages={},harborPlate=new Image(),harborClean=new Image();const stepShellImages={punch:new Image(),walk:new Image()};let stepShellConfig;let enemyBounds={},parallaxData;const SAVE_KEY='brine-rpg-v1';let saveNote='Progress saved on this device.';let config,ready=false,last=0,clock=0,origin={x:200,y:460};
+const walk=new Image(),fire=new Image(),enemyImages={},weaponImages={},harborPlate=new Image(),harborClean=new Image();const stepShellImages={punch:new Image(),walk:new Image()};let stepShellConfig;let enemyBounds={},parallaxData,enemyMotionConfig;const sceneryImages={};const SAVE_KEY='brine-rpg-v1';let saveNote='Progress saved on this device.';let config,ready=false,last=0,clock=0,origin={x:200,y:460};
 function persist(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(model.save()));saveNote='Progress saved on this device.'}catch{saveNote='Saving unavailable in this browser session.'}}
 function refresh(){
  for(const id of ['scrap','repeater','lowtide']){$(id).setAttribute('aria-pressed',model.weapon===id);$(id).disabled=model.best<model.settings.weapons.find(w=>w.id===id).unlock}
@@ -67,17 +67,15 @@ function enemy(){
  if(['reward','lower'].includes(model.state))return;
  const e=model.enemy,img=enemyImages[e.art],b=enemyBounds[e.art],x=model.enemyX;
  const windup=model.state==='fight'?Math.max(0,(model.enemyCycle/e.interval-.75)/.25):0;
- const recoil=Math.sin(Math.min(1,model.enemyAttack/.32)*Math.PI),squash=1-windup*.07,bob=model.state==='travel'?Math.sin(model.time*6)*2:0;
+ const profile=enemyMotionConfig.profiles.find(p=>p.action===e.action),recoil=Math.sin(Math.min(1,model.enemyAttack/.32)*Math.PI);
+ const squash=1-windup*profile.squash+(e.action==='repair'?recoil*.12:0),bob=model.state==='travel'?Math.sin(model.time*6)*profile.bob:0;
  const h=e.height*.78,w=b.w/b.h*h;
- ctx.save();ctx.beginPath();ctx.rect(0,315,450,258);ctx.clip();ctx.translate(x-recoil*(e.action==='slam'?32:14),572+bob+(model.enemyDepth||0));ctx.rotate(windup*.09-recoil*.12);ctx.scale(1,squash);
+ ctx.save();ctx.beginPath();ctx.rect(0,315,450,258);ctx.clip();ctx.translate(x-recoil*profile.lunge,572+bob+(model.enemyDepth||0)-windup*profile.hop);ctx.rotate(windup*profile.lean-recoil*.06);ctx.scale(1+(1-squash)*.22,squash);
  if(model.effects.some(e=>e.type==='hit'&&e.life>.48))ctx.filter='brightness(1.4)';
  ctx.drawImage(img,b.x,b.y,b.w,b.h,-w/2,-h,w,h);
- if(e.action==='guard'){path([[-w*.48,-h*.77],[-w*.19,-h*.8],[-w*.13,-h*.3],[-w*.42,-h*.17],[-w*.56,-h*.4]],model.guarded?'#728071':'#9b7454','#132b2b',3);ctx.fillStyle='#e1c189';ctx.fillRect(-w*.43,-h*.65,5,h*.27);}
- if(e.action==='repair'){ctx.fillStyle='#214b50';ctx.fillRect(w*.02,-h*.68,23,25);ctx.fillStyle='#eadbad';ctx.fillRect(w*.02+9,-h*.68+4,5,17);ctx.fillRect(w*.02+3,-h*.68+10,17,5);}
- if(e.action==='burrow'){path([[-w*.4,-h*.45],[-w*.62,-h*.17],[-w*.17,-h*.2]],'#ac8b5d','#142b2b',3);}
  ctx.restore();if(model.enemyDepth>1){ctx.fillStyle='#b99a66';ctx.beginPath();ctx.ellipse(x,570,45,10,0,0,7);ctx.fill();}
 
- if(windup>0){ctx.fillStyle='#a1482d';ctx.font='bold 20px system-ui';ctx.fillText('!',x-45,572-h+12)}ctx.textAlign='left';
+
 }
 function effects(){
  for(const e of model.effects)if(e.type==='hit'&&e.weapon==='melee')drawComicImpact(e);
@@ -102,7 +100,7 @@ function effects(){
     for(let i=0;i<8;i++){const angle=i*2.4,r=4+t*29;ctx.save();ctx.translate(Math.cos(angle)*r,Math.sin(angle)*r+t*t*24);ctx.rotate(angle+t*3);ctx.fillStyle=i%2?'#f7e4ba':'#b98b52';ctx.strokeStyle='#483e2f';ctx.lineWidth=1;ctx.fillRect(-3,-3,6,6);ctx.strokeRect(-3,-3,6,6);ctx.restore()}
    }ctx.restore();
   }
-  if(e.type!=='flash'){ctx.textAlign='center';ctx.fillStyle=e.type==='reward'?'#203d2b':'#793319';ctx.font='bold 16px system-ui';ctx.fillText(e.type==='reward'?'+'+e.damage+' salvage':e.type==='repair'?'+'+e.damage+' repair':e.type==='miss'?'BURROWED':'−'+e.damage,e.x,e.y-28-(1-e.life)*18);ctx.textAlign='left'}
+  if(e.type!=='flash'&&e.type!=='repair'){ctx.textAlign='center';ctx.fillStyle=e.type==='reward'?'#203d2b':'#793319';ctx.font='bold 16px system-ui';ctx.fillText(e.type==='reward'?'+'+e.damage+' salvage':e.type==='repair'?'+'+e.damage+' repair':e.type==='miss'?'BURROWED':'−'+e.damage,e.x,e.y-28-(1-e.life)*18);ctx.textAlign='left'}
  }
 }
 function render(t){const dt=last?Math.min((t-last)/1000,.1):0;last=t;if(ready){origin=muzzle(blendedPose().grip);origin.x+=model.meleeAdvance||0;if(!document.hidden)model.tick(dt,origin);harborBackdrop();ctx.save();ctx.beginPath();ctx.rect(11,103,428,328);ctx.clip();ctx.translate(0,-212);enemy();actor();effects();ctx.restore();harborHUD();refresh()}requestAnimationFrame(render)}
@@ -113,9 +111,9 @@ function hud(){
  ctx.fillText(model.damage+' DMG  ·  '+model.interval.toFixed(2)+'s',26,160);
  if(model.state==='defeat'||model.paused){ctx.fillStyle='#17221ee8';ctx.fillRect(26,237,398,122);ctx.fillStyle='#f6ead2';ctx.font='bold 24px system-ui';ctx.fillText(model.paused?'TAKE A BREATHER.':'SHELL CRACKED.',46,278);ctx.font='13px system-ui';ctx.fillText(model.paused?'Resume when you’re ready.':'Refit below. Your upgrades stay with you.',46,311)}
 }
-Promise.all([fetch('animation.json').then(r=>r.json()),fetch('gameplay.json').then(r=>r.json()),fetch('enemies/bounds.json').then(r=>r.json()),fetch('parallax.json').then(r=>r.json()),fetch('step-shell.json').then(r=>r.json())]).then(async([d,s,b,parallax,ultimate])=>{
- stepShellConfig=ultimate;config=d;enemyBounds=b;parallaxData=parallax;model.settings=s;model.reset();try{model.load(JSON.parse(localStorage.getItem(SAVE_KEY)))}catch{saveNote='Could not read the saved game. This session starts fresh.'}
+Promise.all([fetch('animation.json?v=harbor-roster-1').then(r=>r.json()),fetch('gameplay.json?v=harbor-roster-1').then(r=>r.json()),fetch('enemies/bounds.json?v=harbor-roster-1').then(r=>r.json()),fetch('parallax.json?v=harbor-roster-1').then(r=>r.json()),fetch('step-shell.json?v=harbor-roster-1').then(r=>r.json()),fetch('enemy-motion.json?v=harbor-roster-1').then(r=>r.json())]).then(async([d,s,b,parallax,ultimate,motion])=>{
+ enemyMotionConfig=motion;stepShellConfig=ultimate;config=d;enemyBounds=b;parallaxData=parallax;model.settings=s;model.reset();try{model.load(JSON.parse(localStorage.getItem(SAVE_KEY)))}catch{saveNote='Could not read the saved game. This session starts fresh.'}
  showOffline();persist();walk.src=d.walk.sheet;fire.src=d.fire.sheet;
- harborPlate.src="ui/harbor-reference.png";harborClean.src="ui/harbor-clean.png";const pending=[walk.decode(),fire.decode(),harborPlate.decode(),harborClean.decode()];for(const w of s.weapons){const img=weaponImages[w.id]=new Image();img.src="weapons/"+w.art+".png";pending.push(img.decode())}for(const enemy of BrineCombat.enemies){const img=enemyImages[enemy.art]=new Image();img.src='enemies/'+enemy.art+'.png';pending.push(img.decode())}
- for(const kind of ['punch','walk']){stepShellImages[kind].src=stepShellConfig[kind].sheet;pending.push(stepShellImages[kind].decode());}await Promise.all(pending);ctx.setTransform(4.8,0,0,4.8,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ready=true;$("loading").hidden=true;refresh();
+ harborPlate.src="ui/harbor-reference.png";harborClean.src="ui/harbor-clean.png";const pending=[walk.decode(),fire.decode(),harborPlate.decode(),harborClean.decode()];for(const w of s.weapons){const img=weaponImages[w.id]=new Image();img.src="weapons/"+w.art+".png";pending.push(img.decode())}for(const enemy of BrineCombat.enemies){const img=enemyImages[enemy.art]=new Image();img.src='enemies/'+enemy.art+'.png?v=harbor-roster-1';pending.push(img.decode())}
+ for(const kind of ['punch','walk']){stepShellImages[kind].src=stepShellConfig[kind].sheet;pending.push(stepShellImages[kind].decode());}for(const l of parallax.layers){const img=sceneryImages[l.image]=new Image();img.src='scenery/'+l.image+'.png';pending.push(img.decode())}await Promise.all(pending);ctx.setTransform(4.8,0,0,4.8,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ready=true;$("loading").hidden=true;refresh();
 }).catch(e=>{$('status').textContent='Could not load the game: '+e.message;$('status').classList.add('error');$('loading').textContent='Could not load harbor. Reload to retry.'});requestAnimationFrame(render);

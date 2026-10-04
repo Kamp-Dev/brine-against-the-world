@@ -2,8 +2,8 @@
  'use strict';
  const defaults={raiseDuration:.32,lowerDuration:.32,shotInterval:.9,recoilDuration:.16,rewardDuration:.65,bulletSpeed:950,enemySpeed:90,reward:8,enemyHealth:48,weapons:[{"id":"scrap","name":"Plugger","art":"plugger","damage":12,"length":48,"unlock":0,"interval":1,"speed":720,"recoil":1,"gripX":470,"gripY":655,"muzzleX":1408,"muzzleY":365,"splitX":720,"splitY":520,"scale":0.047,"width":1536,"height":1024,"description":"Salt slug · sharp chip burst"},{"id":"repeater","name":"Tideline","art":"tideline","damage":20,"length":62,"unlock":3,"interval":1.1,"speed":1550,"recoil":0.65,"gripX":260,"gripY":650,"muzzleX":1470,"muzzleY":350,"splitX":550,"splitY":475,"scale":0.051,"width":1536,"height":1024,"description":"Fast teal tracer · piercing splash"},{"id":"lowtide","name":"Low Tide","art":"low-tide","damage":34,"length":50,"unlock":5,"interval":1.65,"speed":520,"recoil":2.5,"gripX":265,"gripY":805,"muzzleX":1190,"muzzleY":505,"splitX":610,"splitY":675,"scale":0.052,"width":1254,"height":1254,"description":"Spreading blast · dust explosion"}]};
  const weapons=Object.fromEntries(defaults.weapons.map(w=>[w.id,w]));
- const enemies=[{name:'Salt Porter',art:'salt-porter',health:1,damage:8,interval:2.6,height:132},{name:'Pipe Pilfer',art:'pipe-pilfer',health:.85,damage:6,interval:1.8,height:154},{name:'Sluice Keeper',art:'sluice-keeper',health:2.3,damage:17,interval:2.4,height:182}];
- enemies.push({name:'Gate Hauler',art:'salt-porter',health:1.3,damage:11,interval:3.1,height:144,action:'guard'}, {name:'Sump Mender',art:'pipe-pilfer',health:1.1,damage:7,interval:3.4,height:143,action:'repair'}, {name:'Mud Skipper',art:'pipe-pilfer',health:.95,damage:13,interval:2.8,height:122,action:'burrow'});
+ const enemies=[{name:'Salt Porter',art:'salt-porter',health:1,damage:8,interval:2.6,height:132},{name:'Pipe Pilfer',art:'pipe-pilfer',health:.85,damage:6,interval:1.8,height:142},{name:'Sluice Keeper',art:'sluice-keeper',health:2.3,damage:17,interval:2.4,height:164}];
+ enemies.push({name:'Gate Hauler',art:'gate-hauler',health:1.3,damage:11,interval:3.1,height:126,action:'guard'}, {name:'Sump Mender',art:'sump-mender',health:1.1,damage:7,interval:3.4,height:143,action:'repair'}, {name:'Mud Skipper',art:'mud-skipper',health:.95,damage:13,interval:2.8,height:110,action:'burrow'});
  enemies[0].action='lob';enemies[1].action='burst';enemies[2].action='slam';
  const routes=[{name:'Dry Docks',reward:1,damage:1},{name:'Drainage Run',reward:1.25,damage:1.2},{name:'Salt Flats',reward:1.5,damage:1.45}];
  const integer=(v,min,max,fallback)=>Number.isFinite(v)?Math.min(max,Math.max(min,Math.floor(v))):fallback;
@@ -12,7 +12,7 @@
   get enemyIndex(){return this.stage%5===0?2:[0,1,3,4,5][(this.stage-1-Math.floor((this.stage-1)/5))%5]}
   get enemy(){return enemies[this.enemyIndex]}
   // Aim into the torso, not the full art bounds (which include weapons and shadows).
-  get meleeContactX(){const boss=this.enemy.art==='sluice-keeper',ratio=this.enemy.art==='salt-porter'?1195/849:boss?1221/1074:739/1156;return this.enemyX-this.enemy.height*.78*ratio*(boss?.12:.1)}
+  get meleeContactX(){const v=(this.settings.enemyVisuals||[]).find(v=>v.id===this.enemy.art)||{ratio:1,contactFraction:.12};return this.enemyX-this.enemy.height*.78*v.ratio*v.contactFraction}
   get meleeReach(){return Math.max(0,this.meleeContactX-124-(this.settings.meleeReach||102)+4)}
   get ultimateActive(){return this.ultimateTime>0}
   get ultimatePhase(){return !this.ultimateActive?'normal':this.ultimateTime>8.4?'enter':this.ultimateTime<=.4?'exit':'melee'}

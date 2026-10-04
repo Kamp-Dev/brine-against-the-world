@@ -33,10 +33,10 @@ The published web game is the existing HTML/Canvas version. The Unity project is
 ## Combat expansion
 
 - Six encounter types: Salt Porter (lob), Pipe Pilfer (burst), Gate Hauler (shield), Sump Mender (repair), Mud Skipper (burrow), and Sluice Keeper (boss slam).
-- New enemies are variants of the existing three illustrations, distinguished by equipment, silhouettes, and code-driven actions. No additional GodMode credits are required.
+- All six types have their own newly generated illustration and a distinct action motion. There are no medical-cross, shield-box, or digging-blade overlays.
 - Kit contains the Harbor Workshop: three visible barrel attachments per gun, each adding 5 damage. Costs are 45, 90, and 135 salvage.
 - Camp contains route choices. Drainage unlocks at stretch 5 (+25% salvage, +20% enemy damage); Salt Flats at 10 (+50% salvage, +45% enemy damage).
-- Seven shared vector scenery layers scroll at different rates during travel and freeze in combat/pause. Browser and Unity read the same `parallax.json`.
+- Three detailed illustrated harbor layers scroll at different rates during travel and freeze in combat/pause: distant tidal harbor, working quay, and timber deck. Alternating mirrored tiles keep the edges continuous. Browser and Unity read the same `parallax.json`.
 - Existing saves migrate with no loss of upgrades or salvage. New Ultimate charge, route selection, and weapon attachments persist.
 
 Run the Brine gameplay checks and `ExpansionChecks.Run` in Unity for the new combat mechanics. `BrineProject.BuildAndTest` includes model, animation, expansion, and play-mode checks. Browser checks run with `npm test`.
@@ -59,3 +59,9 @@ This repository is a prototype for testing. No open-source license is granted by
 Step Shell now uses the supplied Ultimate design, replacing the temporary polygon armor. It has a 29-frame punch and 28-frame walk. Each activation includes a 0.4-second local comic transformation, eight seconds of melee, and a 0.4-second return. Punch damage lands on frame 15; guns are stowed during the power-up. Original normal-form animation is preserved.
 
 Open `step-shell-review.html` for a replayable, slow-motion preview with a transparency-check backdrop; it does not read or modify your save. GodModeAI generation and cleanup used four requests at an expected one credit each, within the five-credit limit.
+
+## Enemy and harbor art refresh
+
+`world-review.html` previews all six enemies, their attack motions, melee contact, and scrolling scenery without changing a save. Enemy art lives in `web/enemies`, scenery in `web/scenery`, with identical Unity Resources copies. `enemy-motion.json` controls the anticipation, squash, lunge, and recovery of each type. These are code-driven sprite motions, not new frame-by-frame animations.
+
+Art was generated using the built-in image_gen tool; no GodModeAI credits were used. Prompts are preserved in `art/enemy-harbor-prompts.json`.

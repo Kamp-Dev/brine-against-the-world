@@ -76,5 +76,37 @@
   "walkCycleDuration": 1.3333333333333333,
   "meleeDuration": 1.2083333333333333,
   "meleeImpact": 0.625,
-  "meleeReach": 102
+  "meleeReach": 102,
+  "enemyVisuals": [
+    {
+      "id": "salt-porter",
+      "ratio": 1.189189,
+      "contactFraction": 0.12
+    },
+    {
+      "id": "pipe-pilfer",
+      "ratio": 1.131996,
+      "contactFraction": 0.12
+    },
+    {
+      "id": "gate-hauler",
+      "ratio": 1.347239,
+      "contactFraction": 0.18
+    },
+    {
+      "id": "sump-mender",
+      "ratio": 0.918584,
+      "contactFraction": 0.12
+    },
+    {
+      "id": "mud-skipper",
+      "ratio": 2.10114,
+      "contactFraction": 0.18
+    },
+    {
+      "id": "sluice-keeper",
+      "ratio": 1.578826,
+      "contactFraction": 0.12
+    }
+  ]
 }

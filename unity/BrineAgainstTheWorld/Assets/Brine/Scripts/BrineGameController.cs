@@ -18,7 +18,7 @@ namespace BrineGame
         Sprite solid;
         SpriteRenderer body;
         GunVisuals gunVisuals;
-        Transform weaponRoot, enemyRoot;StepShellVisuals stepShellVisuals; SpriteRenderer[] attachments; SpriteRenderer shield,mender,burrow;ComicImpactVisuals comicImpact;
+        Transform weaponRoot, enemyRoot;StepShellVisuals stepShellVisuals; SpriteRenderer[] attachments; EnemyMotionData enemyMotion;ComicImpactVisuals comicImpact;
         SpriteRenderer enemyBody, healthFill;
         readonly List<Transform> roadMarks = new List<Transform>();
         Pose currentPose;
@@ -116,8 +116,8 @@ namespace BrineGame
             enemyBody = new GameObject("Enemy comic sprite").AddComponent<SpriteRenderer>();enemyBody.transform.SetParent(enemyRoot,false);enemyBody.sortingOrder=5;
             var atlas=JsonUtility.FromJson<EnemyAtlas>(Resources.Load<TextAsset>("enemy-atlas").text);enemySprites=new Sprite[EncounterModel.Enemies.Length];
             for(int i=0;i<enemySprites.Length;i++){var entry=Array.Find(atlas.entries,b=>b.id==EncounterModel.Enemies[i].Art);var texture=Resources.Load<Texture2D>("enemies/"+entry.id);enemySprites[i]=Sprite.Create(texture,new Rect(entry.x,texture.height-entry.y-entry.h,entry.w,entry.h),new Vector2(.5f,0),100,0,SpriteMeshType.FullRect);}
-            shield=Box("Gate shield",enemyRoot,-35,-54,24,65,"#728071",7);mender=Box("Repair kit",enemyRoot,10,-70,23,25,"#214b50",7);burrow=Box("Digging blade",enemyRoot,-23,-28,27,23,"#ac8b5d",7);
-            var mask=new GameObject("Enemy ground occlusion").AddComponent<SpriteMask>();mask.sprite=solid;mask.transform.position=World(225,444);mask.transform.localScale=new Vector3(4.5f,2.58f,1);mask.isCustomRangeActive=true;mask.frontSortingOrder=8;mask.backSortingOrder=0;enemyBody.maskInteraction=SpriteMaskInteraction.VisibleInsideMask;shield.maskInteraction=mender.maskInteraction=burrow.maskInteraction=SpriteMaskInteraction.VisibleInsideMask;
+            enemyMotion=JsonUtility.FromJson<EnemyMotionData>(Resources.Load<TextAsset>("enemy-motion").text);
+            var mask=new GameObject("Enemy ground occlusion").AddComponent<SpriteMask>();mask.sprite=solid;mask.transform.position=World(225,444);mask.transform.localScale=new Vector3(4.5f,2.58f,1);mask.isCustomRangeActive=true;mask.frontSortingOrder=8;mask.backSortingOrder=0;enemyBody.maskInteraction=SpriteMaskInteraction.VisibleInsideMask;
             healthFill = Box("Health", enemyRoot, 0, -170, 84, 5, "#536746", 7);
         }
         void Update()
@@ -144,9 +144,12 @@ namespace BrineGame
             enemyBody.sprite=enemySprites[Model.EnemyIndex];
             float enemyScale=Model.Enemy.Height*.78f/(enemyBody.sprite.rect.height);
             float windup=Model.State==EncounterState.Fight?Mathf.Clamp01((Model.EnemyCycle/Model.Enemy.Interval-.75f)/.25f):0;
-            enemyBody.transform.localScale=new Vector3(enemyScale,enemyScale*(1-windup*.045f),1);
-            float recoil=Mathf.Sin(Mathf.Min(1,Model.EnemyAttack/.32f)*Mathf.PI);enemyBody.transform.localRotation=Quaternion.Euler(0,0,-windup*5+recoil*7);enemyRoot.position=World(Model.EnemyX-recoil*(Model.Enemy.Action=="slam"?32:14),572+Model.EnemyDepth);shield.enabled=Model.Enemy.Action=="guard";shield.color=Hex(Model.Guarded?"#728071":"#9b7454");mender.enabled=Model.Enemy.Action=="repair";burrow.enabled=Model.Enemy.Action=="burrow";
-            enemyBody.transform.localPosition=new Vector3(0,Model.State==EncounterState.Travel?Mathf.Sin(Model.Time*6)*.02f:0,0);
+            var profile=Array.Find(enemyMotion.profiles,p=>p.action==Model.Enemy.Action);float recoil=Mathf.Sin(Mathf.Min(1,Model.EnemyAttack/.32f)*Mathf.PI);
+            float squash=1-windup*profile.squash+(Model.Enemy.Action=="repair"?recoil*.12f:0);
+            enemyBody.transform.localScale=new Vector3(enemyScale*(1+(1-squash)*.22f),enemyScale*squash,1);
+            enemyBody.transform.localRotation=Quaternion.Euler(0,0,-(windup*profile.lean-recoil*.06f)*Mathf.Rad2Deg);
+            enemyRoot.position=World(Model.EnemyX-recoil*profile.lunge,572+Model.EnemyDepth-windup*profile.hop);
+            enemyBody.transform.localPosition=new Vector3(0,Model.State==EncounterState.Travel?Mathf.Sin(Model.Time*6)*profile.bob/100:0,0);
             enemyBody.color=Model.HitFlash>0?new Color(1,.75f,.55f):Color.white;
             healthFill.enabled=false;
             parallax.Render(Model.Distance);harborScenery.gameObject.SetActive(false);

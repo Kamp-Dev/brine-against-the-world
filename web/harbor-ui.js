@@ -16,7 +16,8 @@ function healthBar(x,y,w,h,current,maximum){
 function harborBackdrop(){ctx.clearRect(0,0,450,800);ctx.drawImage(harborPlate,0,0,450,800);
  ctx.save();ctx.beginPath();ctx.roundRect(11,103,428,326,9);ctx.clip();
  ctx.translate(0,-212);
- for(const l of parallaxData.layers){const offset=model.distance*l.speed%l.period;for(let tile=-1;tile<2;tile++){ctx.save();ctx.translate(tile*l.period-offset,0);for(const shape of l.shapes)path(shape.points.map(p=>[p.x,p.y]),shape.color,shape.stroke,1.5);ctx.restore();}}
+ for(const l of parallaxData.layers){const travel=model.distance*l.speed/l.period,base=Math.floor(travel),offset=(travel-base)*l.period;for(let tile=-1;tile<2;tile++){const flip=(base+tile)%2!==0;ctx.save();ctx.translate(tile*l.period-offset+(flip?l.period:0),l.y);ctx.scale(flip?-1:1,1);ctx.drawImage(sceneryImages[l.image],0,0,l.period+.5,l.height);ctx.restore();}}
+
  ctx.restore();
 }
 function harborHUD(){

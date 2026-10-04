@@ -4,7 +4,9 @@ using System.Collections.Generic;
 namespace BrineGame
 {
  [Serializable] public class WeaponData { public string id, name, art, description; public int damage,unlock,width,height,splitX,splitY; public float length,interval=1,speed=950,recoil=1,gripX,gripY,muzzleX,muzzleY,scale; }
+ [Serializable] public class EnemyVisualData { public string id; public float ratio,contactFraction; }
  [Serializable] public class GameplayData {
+  public EnemyVisualData[] enemyVisuals;
   public float meleeReach=102; public float meleeDuration=1.2f,meleeImpact=.45f; public float walkCycleDuration=1.75f;
   public float raiseDuration, lowerDuration, shotInterval, recoilDuration, rewardDuration, bulletSpeed, enemySpeed;
   public int reward, enemyHealth; public WeaponData[] weapons;
@@ -31,7 +33,7 @@ namespace BrineGame
   public bool Paused,Farming;
   public UpgradeData Upgrades=new UpgradeData();
   bool meleeLanded; int burst; public int Route,UltimateCharge; public UpgradeData Mods=new UpgradeData(); public float EnemyDepth,MeleeAdvance,UltimateTime,MeleeCycle,MeleeSince=99,EnemyAttack=99;
-  public float MeleeContactX=>EnemyX-Enemy.Height*.78f*(Enemy.Art=="salt-porter"?1195f/849:Enemy.Art=="sluice-keeper"?1221f/1074:739f/1156)*(Enemy.Art=="sluice-keeper"?.12f:.1f);
+  public float MeleeContactX { get {var v=Settings.enemyVisuals==null?null:Array.Find(Settings.enemyVisuals,x=>x.id==Enemy.Art);return EnemyX-Enemy.Height*.78f*(v==null?1:v.ratio)*(v==null?.12f:v.contactFraction);}}
   public float MeleeReach=>Math.Max(0,MeleeContactX-124-Settings.meleeReach+4);
   public bool UltimateActive=>UltimateTime>0;
   public string UltimatePhase=>!UltimateActive?"normal":UltimateTime>8.4f?"enter":UltimateTime<=.4f?"exit":"melee";
@@ -45,7 +47,7 @@ namespace BrineGame
   public bool ChooseRoute(int id){if(id<0||id>2||Best<id*5||State==EncounterState.Defeat||UltimateActive)return false;Route=id;return true;}
   public bool Ultimate(){if(State!=EncounterState.Fight||Paused||UltimateCharge<100||UltimateActive)return false;UltimateCharge=0;UltimateTime=8.8f;MeleeCycle=0;MeleeSince=99;meleeLanded=false;burst=0;Shots.Clear();return true;}
   public readonly List<Projectile> Shots=new List<Projectile>(), EnemyShots=new List<Projectile>();
-  public static readonly EnemyData[] Enemies={new EnemyData("Salt Porter","salt-porter",1,8,2.6f,132),new EnemyData("Pipe Pilfer","pipe-pilfer",.85f,6,1.8f,154,"burst"),new EnemyData("Sluice Keeper","sluice-keeper",2.3f,17,2.4f,182,"slam"),new EnemyData("Gate Hauler","salt-porter",1.3f,11,3.1f,144,"guard"),new EnemyData("Sump Mender","pipe-pilfer",1.1f,7,3.4f,143,"repair"),new EnemyData("Mud Skipper","pipe-pilfer",.95f,13,2.8f,122,"burrow")};
+  public static readonly EnemyData[] Enemies={new EnemyData("Salt Porter","salt-porter",1,8,2.6f,132),new EnemyData("Pipe Pilfer","pipe-pilfer",.85f,6,1.8f,142,"burst"),new EnemyData("Sluice Keeper","sluice-keeper",2.3f,17,2.4f,164,"slam"),new EnemyData("Gate Hauler","gate-hauler",1.3f,11,3.1f,126,"guard"),new EnemyData("Sump Mender","sump-mender",1.1f,7,3.4f,143,"repair"),new EnemyData("Mud Skipper","mud-skipper",.95f,13,2.8f,110,"burrow")};
   static readonly int[] Rotation={0,1,3,4,5};
   public int EnemyIndex=>Stage%5==0?2:Rotation[(Stage-1-(Stage-1)/5)%5];
   public EnemyData Enemy=>Enemies[EnemyIndex];

@@ -1,0 +1,52 @@
+{
+  "profiles": [
+    {
+      "action": "lob",
+      "lean": -0.15,
+      "squash": 0.07,
+      "lunge": 12,
+      "hop": 4,
+      "bob": 2
+    },
+    {
+      "action": "burst",
+      "lean": -0.08,
+      "squash": 0.06,
+      "lunge": -9,
+      "hop": 0,
+      "bob": 3
+    },
+    {
+      "action": "guard",
+      "lean": 0.02,
+      "squash": 0.14,
+      "lunge": 28,
+      "hop": 0,
+      "bob": 1
+    },
+    {
+      "action": "repair",
+      "lean": 0,
+      "squash": 0.22,
+      "lunge": 0,
+      "hop": 3,
+      "bob": 2
+    },
+    {
+      "action": "burrow",
+      "lean": -0.12,
+      "squash": 0.09,
+      "lunge": 22,
+      "hop": 10,
+      "bob": 2
+    },
+    {
+      "action": "slam",
+      "lean": -0.1,
+      "squash": -0.09,
+      "lunge": 18,
+      "hop": 19,
+      "bob": 1
+    }
+  ]
+}
