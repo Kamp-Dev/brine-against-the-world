@@ -1,0 +1,13 @@
+{
+  "name": "brine-against-the-world",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Portrait idle RPG browser and Unity playtest",
+  "scripts": {
+    "start": "node scripts/serve.cjs",
+    "test": "node tests/assets.cjs && node tests/gameplay.cjs && node tests/animation.cjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

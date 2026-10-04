@@ -1,0 +1,14 @@
+**/Library/
+**/Temp/
+**/Obj/
+**/Logs/
+**/UserSettings/
+**/Builds/
+node_modules/
+.env
+.env.*
+*.log
+*.csproj
+*.sln
+.DS_Store
+Thumbs.db

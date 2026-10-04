@@ -1,0 +1,10 @@
+HARBOR UI ART SOURCES
+Approved concept: outputs/concepts/brine/ui-v1/02-harbor-issue.png
+harbor-reference.png is a copy of that approved concept.
+harbor-clean.png is a built-in image generation edit used behind live actors.
+UI text uses locally available Impact, with sans-serif fallback.
+GodModeAI credits: 0.
+
+Clean scene edit prompt:
+Edit this approved UI mockup with extreme preservation. Preserve the COMPLETE image and every interface panel, label, border, icon, color, layout, aspect ratio and typography EXACTLY. Change ONLY the interior of the battle scene, the large illustrated rectangle below the SALT ROAD header and above the PLUGGER panel. Remove the orange protagonist and his gun, the bird/pipe enemy, and BOTH floating health plaques (enemy upper right and Brine lower left) from this scene. Reconstruct the harbor scenery naturally behind those removed items: ochre sky, rock cliffs, central sluice gate, teal water, foreground stone quay, dock posts. Keep the same quay ground line and camera viewpoint. No characters, weapons, health labels or interface elements remaining INSIDE the battle illustration. All other screen elements, including title, route, PLUGGER card, STEP SHELL panel, upgrades, salvage, and bottom navigation, must remain pixel-position aligned with original. Output a full portrait UI image in the same proportions. Do not redesign, recompose, relabel, or restyle anything.
+

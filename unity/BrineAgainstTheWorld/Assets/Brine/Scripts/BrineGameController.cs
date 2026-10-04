@@ -1,0 +1,154 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace BrineGame
+{
+    public sealed class BrineGameController : MonoBehaviour
+    {
+        [Header("Shared prototype data")]
+        public TextAsset gameplay;
+        public TextAsset animationMap;
+        public Texture2D walkingSheet;
+        public Texture2D firingSheet;
+        public EncounterModel Model { get; private set; }
+        public Camera GameCamera { get; private set; }
+        AnimationData animations;
+        Sprite[] walkFrames, fireFrames;
+        Sprite solid;
+        SpriteRenderer body;
+        GunVisuals gunVisuals;
+        Transform weaponRoot, enemyRoot;
+        SpriteRenderer enemyBody, healthFill;
+        readonly List<Transform> roadMarks = new List<Transform>();
+        Pose currentPose;
+        float saveTimer;
+        const string SaveKey="Brine.RPG.v1";
+        public static bool ValidationMode;
+        string saveMessage="Saved on this device.";
+        public RenderTexture BattleTexture {get;private set;}
+        Transform harborScenery;
+        public void SaveAndRefresh(){FreshVisuals();SaveProgress();}
+        Sprite[] enemySprites;
+        readonly List<SpriteRenderer> hostileBullets=new List<SpriteRenderer>();
+        [Serializable] public class EnemyBounds { public string id; public int x,y,w,h; }
+        [Serializable] public class EnemyAtlas { public EnemyBounds[] entries; }
+        static long Now()=>DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        void SaveProgress(){if(Model==null||ValidationMode)return;try{PlayerPrefs.SetString(SaveKey,JsonUtility.ToJson(Model.Save(Now())));PlayerPrefs.Save();}catch(Exception){saveMessage="Saving unavailable on this device.";}}
+        void OnApplicationQuit(){SaveProgress();}
+        void OnApplicationPause(bool paused){if(paused)SaveProgress();else if(Model!=null&&!ValidationMode){LoadProgress();SaveProgress();}}
+        void LoadProgress(){if(ValidationMode)return;try{if(PlayerPrefs.HasKey(SaveKey)){Model.Load(JsonUtility.FromJson<SaveData>(PlayerPrefs.GetString(SaveKey)),Now());if(Model.OfflineEarned>0)saveMessage="Away earnings: +"+Model.OfflineEarned+" salvage (8h cap).";}}catch(Exception){saveMessage="Could not read the saved game.";}}
+        void FreshVisuals(){currentPose=BrineAnimation.Sample(Model,animations);}
+
+        public static Vector3 World(float x, float y) => new Vector3((x - 225) / 100, (400 - y) / 100, 0);
+        static Color Hex(string s) { ColorUtility.TryParseHtmlString(s, out var c); return c; }
+        void Awake()
+        {
+#if UNITY_EDITOR
+            ValidationMode = UnityEditor.SessionState.GetBool("Brine.Test", false);
+#endif
+            if (!gameplay) gameplay = Resources.Load<TextAsset>("gameplay");
+            if (!animationMap) animationMap = Resources.Load<TextAsset>("animation");
+            if (!walkingSheet) walkingSheet = Resources.Load<Texture2D>("walk");
+            if (!firingSheet) firingSheet = Resources.Load<Texture2D>("fire-transparent");
+            if (!gameplay || !animationMap || !walkingSheet || !firingSheet) throw new InvalidOperationException("Brine assets missing. Run Brine > Rebuild Sample Scene.");
+            Model = new EncounterModel(JsonUtility.FromJson<GameplayData>(gameplay.text));
+            LoadProgress(); SaveProgress();
+            animations = JsonUtility.FromJson<AnimationData>(animationMap.text);
+            Application.targetFrameRate = 60;
+            var tex = new Texture2D(1, 1); tex.SetPixel(0, 0, Color.white); tex.Apply();
+            solid = Sprite.Create(tex, new Rect(0, 0, 1, 1), Vector2.one * .5f, 1);
+            GameCamera = new GameObject("Portrait Camera").AddComponent<Camera>();
+            GameCamera.transform.position = new Vector3(0, 0, -10); GameCamera.orthographic = true; GameCamera.orthographicSize = 4;
+            GameCamera.clearFlags = CameraClearFlags.SolidColor; GameCamera.backgroundColor = Hex("#e6c991");
+            walkFrames = Slice(walkingSheet, animations.walk); fireFrames = Slice(firingSheet, animations.fire);
+            fireFrames[0] = walkFrames[0]; // Identical neutral frame at both joins.
+            BuildWorld(); BuildCharacter(); BuildEnemy();
+            BattleTexture=new RenderTexture(2160,3840,24){filterMode=FilterMode.Bilinear,wrapMode=TextureWrapMode.Clamp,name="Harbor Portrait 4K"};GameCamera.targetTexture=BattleTexture;GameCamera.aspect=450f/800;
+            // Keep Display 1 active while the battle camera feeds the Harbor UI.
+            var displayCamera = new GameObject("Harbor Display Camera").AddComponent<Camera>();
+            displayCamera.transform.SetParent(transform, false);
+            displayCamera.clearFlags = CameraClearFlags.SolidColor;
+            displayCamera.backgroundColor = Color.black;
+            displayCamera.cullingMask = 0;
+            displayCamera.targetDisplay = 0;
+            displayCamera.depth = -100;
+            gameObject.AddComponent<HarborUI>().Initialize(this);
+            currentPose = BrineAnimation.Sample(Model, animations);
+        }
+        Sprite[] Slice(Texture2D texture, ClipData clip)
+        {
+            var b = BrineAnimation.Bounds(clip); var frames = new Sprite[clip.frames];
+            for (int i = 0; i < frames.Length; i++)
+                frames[i] = Sprite.Create(texture, new Rect(i % clip.columns * clip.cellWidth + b.x,
+                    texture.height - (i / clip.columns * clip.cellHeight + b.y + b.h), b.w, b.h), new Vector2(.5f, 0), 100, 0, SpriteMeshType.FullRect);
+            return frames;
+        }
+        SpriteRenderer Box(string name, Transform parent, float x, float y, float width, float height, string color, int order)
+        {
+            var go = new GameObject(name); if (parent) go.transform.SetParent(parent, false);
+            var renderer = go.AddComponent<SpriteRenderer>(); renderer.sprite = solid; renderer.color = Hex(color); renderer.sortingOrder = order;
+            go.transform.localPosition = parent ? new Vector3(x / 100, -y / 100, 0) : World(x, y);
+            go.transform.localScale = new Vector3(width / 100, height / 100, 1); return renderer;
+        }
+        void BuildWorld()
+        {
+            var texture=Resources.Load<Texture2D>("ui/harbor-clean");
+            var r=new GameObject("Approved harbor scenery").AddComponent<SpriteRenderer>();
+            r.sprite=Sprite.Create(texture,new Rect(0,0,texture.width,texture.height),Vector2.one*.5f,100,0,SpriteMeshType.FullRect);r.sortingOrder=-30;
+            r.transform.position=World(225,612);r.transform.localScale=new Vector3(450f/texture.width,800f/texture.height,1);harborScenery=r.transform;
+        }
+        void OnDestroy(){if(BattleTexture){BattleTexture.Release();Destroy(BattleTexture);}}
+        void BuildCharacter()
+        {
+            var actor = new GameObject("Brine - interchangeable weapon").transform;
+            body = new GameObject("Body").AddComponent<SpriteRenderer>(); body.transform.SetParent(actor); body.sortingOrder = 10;
+            body.transform.position = World(124, 572); body.transform.localScale = Vector3.one * (120 / BrineAnimation.Common.h);
+            weaponRoot = new GameObject("Weapon grip socket").transform; weaponRoot.SetParent(actor);
+            gunVisuals=new GameObject("Comic gun effects").AddComponent<GunVisuals>();gunVisuals.Build(weaponRoot,Model.Settings.weapons);
+        }
+        void BuildEnemy()
+        {
+            enemyRoot = new GameObject("Salt road creatures").transform;
+            enemyBody = new GameObject("Enemy comic sprite").AddComponent<SpriteRenderer>();enemyBody.transform.SetParent(enemyRoot,false);enemyBody.sortingOrder=5;
+            var atlas=JsonUtility.FromJson<EnemyAtlas>(Resources.Load<TextAsset>("enemy-atlas").text);enemySprites=new Sprite[EncounterModel.Enemies.Length];
+            for(int i=0;i<enemySprites.Length;i++){var entry=Array.Find(atlas.entries,b=>b.id==EncounterModel.Enemies[i].Art);var texture=Resources.Load<Texture2D>("enemies/"+entry.id);enemySprites[i]=Sprite.Create(texture,new Rect(entry.x,texture.height-entry.y-entry.h,entry.w,entry.h),new Vector2(.5f,0),100,0,SpriteMeshType.FullRect);}
+            healthFill = Box("Health", enemyRoot, 0, -170, 84, 5, "#536746", 7);
+        }
+        void Update()
+        {
+            if (Model == null) return;
+            var muzzle = BrineAnimation.Muzzle(currentPose, Model.Equipped);
+            Model.Tick(Time.deltaTime, muzzle.x, muzzle.y);
+            if(!ValidationMode){saveTimer+=Time.deltaTime;if(saveTimer>5){SaveProgress();saveTimer=0;}}
+            var target = BrineAnimation.Sample(Model, animations); currentPose = target;
+            // Hand and weapon use exactly the displayed pose.
+            
+            body.transform.localScale = Vector3.one * (120 / BrineAnimation.Bounds(target.firing ? animations.fire : animations.walk).h);
+            body.transform.localRotation = Quaternion.Euler(0,0,-target.lean*Mathf.Rad2Deg);
+            body.sprite = target.firing ? fireFrames[target.frame] : walkFrames[target.frame]; body.color = Model.PlayerHit>0 ? new Color(1,.65f,.5f,1) : Color.white;
+            weaponRoot.position = World(currentPose.hand.x, currentPose.hand.y);
+            weaponRoot.rotation = Quaternion.Euler(0, 0, -currentPose.angle * Mathf.Rad2Deg); weaponRoot.localScale = Vector3.one*.8f;
+            gunVisuals.Equip(Model.Weapon);gunVisuals.Render(Model);
+            enemyRoot.position = World(Model.EnemyX, 572);
+            enemyRoot.gameObject.SetActive(Model.State != EncounterState.Reward && Model.State != EncounterState.Lower);
+            enemyBody.sprite=enemySprites[Model.Boss?2:(Model.Stage-1)%2];
+            float enemyScale=Model.Enemy.Height*.78f/(enemyBody.sprite.rect.height);
+            float windup=Model.State==EncounterState.Fight?Mathf.Clamp01((Model.EnemyCycle/Model.Enemy.Interval-.75f)/.25f):0;
+            enemyBody.transform.localScale=new Vector3(enemyScale,enemyScale*(1-windup*.045f),1);
+            enemyBody.transform.localRotation=Quaternion.Euler(0,0,-windup*2);
+            enemyBody.transform.localPosition=new Vector3(0,Model.State==EncounterState.Travel?Mathf.Sin(Model.Time*6)*.02f:0,0);
+            enemyBody.color=Model.HitFlash>0?new Color(1,.75f,.55f):Color.white;
+            healthFill.enabled=false;
+            harborScenery.position=World(225+Mathf.Sin(Model.Distance/250)*3,612);
+            float healthRatio = Model.Health / (float)Model.MaxHealth;
+            healthFill.transform.localScale = new Vector3(.84f * healthRatio, .05f, 1);
+            healthFill.transform.localPosition = new Vector3(-.42f * (1 - healthRatio), (Model.Enemy.Height+25)/100, 0);
+            for (int i = 0; i < roadMarks.Count; i++) roadMarks[i].position = World(i * 70 - Model.Distance % 70, 600 + i % 3 * 25);
+            while(hostileBullets.Count<Model.EnemyShots.Count)hostileBullets.Add(Box("Salt clod",null,0,0,10,8,"#ae6a48",20));
+            for(int i=0;i<hostileBullets.Count;i++){hostileBullets[i].enabled=i<Model.EnemyShots.Count;if(i<Model.EnemyShots.Count)hostileBullets[i].transform.position=World(Model.EnemyShots[i].x,Model.EnemyShots[i].y);}
+            muzzle = BrineAnimation.Muzzle(currentPose, Model.Equipped);
+            GameCamera.rect=new Rect(0,0,1,1);GameCamera.aspect=450f/800;
+        }
+    }
+}
