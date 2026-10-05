@@ -96,3 +96,6 @@ Browser and Unity both save the new progression. Legacy saves retain upgrades an
 
 Restoration artwork: Workshop, Ferry, and Lighthouse now use three illustrated stages in Camp and the scrolling harbor, with matching Unity assets. The atlases retain transparent backgrounds; source frames are selected without resizing the saved artwork. See web/restoration/prompts.json for the built-in image-generation preparation prompts. No GodModeAI credits were used. Preview all levels at harbor-review.html.
 
+
+The route header now renders the approved illustrated banner directly. Original title art, borders, tile frames, current marker and boss badge are shared by the browser and Unity; stage numbers and progress remain live. The six-tile window places a boss badge on every fifth stage. The blank tile atlas was prepared with the built-in image editor, with no GodModeAI use.
+

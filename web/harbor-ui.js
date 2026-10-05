@@ -24,10 +24,10 @@ function harborHUD(){
  // Restore the approved illustrated road, toolbox, and tent/fire navigation.
  plateRegion(0,716,450,84);
  const navIndex={road:0,guns:1,camp:2}[harborTab];if(navIndex!==undefined)highlightNavigationIcon(navIndex);
- for(const [x,w,name,hp,max] of [[8,132,'BRINE · LV '+model.level,model.playerHp,model.maxPlayerHp],[309,132,model.enemy.name.toUpperCase(),model.hp,model.maxHp]]){ticket(x,105,w,49);ink(name,x+11,111,13,dark,'left',false,w-22);healthBar(x+9,129,w-18,17,hp,max);ink(hp+' / '+max,x+w/2,131,13,cream,'center',false,w-24)}
- if(model.state==='fight'){ink(model.submerged?'BURROWED':model.guarded?'SHIELD UP':model.enemy.action.toUpperCase(),437,158,10,cream,'right')}
+ for(const [x,w,name,hp,max] of [[8,132,'BRINE · LV '+model.level,model.playerHp,model.maxPlayerHp],[309,132,model.enemy.name.toUpperCase(),model.hp,model.maxHp]]){ticket(x,142,w,49);ink(name,x+11,148,13,dark,'left',false,w-22);healthBar(x+9,166,w-18,17,hp,max);ink(hp+' / '+max,x+w/2,168,13,cream,'center',false,w-24)}
+ if(model.state==='fight'){ink(model.submerged?'BURROWED':model.guarded?'SHIELD UP':model.enemy.action.toUpperCase(),437,195,10,cream,'right')}
  ticket(8,675,434,35);ink('SALVAGE',19,684,17,dark);ink(model.gold.toLocaleString(),429,680,24,dark,'right',false,205);
- if(model.paused){ticket(153,160,144,22);ink('PAUSED · CAMP TO RESUME',225,166,9,dark,'center')}
+ if(model.paused){ticket(153,194,144,22);ink('PAUSED · CAMP TO RESUME',225,200,9,dark,'center')}
 }
 function setActionLabel(id,title,detail){$(id).querySelector('strong').textContent=title;$(id).querySelector('small').textContent=detail;}
 function setActionText(id,text){const lines=text.split('\n');setActionLabel(id,lines[0],lines[1]||'');}
@@ -42,6 +42,7 @@ function updateHDControls(){
  const routeKey=[model.stage,model.best,model.state==='reward'||model.state==='lower'].join(':');
  if($('numbered-route').dataset.key!==routeKey){$('numbered-route').innerHTML=BrineRoute.routeMarkup(model.stage,model.best,model.state);$('numbered-route').dataset.key=routeKey;}
  $('route-heading').querySelector('small').textContent=model.farming?'SALVAGE RUN':'NUMBERED ROUTE';
+ BrineRoute.paint($('route-art'),model.stage,model.best,model.state,BrineCombat.routes[model.route].name);
 }
 let selectedFont='Bangers';try{selectedFont=localStorage.getItem('brine-ui-font')||selectedFont}catch{};if(!['Bangers','Bungee','Barlow Condensed'].includes(selectedFont))selectedFont='Bangers';
 function applyFont(name){selectedFont=name;document.documentElement.dataset.font=name;document.documentElement.style.setProperty('--comic','"'+name+'"');$('font-choice').value=name;document.fonts.load('16px "'+name+'"');}
