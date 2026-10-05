@@ -1,6 +1,6 @@
 (function(root){
 'use strict';
-const rules={damage:['Damage','Available from the start',m=>true],shell:['Shell','Reach level 2',m=>m.level>=2],speed:['Speed','Reach level 2',m=>m.level>=2],volley:['3-shot volley','Reach level 3',m=>m.level>=3],
+const rules={damage:['Damage','Available from the start',m=>true],farm:['Farming','Clear stretch 1',m=>m.best>=1],shell:['Shell','Reach level 2',m=>m.level>=2],speed:['Speed','Reach level 2',m=>m.level>=2],volley:['3-shot volley','Reach level 3',m=>m.level>=3],
  'step-shell':['Step Shell','Clear stretch 5',m=>m.best>=5],workshop:['Workshop','Clear stretch 5',m=>m.best>=5],repeater:['Tideline','Clear stretch 6',m=>m.best>=6],contracts:['Contracts','Clear stretch 6',m=>m.best>=6],
  scavenging:['Scavenging','Clear stretch 8',m=>m.best>=8],patch:['Patch up','Clear stretch 8',m=>m.best>=8],tide:['Tide charge','Clear stretch 8',m=>m.best>=8],lowtide:['Low Tide','Clear stretch 10',m=>m.best>=10],ferry:['Ferry Dock','Clear stretch 10',m=>m.best>=10],
  samurai:['Samurai','Clear stretch 15',m=>m.best>=15],lighthouse:['Lighthouse','Clear stretch 15',m=>m.best>=15],scrap:['Plugger','Available from the start',m=>true]};
@@ -9,7 +9,8 @@ const clean=a=>Array.isArray(a)?[...new Set(a.filter(v=>typeof v==='string'&&v.l
 function available(m,id){return !!rules[id]&&(rules[id][2](m)||m.journey?.grants.includes(id));}
 function requirement(id){return rules[id]?.[1]||'Continue along the road';}
 const lessons=[
- ['damage','First repairs','Defeat enemies for salvage, then buy Damage. Each purchase adds damage to every hit.','#upgrade-damage',m=>m.upgrades.damage>0],
+ ['damage','First repairs','Wins earn XP and salvage. XP levels Brine up. Spend salvage on Damage to strengthen every hit.','#upgrade-damage',m=>m.upgrades.damage>0],
+ ['farm','Choose your ground','Tap Gather Salvage to repeat cleared ground, or select a cleared route number. Push Forward returns to your next uncleared stretch.','#farm',m=>m.farming],
  ['shell','Protect your shell','Shell raises maximum health and repairs some damage immediately. Buy one rank.','#upgrade-shell',m=>m.upgrades.shell>0],
  ['speed','Keep firing','Speed shortens the wait between shots. Buy a rank to try it.','#upgrade-speed',m=>m.upgrades.speed>0],
  ['volley','Three shots, one tap','Hits charge Volley. When READY, tap it during a battle to fire three quick shots.','#volley',m=>m.journey.actions.includes('volley')],
