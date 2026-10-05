@@ -5,7 +5,7 @@ namespace BrineGame {
  readonly Texture2D[] restorationArt=new Texture2D[3];
  int progressionPage;Vector2 progressScroll;bool harborSettings;
  readonly string[] progressLabels={"HARBOR","CONTRACTS","WEAPONS","FORMS","GUIDE","EXPEDITIONS","DISTRICTS"};
- void DrawGrowth(){var m=game.Model;var p=m.Progress;if(p.district[m.Route]){Fill(415,140,2,60,Dark);Fill(417,140,23,17,"#f19a76");}if(m.Boss){Fill(160,63,132,19,Orange);Text("CAPTAIN / "+HarborProgress.Captains[m.Route],163,66,126,15,9,Cream,TextAnchor.MiddleCenter);}Fill(9,337,432,22,Teal);Text("NEXT / "+HarborProgress.Next(p),14,342,420,15,10,Cream);if(Hot(9,337,432,22,"Open harbor goals")){tab="camp";progressionPage=0;}}
+ void DrawGrowth(){var m=game.Model;var p=m.Progress;if(p.district[m.Route]){Fill(415,140,2,60,Dark);Fill(417,140,23,17,"#f19a76");}if(m.Boss){Fill(160,105,132,19,Orange);Text("CAPTAIN / "+HarborProgress.Captains[m.Route],163,108,126,15,9,Cream,TextAnchor.MiddleCenter);}Fill(9,337,432,22,Teal);Text("NEXT / "+HarborProgress.Next(p),14,342,420,15,10,Cream);if(Hot(9,337,432,22,"Open harbor goals")){tab="camp";progressionPage=0;}}
  void PLine(string text,float y,int size=12){var st=new GUIStyle{font=bodyFont,fontSize=size,wordWrap=true};st.normal.textColor=C(Dark);GUI.Label(new Rect(5,y,367,38),text,st);}
  void PMeter(int value,int max,float y){Fill(5,y,367,12,Teal);Fill(5,y,367*Mathf.Clamp01(value/(float)max),12,Orange);Text(Math.Min(value,max)+" / "+max,10,y,350,12,9,Cream);}
  bool PButton(string label,float y,bool enabled=true){GUI.enabled=enabled;bool result=Button(label,5,y,367,27);GUI.enabled=true;return result;}

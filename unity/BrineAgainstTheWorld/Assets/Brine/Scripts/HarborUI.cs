@@ -15,11 +15,17 @@ namespace BrineGame {
   void Ticket(float x,float y,float w,float h){Frame(x,y,w,h,Cream);}
   void Frame(float x,float y,float w,float h,string color){Fill(x-2,y-2,w+4,h+4,"#507575");Fill(x,y,w,h,Dark);Fill(x+3,y+3,w-6,h-6,color);Fill(x+5,y+5,w-10,1,"#bda77f");foreach(float dx in new[]{7f,w-9})foreach(float dy in new[]{7f,h-9})Fill(x+dx,y+dy,2,2,Dark);}
   bool Button(string label,float x,float y,float w,float h,bool orange=false){Fill(x,y,w,h,Dark);Fill(x+2,y+2,w-4,h-4,orange?Orange:Teal);Text(label,x+4,y+3,w-8,h-6,14,Cream,TextAnchor.MiddleCenter);return Hot(x,y,w,h,label);}
-  void Health(float x,string name,int hp,int max){Ticket(x,61,132,49);Text(name,x+9,65,114,19,13);Fill(x+9,85,114,17,Dark);Fill(x+11,87,110,13,Teal);Fill(x+11,87,110*Mathf.Clamp01(hp/(float)Math.Max(1,max)),13,Orange);Text(hp+" / "+max,x+11,86,110,16,12,Cream,TextAnchor.MiddleCenter);}
+  void Health(float x,string name,int hp,int max){Ticket(x,105,132,49);Text(name,x+9,109,114,19,13);Fill(x+9,129,114,17,Dark);Fill(x+11,131,110,13,Teal);Fill(x+11,131,110*Mathf.Clamp01(hp/(float)Math.Max(1,max)),13,Orange);Text(hp+" / "+max,x+11,130,110,16,12,Cream,TextAnchor.MiddleCenter);}
+
+  Texture2D routeSkull;
+  Texture2D RouteSkull(){if(routeSkull!=null)return routeSkull;routeSkull=new Texture2D(128,128,TextureFormat.RGBA32,false);var pixels=new Color32[128*128];for(int y=0;y<128;y++)for(int x=0;x<128;x++){float a=x/2f,b=(127-y)/2f;bool shape=((a-32)*(a-32)/625+(b-28)*(b-28)/625<=1)||(a>=20&&a<=44&&b>=27&&b<=60);bool hole=((a-22)*(a-22)/64+(b-30)*(b-30)/81<1)||((a-43)*(a-43)/64+(b-30)*(b-30)/81<1)||(b>=36&&b<=45&&Mathf.Abs(a-32)<(b-36)*.56f)||(b>=51&&((a>=25&&a<=29)||(a>=35&&a<=39)));pixels[y*128+x]=shape&&!hole?new Color32(255,255,255,255):new Color32(0,0,0,0);}routeSkull.SetPixels32(pixels);routeSkull.Apply();return routeSkull;}
+  void DrawRouteHeader(){var m=game.Model;Frame(6,5,438,89,Teal);Text("BRINE",18,4,186,32,32,Cream);Text("AGAINST THE WORLD",20,33,210,13,10,Cream);Text(EncounterModel.Routes[m.Route].ToUpper(),278,12,156,25,21,Cream);Fill(14,47,422,2,Cream);Fill(35,73,375,3,Cream);int start=Math.Max(1,m.Stage-2);bool won=m.State==EncounterState.Reward||m.State==EncounterState.Lower;
+   for(int i=0;i<5;i++){int n=start+i;bool current=n==m.Stage,done=n<=m.Best&&(n!=m.Stage||won),boss=n%5==0;float x=15+i*85;string bg=current?"#ed9676":done?Cream:Teal,fg=current||done?Dark:Cream;Fill(x-2,52,78,39,current?Cream:Dark);Fill(x,54,74,35,bg);Text(current?"CURRENT":done?"CLEARED":boss?"BOSS":"NEXT",x,54,74,10,8,fg,TextAnchor.MiddleCenter);if(boss){GUI.color=C(fg);GUI.DrawTexture(new Rect(x+26,64,23,23),RouteSkull());GUI.color=Color.white;}else Text(n.ToString(),x+1,63,72,25,23,fg,TextAnchor.MiddleCenter);if(done)Text("✓",x+59,55,13,12,11,fg);}
+  }
   void OnGUI(){if(game==null||plate==null)return;var m=game.Model;float scale=Mathf.Min(Screen.width/450f,Screen.height/800f);GUI.matrix=Matrix4x4.TRS(new Vector3((Screen.width-450*scale)/2,(Screen.height-800*scale)/2,0),Quaternion.identity,Vector3.one*scale);GUI.color=Color.white;
-   Fill(0,0,450,800,"#082f38");Fill(4,4,442,1,"#557876");Text("BRINE",15,0,130,49,43,Cream);Text("AGAINST",141,9,102,17,14,Cream);Text("THE WORLD",141,25,102,17,14,Cream);GUI.DrawTextureWithTexCoords(new Rect(5,52,440,310),game.BattleTexture,new Rect(5f/450,(800f-611)/800,440f/450,310f/800));
-   Fill(250,5,173,19,"#07343e");Text(EncounterModel.Routes[m.Route].ToUpper()+" / "+m.Stage.ToString("00"),258,7,163,18,14,Cream);Fill(258,29,164,17,"#07343e");Fill(272,35,136,2,Cream);for(int i=0;i<5;i++)Fill(270+i*32,32,7,8,i<=(m.Stage-1)%5?Orange:Cream);
-   DrawGrowth();
+   Fill(0,0,450,800,"#082f38");Fill(4,4,442,1,"#557876");GUI.DrawTextureWithTexCoords(new Rect(5,52,440,310),game.BattleTexture,new Rect(5f/450,(800f-611)/800,440f/450,310f/800));
+
+   DrawRouteHeader();DrawGrowth();
    Health(8,"BRINE / LV "+m.Level,m.PlayerHealth,m.MaxPlayerHealth);Health(309,m.Enemy.Name.ToUpper(),m.Health,m.MaxHealth);
    bool volley=!m.UltimateActive&&m.State==EncounterState.Fight&&!m.Paused&&m.Charge>=100;
    GUI.enabled=!m.UltimateActive&&m.Best>0&&m.State!=EncounterState.Defeat;
@@ -30,7 +36,7 @@ namespace BrineGame {
    DrawUpgrades();Ticket(8,675,434,35);Text("SALVAGE",19,680,160,26,20);Text(m.Gold.ToString("N0"),210,678,219,28,24,Dark,TextAnchor.MiddleRight);
    GUI.DrawTextureWithTexCoords(new Rect(0,716,450,84),plate,new Rect(0,0,1,84f/800));
    string[] tabs={"road","gear","camp"};for(int i=0;i<3;i++){if(Hot(5+i*149,723,140,73,tabs[i])){tab=tabs[i];menuScroll=Vector2.zero;}if(tab==tabs[i])HighlightNavigation(i);}
-   if(m.Paused){Ticket(153,118,144,22);Text("PAUSED / CAMP TO RESUME",153,120,144,18,9,Dark,TextAnchor.MiddleCenter);}
+   if(m.Paused){Ticket(153,160,144,22);Text("PAUSED / CAMP TO RESUME",153,162,144,18,9,Dark,TextAnchor.MiddleCenter);}
    if(m.State==EncounterState.Defeat&&tab=="road"){Ticket(65,220,320,75);Text("SHELL CRACKED",71,230,308,29,26,Dark,TextAnchor.MiddleCenter);Text("REFIT & RETRY / KEEP UPGRADES",71,267,308,17,13,Dark,TextAnchor.MiddleCenter);if(Hot(65,220,320,75,"Refit"))Act(()=>m.Retry());}
    if(tab=="camp")ProgressionDrawer();else if(tab!="road")Drawer();GUI.enabled=true;GUI.matrix=Matrix4x4.identity;
   }
