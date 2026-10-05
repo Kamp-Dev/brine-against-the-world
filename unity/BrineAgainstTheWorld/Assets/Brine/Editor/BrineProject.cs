@@ -68,7 +68,7 @@ public static class BrineProject
         var save=m.Save(100000);var restored=new EncounterModel(data);
         Require(restored.Load(save,100000),"load");
         Require(restored.Stage==5 && restored.Boss && restored.Damage==18 && restored.Level==2,"save progression");
-        Require(restored.Reward==64 && restored.Enemy.Name=="Sluice Keeper","boss data");
+        Require(restored.Reward==64 && restored.Enemy.Name=="Foreman Rusk","boss data");
         restored.Load(save,100000+48*3600000L);Require(restored.OfflineEarned==4800,"8 hour offline cap");
         var collected=restored.Save(100000+48*3600000L);restored.Load(collected,collected.savedAt);Require(restored.OfflineEarned==0,"no repeated offline reward");
         restored.Load(save,1);Require(restored.OfflineEarned==0,"future timestamp has no payout");
@@ -85,7 +85,7 @@ public static class BrineProject
     }
     public static void BuildAndTest()
     {
-        try { CreateScene(); CheckModel(); AnimationChecks.Run(); ExpansionChecks.Run(); SamuraiCombatChecks.Run(); TicketBoardChecks.Run(); SessionState.SetBool("Brine.Test", true); EditorApplication.EnterPlaymode(); }
+        try { CreateScene(); CheckModel(); AnimationChecks.Run(); ExpansionChecks.Run(); SamuraiCombatChecks.Run(); TicketBoardChecks.Run(); HarborProgressChecks.Run(); SessionState.SetBool("Brine.Test", true); EditorApplication.EnterPlaymode(); }
         catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
     }
     public static void OpenAndPlay()

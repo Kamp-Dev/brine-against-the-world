@@ -13,7 +13,7 @@ namespace BrineGame
  }
  [Serializable] public class UpgradeData { public int damage, shell, speed, scavenging, patch, tide; }
  [Serializable] public class SaveData {
-  public int version=1; public long savedAt; public string weapon,selectedForm; public int gold,kills,best,xp,charge,stage,playerHp;
+  public HarborProgressData progress;public int version=1; public long savedAt; public string weapon,selectedForm; public int gold,kills,best,xp,charge,stage,playerHp;
   public int route,ultimateCharge; public UpgradeData mods; public UpgradeData upgrades; public bool farming,defeated;
  }
  public sealed class EnemyData {
@@ -24,6 +24,7 @@ namespace BrineGame
  public sealed class Projectile { public float x,y,startX,speed; public int damage; public string weapon,selectedForm; }
  public sealed class ShotEffect { public string weapon,selectedForm; public float x,y,life,duration; public bool impact;public float power=1; }
  public sealed class EncounterModel {
+  public HarborProgressData Progress=new HarborProgressData();public float Shattered;
   public readonly List<ShotEffect> Effects=new List<ShotEffect>();
   public readonly GameplayData Settings;
   public EncounterState State {get;private set;}
@@ -46,23 +47,23 @@ namespace BrineGame
   public int ModRank=>Weapon=="scrap"?Mods.damage:Weapon=="repeater"?Mods.shell:Mods.speed;
   public int ModCost=>45*(ModRank+1);
   public bool BuyMod(){if(ModRank>=3||Gold<ModCost)return false;Gold-=ModCost;if(Weapon=="scrap")Mods.damage++;else if(Weapon=="repeater")Mods.shell++;else Mods.speed++;return true;}
-  public bool ChooseRoute(int id){if(id<0||id>2||Best<id*5||State==EncounterState.Defeat||UltimateActive)return false;Route=id;return true;}
+  public bool ChooseRoute(int id){if(id<0||id>2||Best<id*5||State==EncounterState.Defeat||UltimateActive)return false;if(Route!=id){Route=id;StartEncounter();}return true;}
   public bool Ultimate(){if(State!=EncounterState.Fight||Paused||UltimateCharge<100||UltimateActive)return false;UltimateCharge=0;UltimateTime=8.8f;MeleeAttackIndex=0;MeleeWalkTime=0;MeleeIdleTime=0;MeleeIdleActive=false;MeleeWalking=false;MeleeCycle=0;MeleeSince=99;meleeLanded=false;meleeHitIndex=0;burst=0;Shots.Clear();return true;}
   public readonly List<Projectile> Shots=new List<Projectile>(), EnemyShots=new List<Projectile>();
   public static readonly EnemyData[] Enemies={new EnemyData("Salt Porter","salt-porter",1,8,2.6f,132),new EnemyData("Pipe Pilfer","pipe-pilfer",.85f,6,1.8f,142,"burst"),new EnemyData("Sluice Keeper","sluice-keeper",2.3f,17,2.4f,164,"slam"),new EnemyData("Gate Hauler","gate-hauler",1.3f,11,3.1f,126,"guard"),new EnemyData("Sump Mender","sump-mender",1.1f,7,3.4f,143,"repair"),new EnemyData("Mud Skipper","mud-skipper",.95f,13,2.8f,110,"burrow")};
   static readonly int[] Rotation={0,1,3,4,5};
-  public int EnemyIndex=>Stage%5==0?2:Rotation[(Stage-1-(Stage-1)/5)%5];
-  public EnemyData Enemy=>Enemies[EnemyIndex];
+  public int EnemyIndex=>Stage%5==0?(Route==0?2:Route==1?4:3):Rotation[(Stage-1-(Stage-1)/5)%5];
+  public EnemyData Enemy {get{if(!Boss)return Enemies[EnemyIndex];var e=Enemies[Route==0?2:Route==1?4:3];return new EnemyData(HarborProgress.Captains[Route],e.Art,Enemies[2].Health,Enemies[2].Damage,Enemies[2].Interval,e.Height,e.Action);}}
   public static readonly string[] Routes={"Dry Docks","Drainage Run","Salt Flats"};
   public bool Boss=>Stage%5==0;
   public WeaponData Equipped=>Array.Find(Settings.weapons,w=>w.id==Weapon);
   public int Level=>1+(int)Math.Sqrt(Xp/30.0);
   public int NextXp=>Level*Level*30;
   public int MaxPlayerHealth=>100+Upgrades.shell*25+(Level-1)*8;
-  public int Damage=>Equipped.damage+Upgrades.damage*4+(Level-1)*2+ModRank*5;
-  public float Interval=>Settings.shotInterval*Equipped.interval/(1+Upgrades.speed*.08f);
+  public int Damage=>Equipped.damage+Upgrades.damage*4+(Level-1)*2+ModRank*5+(int)Math.Round(Equipped.damage*Math.Max(0,Progress.build[0]-1)*.05);
+  public float Interval=>Settings.shotInterval*Equipped.interval/(1+Upgrades.speed*.08f+(Progress.weaponPath[Array.IndexOf(HarborProgress.Weapons,Weapon)]=="tempo"?HarborProgress.Tier(Progress.weaponXP[Array.IndexOf(HarborProgress.Weapons,Weapon)])*.15f:0));
   public int EnemyDamage=>(int)Math.Floor((Enemy.Damage+(int)((Stage-1)*1.6f))*(Route==0?1:Route==1?1.2:1.45)+.5);
-  public double SalvageMultiplier=>1+Upgrades.scavenging*.05;
+  public double SalvageMultiplier=>1+Upgrades.scavenging*.05+Math.Max(0,Progress.build[2]-1)*.05;
   public int RecoveryPercent=>12+Upgrades.patch;
   public int ChargePerHit=>12+Upgrades.tide;
   public int Cap(string kind)=>kind=="scavenging"?20:kind=="patch"?10:kind=="tide"?8:30;
@@ -71,8 +72,8 @@ namespace BrineGame
   public int Cost(string kind)=> (int)((kind=="damage"?18:kind=="shell"?16:kind=="scavenging"?60:kind=="patch"?45:kind=="tide"?75:30)*Math.Pow(1.5,Rank(kind)));
   public int Rank(string kind)=>kind=="damage"?Upgrades.damage:kind=="shell"?Upgrades.shell:kind=="scavenging"?Upgrades.scavenging:kind=="patch"?Upgrades.patch:kind=="tide"?Upgrades.tide:Upgrades.speed;
   public EncounterModel(GameplayData settings){Settings=settings;Reset();}
-  public void Reset(){SelectedForm="step-shell";MeleeAttackIndex=0;Route=UltimateCharge=0;MeleeAdvance=UltimateTime=MeleeCycle=0;MeleeWalking=false;MeleeWalkTime=0;MeleeIdleTime=0;MeleeIdleActive=false;MeleeSince=EnemyAttack=99;Mods=new UpgradeData();Weapon="scrap";Gold=Kills=ShotSerial=Best=Xp=Charge=OfflineEarned=0;Stage=1;Upgrades=new UpgradeData();Farming=Paused=false;Time=Distance=0;PlayerHealth=MaxPlayerHealth;StartEncounter();}
-  void StartEncounter(){MeleeCycle=0;meleeLanded=false;meleeHitIndex=0;State=EncounterState.Travel;Age=0;EnemyX=520;Health=MaxHealth=(int)Math.Floor((Settings.enemyHealth+(Stage-1)*9)*Enemy.Health+.5f);Cycle=EnemyCycle=0;Shots.Clear();EnemyShots.Clear();Effects.Clear();SinceShot=99;PlayerHit=HitFlash=0;burst=LastReward=0;EnemyDepth=0;EnemyAttack=99;}
+  public void Reset(){Progress=new HarborProgressData();Shattered=0;SelectedForm="step-shell";MeleeAttackIndex=0;Route=UltimateCharge=0;MeleeAdvance=UltimateTime=MeleeCycle=0;MeleeWalking=false;MeleeWalkTime=0;MeleeIdleTime=0;MeleeIdleActive=false;MeleeSince=EnemyAttack=99;Mods=new UpgradeData();Weapon="scrap";Gold=Kills=ShotSerial=Best=Xp=Charge=OfflineEarned=0;Stage=1;Upgrades=new UpgradeData();Farming=Paused=false;Time=Distance=0;PlayerHealth=MaxPlayerHealth;StartEncounter();}
+  void StartEncounter(){Shattered=0;MeleeCycle=0;meleeLanded=false;meleeHitIndex=0;State=EncounterState.Travel;Age=0;EnemyX=520;Health=MaxHealth=(int)Math.Floor((Settings.enemyHealth+(Stage-1)*9)*Enemy.Health+.5f);Cycle=EnemyCycle=0;Shots.Clear();EnemyShots.Clear();Effects.Clear();SinceShot=99;PlayerHit=HitFlash=0;burst=LastReward=0;EnemyDepth=0;EnemyAttack=99;}
   public bool Equip(string id){if(!Array.Exists(Settings.weapons,w=>w.id==id))throw new ArgumentException("Unknown weapon");if(Best<Array.Find(Settings.weapons,w=>w.id==id).unlock)return false;Weapon=id;return true;}
   public bool Buy(string kind){if(kind!="damage"&&kind!="shell"&&kind!="speed"&&kind!="scavenging"&&kind!="patch"&&kind!="tide")return false;int cost=Cost(kind);if(Gold<cost||Rank(kind)>=Cap(kind))return false;Gold-=cost;if(kind=="damage")Upgrades.damage++;else if(kind=="speed")Upgrades.speed++;else if(kind=="scavenging")Upgrades.scavenging++;else if(kind=="patch")Upgrades.patch++;else if(kind=="tide")Upgrades.tide++;else {Upgrades.shell++;if(State!=EncounterState.Defeat)PlayerHealth=Math.Min(MaxPlayerHealth,PlayerHealth+25);}return true;}
   public int FarmStage=>Math.Max(1,Best-(Best%5==0?1:0));
@@ -99,11 +100,11 @@ namespace BrineGame
     case EncounterState.Lower:if(Age>=Settings.lowerDuration){if(!Farming)Stage++;StartEncounter();}break;
    }
    for(int i=Shots.Count-1;i>=0;i--){var shot=Shots[i];shot.x+=dt*shot.speed;if(shot.x>=EnemyX-23){if(State==EncounterState.Fight){HitEnemy(shot.damage,shot.weapon,shot.y);}Shots.RemoveAt(i);}else if(shot.x>550)Shots.RemoveAt(i);}
-   for(int i=EnemyShots.Count-1;i>=0;i--){var shot=EnemyShots[i];shot.x-=dt*310;if(shot.x<=145+MeleeAdvance){shot.damage=Math.Max(1,(int)Math.Floor(shot.damage*(UltimateActive?.25:1)+.5));PlayerHealth=Math.Max(0,PlayerHealth-shot.damage);if(!UltimateActive)UltimateCharge=Math.Min(100,UltimateCharge+5);PlayerHit=.22f;EnemyShots.RemoveAt(i);if(PlayerHealth==0){Enter(EncounterState.Defeat);Shots.Clear();EnemyShots.Clear();return;}}}
+   for(int i=EnemyShots.Count-1;i>=0;i--){var shot=EnemyShots[i];shot.x-=dt*310;if(shot.x<=145+MeleeAdvance){shot.damage=Math.Max(1,(int)Math.Floor(shot.damage*(UltimateActive?(Progress.formPath[Array.IndexOf(HarborProgress.Forms,SelectedForm)]=="bastion"?.15:.25):1)*(1-Shattered)+.5));PlayerHealth=Math.Max(0,PlayerHealth-shot.damage);if(!UltimateActive)UltimateCharge=Math.Min(100,UltimateCharge+5);PlayerHit=.22f;EnemyShots.RemoveAt(i);if(PlayerHealth==0){Enter(EncounterState.Defeat);Shots.Clear();EnemyShots.Clear();return;}}}
   }
-  public void HitEnemy(int damage,string weapon,float y,float power=1){if(State!=EncounterState.Fight)return;bool melee=weapon=="melee";if(Submerged&&!melee)return;damage=(int)Math.Floor(damage*(Guarded&&!melee?.35:1)+.5);Health=Math.Max(0,Health-damage);HitFlash=.12f;Effects.Add(new ShotEffect{weapon=weapon,x=melee?124+MeleeAdvance+Settings.meleeReach-4:EnemyX,y=y,life=.6f,duration=.6f,impact=true,power=power});Charge=Math.Min(100,Charge+8);if(!UltimateActive)UltimateCharge=Math.Min(100,UltimateCharge+ChargePerHit);if(Health==0){Kills++;LastReward=Reward;Gold=Math.Min(1000000000,Gold+LastReward);Best=Math.Max(Best,Stage);Xp+=Boss?35:10;PlayerHealth=Math.Min(MaxPlayerHealth,PlayerHealth+(int)Math.Floor(MaxPlayerHealth*RecoveryPercent/100.0+.5));Enter(EncounterState.Reward);EnemyShots.Clear();burst=0;}}
-  public SaveData Save(long now){return new SaveData{selectedForm=SelectedForm,route=Route,ultimateCharge=UltimateCharge,mods=new UpgradeData{damage=Mods.damage,shell=Mods.shell,speed=Mods.speed},savedAt=now,weapon=Weapon,gold=Gold,kills=Kills,best=Best,xp=Xp,charge=Charge,stage=Stage,playerHp=PlayerHealth,farming=Farming,defeated=State==EncounterState.Defeat,upgrades=new UpgradeData{damage=Upgrades.damage,shell=Upgrades.shell,speed=Upgrades.speed,scavenging=Upgrades.scavenging,patch=Upgrades.patch,tide=Upgrades.tide}};}
+  public void HitEnemy(int damage,string weapon,float y,float power=1){if(State!=EncounterState.Fight)return;bool melee=weapon=="melee";if(Submerged&&!melee)return;damage=HarborProgress.Hit(this,damage,weapon);damage=(int)Math.Floor(damage*(Guarded&&!melee?.35:1)+.5);Health=Math.Max(0,Health-damage);HitFlash=.12f;Effects.Add(new ShotEffect{weapon=weapon,x=melee?124+MeleeAdvance+Settings.meleeReach-4:EnemyX,y=y,life=.6f,duration=.6f,impact=true,power=power});Charge=Math.Min(100,Charge+8);if(!UltimateActive)UltimateCharge=Math.Min(100,UltimateCharge+ChargePerHit);if(Health==0){HarborProgress.Kill(this,weapon);Kills++;LastReward=Reward;Gold=Math.Min(1000000000,Gold+LastReward);Best=Math.Max(Best,Stage);Xp+=Boss?35:10;PlayerHealth=Math.Min(MaxPlayerHealth,PlayerHealth+(int)Math.Floor(MaxPlayerHealth*RecoveryPercent/100.0+.5));Enter(EncounterState.Reward);EnemyShots.Clear();burst=0;}}
+  public SaveData Save(long now){return new SaveData{progress=UnityEngine.JsonUtility.FromJson<HarborProgressData>(UnityEngine.JsonUtility.ToJson(Progress)),selectedForm=SelectedForm,route=Route,ultimateCharge=UltimateCharge,mods=new UpgradeData{damage=Mods.damage,shell=Mods.shell,speed=Mods.speed},savedAt=now,weapon=Weapon,gold=Gold,kills=Kills,best=Best,xp=Xp,charge=Charge,stage=Stage,playerHp=PlayerHealth,farming=Farming,defeated=State==EncounterState.Defeat,upgrades=new UpgradeData{damage=Upgrades.damage,shell=Upgrades.shell,speed=Upgrades.speed,scavenging=Upgrades.scavenging,patch=Upgrades.patch,tide=Upgrades.tide}};}
   static int Clamp(int value,int min,int max)=>Math.Min(max,Math.Max(min,value));
-  public bool Load(SaveData data,long now){if(data==null||data.version!=1)return false;Reset();ChooseForm(data.selectedForm);UltimateCharge=Clamp(data.ultimateCharge,0,100);var mods=data.mods??new UpgradeData();Mods=new UpgradeData{damage=Clamp(mods.damage,0,3),shell=Clamp(mods.shell,0,3),speed=Clamp(mods.speed,0,3)};Gold=Clamp(data.gold,0,1000000000);Kills=Clamp(data.kills,0,10000000);Best=Clamp(data.best,0,10000);Xp=Clamp(data.xp,0,1000000000);Route=Clamp(data.route,0,Math.Min(2,Best/5));var u=data.upgrades??new UpgradeData();Upgrades=new UpgradeData{damage=Clamp(u.damage,0,30),shell=Clamp(u.shell,0,30),speed=Clamp(u.speed,0,30),scavenging=Clamp(u.scavenging,0,20),patch=Clamp(u.patch,0,10),tide=Clamp(u.tide,0,8)};Stage=Clamp(data.stage,1,Best+1);Farming=data.farming&&Best>0;PlayerHealth=Clamp(data.playerHp,0,MaxPlayerHealth);Charge=Clamp(data.charge,0,100);if(Array.Exists(Settings.weapons,w=>w.id==data.weapon&&Best>=w.unlock))Weapon=data.weapon;double seconds=Math.Min(8*3600,Math.Max(0,(now-data.savedAt)/1000.0));OfflineEarned=(int)Math.Floor(seconds/60*OfflineRate);Gold=Math.Min(1000000000,Gold+OfflineEarned);StartEncounter();if(data.defeated||PlayerHealth==0)Enter(EncounterState.Defeat);return true;}
+  public bool Load(SaveData data,long now){if(data==null||data.version!=1)return false;Reset();Progress=HarborProgress.Load(data.progress);ChooseForm(data.selectedForm);UltimateCharge=Clamp(data.ultimateCharge,0,100);var mods=data.mods??new UpgradeData();Mods=new UpgradeData{damage=Clamp(mods.damage,0,3),shell=Clamp(mods.shell,0,3),speed=Clamp(mods.speed,0,3)};Gold=Clamp(data.gold,0,1000000000);Kills=Clamp(data.kills,0,10000000);Best=Clamp(data.best,0,10000);Xp=Clamp(data.xp,0,1000000000);Route=Clamp(data.route,0,Math.Min(2,Best/5));var u=data.upgrades??new UpgradeData();Upgrades=new UpgradeData{damage=Clamp(u.damage,0,30),shell=Clamp(u.shell,0,30),speed=Clamp(u.speed,0,30),scavenging=Clamp(u.scavenging,0,20),patch=Clamp(u.patch,0,10),tide=Clamp(u.tide,0,8)};Stage=Clamp(data.stage,1,Best+1);Farming=data.farming&&Best>0;PlayerHealth=Clamp(data.playerHp,0,MaxPlayerHealth);Charge=Clamp(data.charge,0,100);if(Array.Exists(Settings.weapons,w=>w.id==data.weapon&&Best>=w.unlock))Weapon=data.weapon;if(data.progress==null&&Best>=5){Progress.district[0]=true;HarborProgress.Award(Progress,HarborProgress.CaptainRewards[0]);Progress.notice="Earlier captain victory credited: workshop permit and materials.";}double seconds=Math.Min(8*3600,Math.Max(0,(now-data.savedAt)/1000.0));OfflineEarned=(int)Math.Floor(seconds/60*OfflineRate);Gold=Math.Min(1000000000,Gold+OfflineEarned);StartEncounter();if(data.defeated||PlayerHealth==0)Enter(EncounterState.Defeat);return true;}
  }
 }

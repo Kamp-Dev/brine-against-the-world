@@ -85,3 +85,11 @@ Bangers is the default heading font, with Barlow Condensed for readable statisti
 Validation: browser gameplay/asset/animation tests; mouse drag without purchasing; portrait layout at 2160 × 3840; all three font choices; Unity model checks and play-mode smoke test.
 
 The Ultimate selector is now a single orange framed card: swipe left for Samurai, right for Step Shell, then tap when ready. Keyboard arrows and horizontal trackpad scrolling also select forms. Swiping never activates the power, and selection remains locked during an active Ultimate.
+
+### Reclaim the harbor
+
+Open Camp or tap the Next unlock banner to manage Harbor, Contracts, Weapons, Forms, Field guide, Expeditions and Districts. Three buildings have three restoration levels and add visible structures, equipment, lights and flags to the harbor. `web/harbor-review.html` previews stages without modifying a save.
+
+Every victory earns timber; captains and contracts supply brass and charts. District captains grant guaranteed first-clear rewards. Weapon mastery and form practice come from successful contacts; buildings unlock their selectable paths. Field-guide research grants an enemy-specific damage bonus after 15 defeats. One crew can run a guaranteed 3-, 15-, or 45-minute expedition, including while the game is closed. No daily streak or prestige reset is required.
+
+Browser and Unity both save the new progression. Legacy saves retain upgrades and credit an earlier first-district clear toward the Workshop permit. Captain names and action types use the existing enemy art; character animation assets were not regenerated and no GodModeAI credits were used. The economy is a first playable balance pass, with deterministic reward, save, and claim checks.

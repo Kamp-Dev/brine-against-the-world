@@ -11,7 +11,7 @@ until(m,()=>m.stage===2);assert.equal(m.enemy.name,'Pipe Pilfer');
 const saved=m.save(100000),copy=new Encounter(settings);assert(copy.load(saved,100000));assert.deepEqual(copy.save(100000),saved);
 const away=new Encounter(settings);away.load(saved,100000+48*3600000);assert.equal(away.offlineEarned,Math.floor(480*m.offlineRate));const collected=away.save(100000+48*3600000);const reload=new Encounter(settings);reload.load(collected,collected.savedAt);assert.equal(reload.offlineEarned,0,'No repeat payout');
 const future=new Encounter(settings);future.load(saved,1);assert.equal(future.offlineEarned,0);assert(!future.load({version:7},1));
-m.best=4;m.stage=5;m.startEncounter();assert(m.boss);assert.equal(m.enemy.name,'Sluice Keeper');assert.equal(m.reward,64);
+m.best=4;m.stage=5;m.startEncounter();assert(m.boss);assert.equal(m.enemy.name,'Foreman Rusk');assert.equal(m.reward,64);
 until(m,()=>m.state==='fight');m.charge=100;assert(m.volley());assert.equal(m.charge,0);assert(!m.volley());
 const count=m.shotSerial;for(let i=0;i<25;i++)m.tick(.02,origin);assert.equal(m.shotSerial-count,3,'Volley fires three rapid shots');
 m.playerHp=1;until(m,()=>m.state==='defeat');assert.equal(m.playerHp,0);const dead=JSON.stringify(m);m.tick(.1,origin);assert.equal(JSON.stringify(m),dead);

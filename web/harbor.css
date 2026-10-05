@@ -38,3 +38,10 @@
 
 /* Selection lives on the illustrated icon, never a gold navigation box. */
 .nav:hover,.nav[aria-current=page]{box-shadow:none;border:0}.nav:focus-visible{outline:none}.nav:focus-visible:after{content:'';position:absolute;bottom:4%;left:38%;width:24%;height:2px;background:#f18b77}
+#next-goal{position:absolute;z-index:3;left:2%;top:42.1%;width:96%;height:3%;border:1px solid #e2bd78;background:#123d43ed;color:#ffe7ba;font:700 2.2cqw 'Barlow Condensed';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2%;text-align:left;border-radius:3px}
+#progress-tabs{display:flex;gap:2%;overflow:auto;white-space:nowrap;margin-bottom:2%;padding-bottom:2%}#progress-tabs button{flex:0 0 auto;font-size:3cqw!important;padding:2% 3%!important}#progress-tabs button[aria-pressed=true]{background:#c16344!important}
+#progress-content .goal-card{border:2px solid #315c5b;border-radius:5px;padding:3%;margin:3% 0;background:#fff0cb;overflow:hidden}#progress-content h3{font:4cqw var(--comic);margin:0 0 2%}#progress-content p{font-size:3cqw}.cargo{padding:2%;background:#173e43;color:#ffe0a1}.harbor-notice{color:#8c3826}#progress-content>svg{width:100%;border:2px solid #173e43;border-radius:4px}.progress-meter{position:relative;height:3.5cqw;background:#254d51;color:#fff1cc;overflow:hidden}.progress-meter i{position:absolute;left:0;top:0;bottom:0;background:#ba6245}.progress-meter span{position:relative;padding-left:2%;font-size:2.6cqw}.guide-portrait{float:right;width:20%;height:18cqw;object-fit:contain;margin:0 0 2% 3%}#progress-content button{font-size:3.2cqw!important}#drawer details{border-top:2px solid #315c5b;margin-top:4%;padding-top:3%}#drawer summary{font:4cqw var(--comic);cursor:pointer}
+
+#progress-tabs{scrollbar-width:none}#progress-tabs::-webkit-scrollbar{display:none}
+
+#progress-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;overflow:visible}#progress-tabs button{font-size:2.65cqw!important;min-width:0;margin:0!important;min-height:6cqw}
