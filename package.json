@@ -5,7 +5,8 @@
   "description": "Portrait idle RPG browser and Unity playtest",
   "scripts": {
     "start": "node scripts/serve.cjs",
-    "test": "node tests/assets.cjs && node tests/gameplay.cjs && node tests/animation.cjs && node tests/expansion.cjs && node tests/step-shell.cjs && node tests/roster-art.cjs && node tests/samurai.cjs && node tests/ticket-board.cjs && node tests/form-swipe.cjs && node tests/progression.cjs && node tests/restoration-art.cjs && node tests/route-header.cjs && node tests/notifications.cjs && node tests/stage-travel.cjs"
+    "test": "node tests/assets.cjs && node tests/gameplay.cjs && node tests/animation.cjs && node tests/expansion.cjs && node tests/step-shell.cjs && node tests/roster-art.cjs && node tests/samurai.cjs && node tests/ticket-board.cjs && node tests/form-swipe.cjs && node tests/progression.cjs && node tests/restoration-art.cjs && node tests/route-header.cjs && node tests/notifications.cjs && node tests/stage-travel.cjs && node tests/loading.cjs",
+    "build:loading": "node scripts/build-loading-manifest.cjs"
   },
   "engines": {
     "node": ">=20"

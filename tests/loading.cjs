@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const {metrics}=require('../web/loading-progress.js');
+assert.deepEqual(metrics(50,100,5,false),{percent:47,eta:5});assert.equal(metrics(0,100,10,true).eta,null);assert.equal(metrics(50,100,1,false).eta,null);assert.equal(metrics(100,100,10,false).percent,95,'reserve completion for preparation');
+const manifest=JSON.parse(fs.readFileSync('web/loading-manifest.js','utf8').split('window.BrineLoadingManifest=')[1].split(';')[0]);for(const [name,size] of Object.entries(manifest))assert.equal(fs.statSync('web/'+name).size,size,'resource manifest matches '+name);
+function context(fetch){const nodes={};const c={document:{getElementById:id=>nodes[id]??=( {hidden:true,textContent:'',value:0})},BrineLoadingManifest:{'test.json':7},performance,fetch,Blob,URL,AbortController,setTimeout,clearTimeout,setInterval,clearInterval,requestAnimationFrame:cb=>setTimeout(cb,0),location:{reload(){}}};vm.createContext(c);vm.runInContext(fs.readFileSync('web/loading-progress.js','utf8'),c);return {c,nodes};}
+(async()=>{
+ let {c,nodes}=context(async()=>new Response(new ReadableStream({start(controller){controller.enqueue(new TextEncoder().encode('{"a":'));controller.enqueue(new TextEncoder().encode('1}'));controller.close();}}),{headers:{'Content-Type':'application/json'}}));
+ try{assert.equal((await c.BrineLoading.json('test.json?v=1')).a,1);assert.equal(nodes['load-progress'].value,95);assert.match(nodes['load-bytes'].textContent,/1 \/ 1 resources/);await c.BrineLoading.preparing();assert.match(nodes['load-eta'].textContent,/Finishing/);}finally{c.BrineLoading.finish();}assert.equal(nodes['load-progress'].value,100);assert.equal(nodes.loading.hidden,true);
+ ({c,nodes}=context(async()=>new Response('missing',{status:404})));try{await assert.rejects(c.BrineLoading.json('test.json'),/404/);}finally{c.BrineLoading.fail();}assert.equal(nodes['load-retry'].hidden,false);assert.equal(nodes['load-phase'].textContent,'Download interrupted');
+ console.log('PASS: byte manifest, ETA confidence/stalls, streamed download progress, preparation, completion and HTTP-error retry.');
+})().catch(e=>{console.error(e);process.exitCode=1});
