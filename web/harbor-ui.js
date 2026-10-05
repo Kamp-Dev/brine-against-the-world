@@ -23,7 +23,7 @@ function harborHUD(){
  const cream='#f1e2be',dark='#092329';
  // Restore the approved illustrated road, toolbox, and tent/fire navigation.
  plateRegion(0,716,450,84);
- const navIndex={road:0,guns:1,camp:2}[harborTab];if(navIndex!==undefined)fill(22+navIndex*149,791,109,3,'#deb36a');
+ const navIndex={road:0,guns:1,camp:2}[harborTab];if(navIndex!==undefined)highlightNavigationIcon(navIndex);
  for(const [x,w,name,hp,max] of [[8,132,'BRINE · LV '+model.level,model.playerHp,model.maxPlayerHp],[309,132,model.enemy.name.toUpperCase(),model.hp,model.maxHp]]){ticket(x,61,w,49);ink(name,x+11,67,13,dark,'left',false,w-22);healthBar(x+9,85,w-18,17,hp,max);ink(hp+' / '+max,x+w/2,87,13,cream,'center',false,w-24)}
  if(model.state==='fight'){ink(model.submerged?'BURROWED':model.guarded?'SHIELD UP':model.enemy.action.toUpperCase(),437,114,10,cream,'right')}
  ticket(8,675,434,35);ink('SALVAGE',19,684,17,dark);ink(model.gold.toLocaleString(),429,680,24,dark,'right',false,205);
@@ -56,3 +56,10 @@ upgradeTrack.addEventListener('click',e=>{if(suppressUpgradeClick){e.preventDefa
 upgradeTrack.addEventListener('wheel',e=>{const delta=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;if((delta>0&&upgradeTrack.scrollLeft<upgradeTrack.scrollWidth-upgradeTrack.clientWidth-1)||(delta<0&&upgradeTrack.scrollLeft>0)){e.preventDefault();upgradeTrack.scrollLeft+=delta;}},{passive:false});updateUpgradePaging();
 
 attachFormSwipe($('form-card'), direction=>{if(model.ultimateActive)return;const next=direction>0?'samurai':'step-shell';if(next===model.selectedForm)return;model.chooseForm(next);persist();refresh();$('ultimate-art').animate([{transform:'translateX('+(direction*15)+'px)',opacity:.3},{transform:'translateX(0)',opacity:1}],{duration:180,easing:'ease-out'});});
+
+let salmonNavigation=null;
+const navIconRects=[[41,724,68,34],[200,724,48,34],[334,724,70,34]];
+function highlightNavigationIcon(index){
+ if(!salmonNavigation){salmonNavigation=document.createElement('canvas');salmonNavigation.width=harborPlate.width;salmonNavigation.height=harborPlate.height;const paint=salmonNavigation.getContext('2d');paint.drawImage(harborPlate,0,0);const pixels=paint.getImageData(0,0,salmonNavigation.width,salmonNavigation.height);for(let i=0;i<pixels.data.length;i+=4){const d=pixels.data;if(d[i]>155&&d[i+1]>145&&d[i+2]>100){d[i]=241;d[i+1]=139;d[i+2]=119;}}paint.putImageData(pixels,0,0);}
+ const [x,y,w,h]=navIconRects[index];ctx.drawImage(salmonNavigation,x/450*harborPlate.width,y/800*harborPlate.height,w/450*harborPlate.width,h/800*harborPlate.height,x,y,w,h);
+}

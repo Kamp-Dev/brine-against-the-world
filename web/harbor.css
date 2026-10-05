@@ -35,3 +35,6 @@
 .rank-meter{grid-column:1/-1;position:relative;height:100%;min-height:0;background:#173d43;border:1px solid #092329;overflow:hidden}
 .rank-meter i{position:absolute;inset:0 auto 0 0;background:#bd572e;max-width:100%}
 .rank-meter b{position:relative;display:block;padding-left:4%;color:#fff1d0;font:700 1.8cqw 'Barlow Condensed';line-height:1;text-shadow:0 1px #092329}
+
+/* Selection lives on the illustrated icon, never a gold navigation box. */
+.nav:hover,.nav[aria-current=page]{box-shadow:none;border:0}.nav:focus-visible{outline:none}.nav:focus-visible:after{content:'';position:absolute;bottom:4%;left:38%;width:24%;height:2px;background:#f18b77}

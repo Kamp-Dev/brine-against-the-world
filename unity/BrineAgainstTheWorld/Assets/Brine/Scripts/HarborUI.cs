@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace BrineGame {
  public sealed class HarborUI:MonoBehaviour {
-  BrineGameController game;Texture2D plate,sword,stepIcon,samuraiIcon;Font impact,bodyFont;float dragStartX,dragStartScroll;bool upgradeDragging,upgradePressed;float formStartX;bool formPressed,formDragged;string tab="road";bool confirm;Vector2 upgradeScroll,menuScroll;readonly Dictionary<string,Texture2D> guns=new Dictionary<string,Texture2D>();
+  BrineGameController game;Texture2D salmonNav,plate,sword,stepIcon,samuraiIcon;Font impact,bodyFont;float dragStartX,dragStartScroll;bool upgradeDragging,upgradePressed;float formStartX;bool formPressed,formDragged;string tab="road";bool confirm;Vector2 upgradeScroll,menuScroll;readonly Dictionary<string,Texture2D> guns=new Dictionary<string,Texture2D>();
   const string Cream="#f1e2be",Teal="#214b50",Dark="#092329",Orange="#bd572e";
   readonly string[] kinds={"damage","shell","speed","scavenging","patch","tide"},labels={"DAMAGE","SHELL","SPEED","SCAVENGING","PATCH UP","TIDE CHARGE"};
   public void Initialize(BrineGameController controller){game=controller;plate=Resources.Load<Texture2D>("ui/ticket-board");sword=Resources.Load<Texture2D>("samurai-katana");impact=Resources.Load<Font>("Fonts/Bangers-Regular");bodyFont=Resources.Load<Font>("Fonts/BarlowCondensed-Bold");stepIcon=Resources.Load<Texture2D>("ui/step-shell-emblem");samuraiIcon=Resources.Load<Texture2D>("ui/samurai-emblem");foreach(var w in game.Model.Settings.weapons)guns[w.id]=Resources.Load<Texture2D>("weapons/"+w.art);}
@@ -28,12 +28,14 @@ namespace BrineGame {
    DrawFormCard();
    DrawUpgrades();Ticket(8,675,434,35);Text("SALVAGE",19,680,160,26,20);Text(m.Gold.ToString("N0"),210,678,219,28,24,Dark,TextAnchor.MiddleRight);
    GUI.DrawTextureWithTexCoords(new Rect(0,716,450,84),plate,new Rect(0,0,1,84f/800));
-   string[] tabs={"road","gear","camp"};for(int i=0;i<3;i++){if(Hot(5+i*149,723,140,73,tabs[i])){tab=tabs[i];menuScroll=Vector2.zero;}if(tab==tabs[i])Fill(22+i*149,791,109,3,"#deb36a");}
+   string[] tabs={"road","gear","camp"};for(int i=0;i<3;i++){if(Hot(5+i*149,723,140,73,tabs[i])){tab=tabs[i];menuScroll=Vector2.zero;}if(tab==tabs[i])HighlightNavigation(i);}
    if(m.Paused){Ticket(153,118,144,22);Text("PAUSED / CAMP TO RESUME",153,120,144,18,9,Dark,TextAnchor.MiddleCenter);}
    if(m.State==EncounterState.Defeat&&tab=="road"){Ticket(65,220,320,75);Text("SHELL CRACKED",71,230,308,29,26,Dark,TextAnchor.MiddleCenter);Text("REFIT & RETRY / KEEP UPGRADES",71,267,308,17,13,Dark,TextAnchor.MiddleCenter);if(Hot(65,220,320,75,"Refit"))Act(()=>m.Retry());}
    if(tab!="road")Drawer();GUI.enabled=true;GUI.matrix=Matrix4x4.identity;
   }
   string Stat(string kind){var m=game.Model;switch(kind){case "damage":return m.Damage+" > "+(m.Damage+4);case "shell":return m.MaxPlayerHealth+" > "+(m.MaxPlayerHealth+25);case "speed":return (1/m.Interval).ToString("0.0")+" > "+(1/m.Interval*(1+.08f/(1+m.Upgrades.speed*.08f))).ToString("0.0")+"/s";case "scavenging":return "+"+m.Upgrades.scavenging*5+"% > +"+(m.Upgrades.scavenging+1)*5+"%";case "patch":return m.RecoveryPercent+"% > "+(m.RecoveryPercent+1)+"%";default:return m.ChargePerHit+" > "+(m.ChargePerHit+1);}}
+  void HighlightNavigation(int index){if(salmonNav==null){salmonNav=new Texture2D(plate.width,plate.height,TextureFormat.RGBA32,false);var pixels=plate.GetPixels32();for(int i=0;i<pixels.Length;i++){var c=pixels[i];if(c.r>155&&c.g>145&&c.b>100)pixels[i]=new Color32(241,139,119,c.a);}salmonNav.SetPixels32(pixels);salmonNav.Apply();}float[] xs={41,200,334},ws={68,48,70};float x=xs[index],w=ws[index];GUI.DrawTextureWithTexCoords(new Rect(x,724,w,34),salmonNav,new Rect(x/450,42f/800,w/450,34f/800));}
+  void OnDestroy(){if(salmonNav!=null)Destroy(salmonNav);}
   void DrawFormCard(){var m=game.Model;var box=new Rect(185,437,256,114);var e=Event.current;
    if(e.type==EventType.MouseDown&&box.Contains(e.mousePosition)){formStartX=e.mousePosition.x;formPressed=true;formDragged=false;}
    if(e.type==EventType.MouseDrag&&formPressed){if(Mathf.Abs(e.mousePosition.x-formStartX)>10)formDragged=true;e.Use();}
