@@ -101,7 +101,7 @@
 #battle-actions{top:58.5%;height:5.25%;gap:2%}#battle-actions button{padding:1% 3%;grid-template-columns:15% 1fr;grid-template-rows:56% 38%;gap:1% 4%;border-radius:4px;box-shadow:none}
 #battle-actions strong{font-size:3.5cqw}#battle-actions small{font-size:2.15cqw}#volley[data-ready=true]:after{top:3%;right:2%;font-size:1.7cqw;padding:0 2%;transform:none;border-width:1px}
 #loadout-cards{top:64.75%;height:9.25%;grid-template-columns:38% 60%;gap:2%}
-#weapon-card{padding:3% 4%;grid-template-columns:38% 1fr;grid-template-rows:20% 35% 35%;gap:3%}
+#weapon-card{padding:3% 4%;grid-template-columns:36% minmax(0,1fr);grid-template-rows:20% 35% 35%;gap:3%}
 #weapon-card>small{grid-column:1/-1;font-size:1.6cqw}#weapon-title{grid-column:2;grid-row:2;font-size:3.5cqw;align-self:center}#weapon-preview{grid-column:1;grid-row:2/4}#swap{grid-column:2;grid-row:3;font-size:2.4cqw;padding:2% 9%;align-self:stretch;min-height:0}
 #ultimate{height:84%;padding:2% 3% 1%;gap:3%}#ultimate-art{width:28%;padding-right:2%;border-right-width:1px}.ultimate-copy{padding-bottom:9%;gap:4%}#ultimate strong{font-size:3.4cqw}#ultimate-role{font-size:1.55cqw}#ultimate small{font-size:1.8cqw;min-height:0}#ultimate:after{left:34%;width:62%;bottom:21%;height:3px}#form-swipe-hint{font-size:1.5cqw;bottom:3%}
 #upgrade-section{top:75.5%;height:9.5%}#upgrade-track{height:88%}.upgrade-card{padding:2% 2% 1%;gap:3%;grid-template-rows:20% 24% 29% 18%;border-radius:4px}.upgrade-card strong{font-size:2.5cqw}.upgrade-card .stat{font-size:2.8cqw}.upgrade-card .price{font-size:2.9cqw;padding:0 4%}.upgrade-card .price:after{font-size:3cqw}.rank-meter b{font-size:1.65cqw}
@@ -147,3 +147,8 @@ html{min-height:100%;background:#061a1d}body{min-height:100vh;min-height:100dvh;
 #defeat-refit{top:calc(49cqw + var(--battle-extra) * .5)}
 #quality-choice{display:block;width:100%;margin:2% 0;padding:3%;background:#fff0cb;color:#123d43;border:2px solid #123d43;font:700 3cqw 'Barlow Condensed',sans-serif}
 #quality-detail{font-variant-numeric:tabular-nums;color:#325954}
+
+/* Keep long weapon names from expanding the grid beyond its painted frame. */
+#weapon-title{min-width:0;max-width:100%}
+#weapon-card[data-weapon="sword"] #weapon-title{font-size:2.65cqw;letter-spacing:-.04cqw}
+#weapon-card #swap{width:100%;min-width:0;max-width:100%;justify-self:stretch;padding:0 3%;white-space:nowrap}
