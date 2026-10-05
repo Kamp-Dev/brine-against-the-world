@@ -21,6 +21,9 @@ function ticket(x,y,w,h){path([[x+7,y],[x+w-7,y],[x+w,y+7],[x+w,y+h-7],[x+w-7,y+
 function harborBackdrop(){ctx.clearRect(0,0,450,800);fill(0,0,450,800,'#082f38');ctx.strokeStyle='#487574';ctx.lineWidth=2;ctx.strokeRect(3,3,444,794);ctx.save();ctx.beginPath();ctx.rect(5,52,440,310);ctx.clip();fill(5,52,440,310,'#e9ddb5');ctx.translate(0,-249);for(const l of parallaxData.layers){const travel=model.distance*l.speed/l.period,base=Math.floor(travel),offset=(travel-base)*l.period;for(let tile=-1;tile<2;tile++){const flip=(base+tile)%2!==0;ctx.save();ctx.translate(tile*l.period-offset+(flip?l.period:0),l.y);ctx.scale(flip?-1:1,1);ctx.drawImage(sceneryImages[l.image],0,0,l.period+.5,l.height);ctx.restore()}}ctx.restore();}
 function harborHUD(){
  const cream='#f1e2be',dark='#092329';
+ // Restore the approved illustrated road, toolbox, and tent/fire navigation.
+ plateRegion(0,716,450,84);
+ const navIndex={road:0,guns:1,camp:2}[harborTab];if(navIndex!==undefined)fill(22+navIndex*149,791,109,3,'#deb36a');
  for(const [x,w,name,hp,max] of [[8,132,'BRINE · LV '+model.level,model.playerHp,model.maxPlayerHp],[309,132,model.enemy.name.toUpperCase(),model.hp,model.maxHp]]){ticket(x,61,w,49);ink(name,x+11,67,13,dark,'left',false,w-22);healthBar(x+9,85,w-18,17,hp,max);ink(hp+' / '+max,x+w/2,87,13,cream,'center',false,w-24)}
  if(model.state==='fight'){ink(model.submerged?'BURROWED':model.guarded?'SHIELD UP':model.enemy.action.toUpperCase(),437,114,10,cream,'right')}
  ticket(8,675,434,35);ink('SALVAGE',19,684,17,dark);ink(model.gold.toLocaleString(),429,680,24,dark,'right',false,205);

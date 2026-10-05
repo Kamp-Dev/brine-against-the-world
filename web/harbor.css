@@ -10,3 +10,6 @@
 #loadout-cards{grid-template-rows:minmax(0,1fr)}#weapon-card,#form-card{min-height:0;overflow:hidden}#weapon-preview,#form-tabs button,#form-tabs img{min-height:0}#form-tabs button{overflow:hidden}
 
 :root[data-font="Bungee"] #masthead h1{font-size:7cqw}:root[data-font="Bungee"] #battle-actions strong{font-size:2.9cqw}:root[data-font="Bungee"] #ultimate strong{font-size:2.3cqw}:root[data-font="Bungee"] .upgrade-card strong{font-size:2cqw}
+
+/* Original illustrated navigation retained from the approved Ticket Board. */
+.nav{top:90.5%;height:9%;width:31.5%;border:0;border-radius:0;background:transparent!important;box-shadow:none}.nav svg,.nav span{display:none}.nav.road{left:1%}.nav.guns{left:34.3%}.nav.camp{left:67.6%}.nav:hover{box-shadow:inset 0 0 0 2px #deb36a88}
