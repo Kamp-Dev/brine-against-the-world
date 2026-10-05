@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict'),P=require('../web/progression.js'),N=require('../web/progress-notifications.js');
+const p=P.fresh(),n=N.create();assert.equal(n.scan(p,0).events.length,0);
+p.counts[0]=12;let result=n.scan(p,0);assert.equal(result.events[0].title,'CONTRACT COMPLETE!');assert.equal(result.available.length,1);assert.equal(n.scan(p,0).events.length,0,'ready reward does not spam every frame');
+P.claimContract(p);result=n.scan(p,0);assert.equal(result.available.length,0);assert.equal(result.events[0].title,'REWARD COLLECTED!');
+p.counts[0]=12;assert.equal(n.scan(p,0).events[0].collect,true,'repeatable contracts notify on next completion');
+p.expedition={id:0,finish:1000};assert.equal(n.scan(p,999).events.length,0);result=n.scan(p,1000);assert.equal(result.available.length,2);assert.equal(result.events[0].title,'CREW RETURNED!');assert.equal(n.scan(p,1001).events.length,0);
+assert.equal(N.create().scan(p,1001).events.length,2,'returning players see unclaimed rewards');P.collect(p,1001);assert.equal(n.scan(p,1001).events[0].title,'CARGO COLLECTED!');
+p.build[0]=3;p.district[0]=true;p.weaponXP[0]=60;p.formXP[0]=12;p.guide[0]=15;result=n.scan(p,1001);assert.equal(result.events.length,5);assert.equal(n.scan(p,1001).events.length,0);
+assert.equal(n.scan(P.fresh(),1001).events.length,0,'fresh save clears detector without false collection notifications');
+console.log('PASS: completion transitions, no per-frame spam, repeatable contracts, expedition timing, offline-ready reminders, collection, milestones, and reset.');

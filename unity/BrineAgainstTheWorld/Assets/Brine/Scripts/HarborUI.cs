@@ -31,7 +31,7 @@ namespace BrineGame {
    }
    if(m.Route!=0){RouteCut(liveRoute,new Rect(1080,275,850,17),new Rect(1080,106,865,172));RouteText(EncounterModel.Routes[m.Route].ToUpper(),1512,194,825,"#003742",100);}
   }
-  void OnGUI(){if(game==null||plate==null)return;var m=game.Model;float scale=Mathf.Min(Screen.width/450f,Screen.height/800f);GUI.matrix=Matrix4x4.TRS(new Vector3((Screen.width-450*scale)/2,(Screen.height-800*scale)/2,0),Quaternion.identity,Vector3.one*scale);GUI.color=Color.white;
+  void OnGUI(){if(game==null||plate==null)return;var m=game.Model;float scale=Mathf.Min(Screen.width/450f,Screen.height/800f);GUI.matrix=Matrix4x4.TRS(new Vector3((Screen.width-450*scale)/2,(Screen.height-800*scale)/2,0),Quaternion.identity,Vector3.one*scale);GUI.color=Color.white;HandleComicInput();
    Fill(0,0,450,800,"#082f38");Fill(4,4,442,1,"#557876");GUI.DrawTextureWithTexCoords(new Rect(5,52,440,310),game.BattleTexture,new Rect(5f/450,(800f-611)/800,440f/450,310f/800));
 
    DrawRouteHeader();DrawGrowth();
@@ -47,7 +47,7 @@ namespace BrineGame {
    string[] tabs={"road","gear","camp"};for(int i=0;i<3;i++){if(Hot(5+i*149,723,140,73,tabs[i])){tab=tabs[i];menuScroll=Vector2.zero;}if(tab==tabs[i])HighlightNavigation(i);}
    if(m.Paused){Ticket(153,194,144,22);Text("PAUSED / CAMP TO RESUME",153,196,144,18,9,Dark,TextAnchor.MiddleCenter);}
    if(m.State==EncounterState.Defeat&&tab=="road"){Ticket(65,220,320,75);Text("SHELL CRACKED",71,230,308,29,26,Dark,TextAnchor.MiddleCenter);Text("REFIT & RETRY / KEEP UPGRADES",71,267,308,17,13,Dark,TextAnchor.MiddleCenter);if(Hot(65,220,320,75,"Refit"))Act(()=>m.Retry());}
-   if(tab=="camp")ProgressionDrawer();else if(tab!="road")Drawer();GUI.enabled=true;GUI.matrix=Matrix4x4.identity;
+   if(tab=="camp")ProgressionDrawer();else if(tab!="road")Drawer();GUI.enabled=true;DrawComicNotice();GUI.matrix=Matrix4x4.identity;
   }
   string Stat(string kind){var m=game.Model;switch(kind){case "damage":return m.Damage+" > "+(m.Damage+4);case "shell":return m.MaxPlayerHealth+" > "+(m.MaxPlayerHealth+25);case "speed":return (1/m.Interval).ToString("0.0")+" > "+(1/m.Interval*(1+.08f/(1+m.Upgrades.speed*.08f))).ToString("0.0")+"/s";case "scavenging":return "+"+m.Upgrades.scavenging*5+"% > +"+(m.Upgrades.scavenging+1)*5+"%";case "patch":return m.RecoveryPercent+"% > "+(m.RecoveryPercent+1)+"%";default:return m.ChargePerHit+" > "+(m.ChargePerHit+1);}}
   void HighlightNavigation(int index){if(salmonNav==null){salmonNav=new Texture2D(plate.width,plate.height,TextureFormat.RGBA32,false);var pixels=plate.GetPixels32();for(int i=0;i<pixels.Length;i++){var c=pixels[i];if(c.r>155&&c.g>145&&c.b>100)pixels[i]=new Color32(241,139,119,c.a);}salmonNav.SetPixels32(pixels);salmonNav.Apply();}float[] xs={41,200,334},ws={68,48,70};float x=xs[index],w=ws[index];GUI.DrawTextureWithTexCoords(new Rect(x,724,w,34),salmonNav,new Rect(x/450,42f/800,w/450,34f/800));}

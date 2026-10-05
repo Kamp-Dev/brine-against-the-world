@@ -76,3 +76,17 @@
 #goal-detail{font:700 2.35cqw 'Barlow Condensed',sans-serif;line-height:1.03;color:#fff0c6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 #next-goal[data-ready=true] #goal-eyebrow{color:#fff0c6}#next-goal[data-ready=true] .goal-copy{border-left:3px solid #ef9676;padding-left:1.5%}
 #next-goal:focus-visible{outline:2px solid #ef9676;outline-offset:1px}
+
+/* Completion cards: vector edges stay sharp at any display density. */
+#comic-notice{position:absolute;z-index:8;left:4%;top:55%;width:92%;min-height:15%;padding:2.8% 11% 2.8% 19%;background:var(--cream);border:.8cqw solid var(--ink);box-shadow:1cqw 1.2cqw 0 #071c20;transform:rotate(-1deg);animation:comic-arrive .22s ease-out;isolation:isolate}
+#comic-notice[hidden]{display:none}
+#comic-notice:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(#153d4233 .14cqw,transparent .18cqw) 0 0/1.3cqw 1.3cqw;mask-image:linear-gradient(90deg,#000,transparent 40%)}
+.comic-seal{position:absolute;left:2%;top:19%;width:16%;aspect-ratio:1;display:grid;place-items:center;background:#ee8c70;color:var(--ink);font:8cqw Bungee;clip-path:polygon(50% 0,61% 16%,82% 5%,83% 28%,100% 36%,87% 52%,98% 73%,76% 78%,68% 100%,49% 87%,29% 98%,23% 77%,0 68%,14% 49%,2% 28%,26% 24%,31% 3%)}
+.comic-copy strong{font:4.5cqw Bangers;letter-spacing:.05cqw;color:var(--ink);line-height:1.05;display:block}
+.comic-copy p{font:700 2.8cqw 'Barlow Condensed',sans-serif;line-height:1.15;margin:1.4% 0 3%;color:#214b50}
+#comic-notice button.comic-open{background:#164b53;color:#fff0c6;border:.4cqw solid #092329;padding:2% 5%;min-height:7cqw;font:700 2.8cqw 'Barlow Condensed';box-shadow:.5cqw .5cqw 0 #092329}
+#comic-notice[data-kind=ready] button.comic-open{background:#c45332}
+#comic-notice button.comic-close{position:absolute;right:0;top:0;width:10cqw;height:10cqw;border:0;background:transparent;color:#092329;font:7cqw sans-serif;padding:0}
+#comic-notice button:focus-visible{outline:.6cqw solid #ee8c70;outline-offset:.6cqw}
+@keyframes comic-arrive{from{opacity:0;transform:translateY(8px) rotate(1deg) scale(.95)}to{opacity:1;transform:translateY(0) rotate(-1deg) scale(1)}}
+@media(prefers-reduced-motion:reduce){#comic-notice{animation:none;transform:none}}
