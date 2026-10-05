@@ -19,17 +19,17 @@ function fill(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(x,y,w,h)}
 function ink(text,x,y,size=16,color='#092329',align='left',stencil=false,maxWidth){ctx.fillStyle=color;ctx.textAlign=align;ctx.textBaseline='top';ctx.font=size+'px "'+(size>=16?selectedFont:'Barlow Condensed')+'", sans-serif';if(maxWidth)ctx.fillText(text,x,y,maxWidth);else ctx.fillText(text,x,y);ctx.textAlign='left'}
 function healthBar(x,y,w,h,current,maximum){const ratio=maximum>0?Math.max(0,Math.min(1,current/maximum)):0;fill(x,y,w,h,'#092329');fill(x+2,y+2,w-4,h-4,'#214b50');if(ratio>0)fill(x+2,y+2,(w-4)*ratio,h-4,'#bd572e')}
 function ticket(x,y,w,h){path([[x+7,y],[x+w-7,y],[x+w,y+7],[x+w,y+h-7],[x+w-7,y+h],[x+7,y+h],[x,y+h-7],[x,y+7]],'#f1e2be','#092329',2);for(const [a,b] of [[x+7,y+7],[x+w-7,y+7],[x+7,y+h-7],[x+w-7,y+h-7]]){ctx.fillStyle='#092329';ctx.beginPath();ctx.arc(a,b,1.4,0,7);ctx.fill()}}
-function harborBackdrop(){ctx.clearRect(0,0,450,800);fill(0,0,450,800,'#082f38');ctx.strokeStyle='#487574';ctx.lineWidth=2;ctx.strokeRect(3,3,444,794);ctx.save();ctx.beginPath();ctx.rect(5,52,440,382);ctx.clip();fill(5,52,440,382,'#e9ddb5');ctx.translate(0,-143);for(const l of parallaxData.layers){const travel=model.distance*l.speed/l.period,base=Math.floor(travel),offset=(travel-base)*l.period;for(let tile=-1;tile<2;tile++){const flip=(base+tile)%2!==0;ctx.save();ctx.translate(tile*l.period-offset+(flip?l.period:0),l.y);ctx.scale(flip?-1:1,1);ctx.drawImage(sceneryImages[l.image],0,0,l.period+.5,l.height);ctx.restore()}if(l===parallaxData.layers[0]&&typeof drawHarborGrowth==='function'){ctx.save();ctx.translate(0,249);drawHarborGrowth(ctx,model);ctx.restore()}}ctx.restore();}
+function harborBackdrop(){ctx.clearRect(0,0,450,BrineDisplay.height);fill(0,0,450,BrineDisplay.height,'#082f38');ctx.strokeStyle='#487574';ctx.lineWidth=2;ctx.strokeRect(3,3,444,BrineDisplay.height-6);ctx.save();ctx.beginPath();ctx.rect(5,52,440,382+BrineDisplay.extra);ctx.clip();fill(5,52,440,382+BrineDisplay.extra,'#e9ddb5');ctx.translate(0,-143+BrineDisplay.extra);for(const l of parallaxData.layers){const travel=model.distance*l.speed/l.period,base=Math.floor(travel),offset=(travel-base)*l.period;for(let tile=-1;tile<2;tile++){const flip=(base+tile)%2!==0;ctx.save();ctx.translate(tile*l.period-offset+(flip?l.period:0),l.y);ctx.scale(flip?-1:1,1);if(l===parallaxData.layers[0]){const im=sceneryImages[l.image],strip=60;for(let n=1;n*strip<BrineDisplay.extra+180;n++){ctx.save();ctx.translate(0,-n*strip+(n%2?strip:0));ctx.scale(1,n%2?-1:1);ctx.drawImage(im,0,0,im.width,im.height*strip/l.height,0,0,l.period+.5,strip);ctx.restore();}}ctx.drawImage(sceneryImages[l.image],0,0,l.period+.5,l.height);ctx.restore()}if(l===parallaxData.layers[0]&&typeof drawHarborGrowth==='function'){ctx.save();ctx.translate(0,249);drawHarborGrowth(ctx,model);ctx.restore()}}ctx.restore();}
 function harborHUD(){
  const cream='#f1e2be',dark='#092329';
  // Restore the approved illustrated road, toolbox, and tent/fire navigation.
- plateRegion(0,716,450,84);
- const navIndex={road:0,guns:1,camp:2}[harborTab];if(navIndex!==undefined)highlightNavigationIcon(navIndex);
+ ctx.save();ctx.translate(0,BrineDisplay.extra);plateRegion(0,716,450,84);
+ const navIndex={road:0,guns:1,camp:2}[harborTab];if(navIndex!==undefined)highlightNavigationIcon(navIndex);ctx.restore();
  for(const [x,w,name,hp,max] of [[8,132,'BRINE · LV '+model.level,model.playerHp,model.maxPlayerHp],[309,132,model.enemy.name.toUpperCase(),model.hp,model.maxHp]]){ticket(x,142,w,49);ink(name,x+11,148,13,dark,'left',false,w-22);healthBar(x+9,166,w-18,17,hp,max);ink(hp+' / '+max,x+w/2,168,13,cream,'center',false,w-24)}
  if(model.state==='fight'){ink(model.submerged?'BURROWED':model.guarded?'SHIELD UP':model.enemy.action.toUpperCase(),437,195,10,cream,'right')}
- ticket(8,687,434,28);
+ ctx.save();ctx.translate(0,BrineDisplay.extra);ticket(8,687,434,28);
  if(salvageLedger.complete&&salvageLedger.naturalWidth)ctx.drawImage(salvageLedger,80/2048*salvageLedger.width,246/683*salvageLedger.height,226/2048*salvageLedger.width,208/683*salvageLedger.height,14,690,24,22);
- ink('SALVAGE',46,693,15,dark);ink(model.gold.toLocaleString(),428,691,19,dark,'right',false,225);
+ ink('SALVAGE',46,693,15,dark);ink(model.gold.toLocaleString(),428,691,19,dark,'right',false,225);ctx.restore();
 
  drawCaptainBadge(ctx,model);
  if(model.paused){ticket(153,194,144,22);ink('PAUSED · CAMP TO RESUME',225,200,9,dark,'center')}
