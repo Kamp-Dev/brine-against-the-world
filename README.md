@@ -83,3 +83,5 @@ The browser UI scales to 2160 × 3840 portrait with live text and vector control
 Bangers is the default heading font, with Barlow Condensed for readable statistics. Camp offers Bungee and Barlow alternatives; `web/font-review.html` compares them. Fonts are bundled with their SIL Open Font License notices in `web/fonts` and Unity Resources/Fonts. The form emblems are UI illustrations only, generated with the built-in image tool; no GodModeAI credits were used.
 
 Validation: browser gameplay/asset/animation tests; mouse drag without purchasing; portrait layout at 2160 × 3840; all three font choices; Unity model checks and play-mode smoke test.
+
+The Ultimate selector is now a single orange framed card: swipe left for Samurai, right for Step Shell, then tap when ready. Keyboard arrows and horizontal trackpad scrolling also select forms. Swiping never activates the power, and selection remains locked during an active Ultimate.
