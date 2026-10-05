@@ -108,7 +108,7 @@ function effects(){
   if(e.type!=='flash'&&e.type!=='repair'){ctx.textAlign='center';ctx.fillStyle=e.type==='reward'?'#203d2b':'#793319';ctx.font='bold 16px system-ui';ctx.fillText(e.type==='reward'?'+'+e.damage+' salvage':e.type==='repair'?'+'+e.damage+' repair':e.type==='miss'?'BURROWED':'−'+e.damage,e.x,e.y-28-(1-e.life)*18);ctx.textAlign='left'}
  }
 }
-function render(t){const dt=last?Math.min((t-last)/1000,.1):0;last=t;if(ready){origin=muzzle(blendedPose().grip);origin.x+=model.meleeAdvance||0;if(!document.hidden)model.tick(dt,origin);harborBackdrop();ctx.save();ctx.beginPath();ctx.rect(5,52,440,310);ctx.clip();ctx.translate(0,-249);enemy();actor();effects();ctx.restore();harborHUD();refresh()}requestAnimationFrame(render)}
+function render(t){const dt=last?Math.min((t-last)/1000,.1):0;last=t;if(ready){origin=muzzle(blendedPose().grip);origin.x+=model.meleeAdvance||0;if(!document.hidden)model.tick(dt,origin);harborBackdrop();ctx.save();ctx.beginPath();ctx.rect(5,52,440,382);ctx.clip();ctx.translate(0,-143);enemy();actor();effects();ctx.restore();harborHUD();refresh()}requestAnimationFrame(render)}
 function hud(){
  ctx.fillStyle='#243328';ctx.font='bold 13px system-ui';ctx.fillText('BRINE · LEVEL '+model.level,26,98);
  ctx.fillStyle='#9c8b64';ctx.fillRect(26,110,165,10);ctx.fillStyle='#536746';ctx.fillRect(26,110,165*model.playerHp/model.maxPlayerHp,10);

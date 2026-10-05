@@ -90,3 +90,26 @@
 #comic-notice button:focus-visible{outline:.6cqw solid #ee8c70;outline-offset:.6cqw}
 @keyframes comic-arrive{from{opacity:0;transform:translateY(8px) rotate(1deg) scale(.95)}to{opacity:1;transform:translateY(0) rotate(-1deg) scale(1)}}
 @media(prefers-reduced-motion:reduce){#comic-notice{animation:none;transform:none}}
+
+/* Battle-first layout: the stage gains 106 logical pixels; artwork keeps its proportions. */
+#next-goal{top:54.75%;height:3%;left:2%;width:96%;display:flex;align-items:center;background:#123d43;color:#ee9475;border:1px solid #61847a;border-radius:3px;padding:0 2%;overflow:hidden}
+#next-goal>svg{position:static;flex:none;width:4.8cqw;height:4.8cqw;aspect-ratio:1}
+#next-goal .goal-copy{position:static;flex:1;min-width:0;display:flex;flex-direction:row;align-items:center;gap:1.5cqw;margin-left:2%;padding:0;border:0}
+#goal-eyebrow{font-size:1.8cqw;white-space:nowrap;letter-spacing:0}
+#goal-detail{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:2.5cqw;line-height:1.1}
+#next-goal[data-ready=true] .goal-copy{border:0;padding:0}#next-goal[data-ready=true]{border-color:#ef9676}
+#battle-actions{top:58.5%;height:5.25%;gap:2%}#battle-actions button{padding:1% 3%;grid-template-columns:15% 1fr;grid-template-rows:56% 38%;gap:1% 4%;border-radius:4px;box-shadow:none}
+#battle-actions strong{font-size:3.5cqw}#battle-actions small{font-size:2.15cqw}#volley[data-ready=true]:after{top:3%;right:2%;font-size:1.7cqw;padding:0 2%;transform:none;border-width:1px}
+#loadout-cards{top:64.75%;height:9.25%;grid-template-columns:38% 60%;gap:2%}
+#weapon-card{padding:3% 4%;grid-template-columns:38% 1fr;grid-template-rows:20% 35% 35%;gap:3%}
+#weapon-card>small{grid-column:1/-1;font-size:1.6cqw}#weapon-title{grid-column:2;grid-row:2;font-size:3.5cqw;align-self:center}#weapon-preview{grid-column:1;grid-row:2/4}#swap{grid-column:2;grid-row:3;font-size:2.4cqw;padding:2% 9%;align-self:stretch;min-height:0}
+#ultimate{height:84%;padding:2% 3% 1%;gap:3%}#ultimate-art{width:28%;padding-right:2%;border-right-width:1px}.ultimate-copy{padding-bottom:9%;gap:4%}#ultimate strong{font-size:3.4cqw}#ultimate-role{font-size:1.55cqw}#ultimate small{font-size:1.8cqw;min-height:0}#ultimate:after{left:34%;width:62%;bottom:21%;height:3px}#form-swipe-hint{font-size:1.5cqw;bottom:3%}
+#upgrade-section{top:75.5%;height:9.5%}#upgrade-track{height:88%}.upgrade-card{padding:2% 2% 1%;gap:3%;grid-template-rows:20% 24% 29% 18%;border-radius:4px}.upgrade-card strong{font-size:2.5cqw}.upgrade-card .stat{font-size:2.8cqw}.upgrade-card .price{font-size:2.9cqw;padding:0 4%}.upgrade-card .price:after{font-size:3cqw}.rank-meter b{font-size:1.65cqw}
+#weapon-card,#form-card,.upgrade-card{border-width:2px;box-shadow:0 0 0 1px #507575;background-image:none}#form-card:has(#ultimate[data-ready=true]){box-shadow:0 0 0 1px #ef9676}
+#drawer{top:58.5%;height:31%;box-shadow:none}#welcome{top:59%}
+#comic-notice{left:8%;top:65%;width:84%;min-height:0;height:auto;padding:2% 9% 2% 11%;border-width:2px;box-shadow:2px 3px 0 #071c20;transform:none;display:grid;grid-template-columns:1fr;gap:1cqw}
+.comic-seal{left:2%;top:22%;width:8%;font-size:4.2cqw}.comic-copy strong{font-size:3.2cqw}.comic-copy p{font-size:2.5cqw;margin:1% 0;line-height:1.1}
+#comic-notice button.comic-open{justify-self:start;font-size:2.2cqw;min-height:0;padding:1% 3%;border-width:1px;box-shadow:none;background:transparent;color:#164b53}
+#comic-notice[data-kind=ready] button.comic-open{background:#c45332;color:#fff0c6}#comic-notice button.comic-close{width:8cqw;height:8cqw;font-size:5cqw}
+#comic-notice[data-kind=done] .comic-open{display:none}
+#next-goal .goal-copy{justify-content:flex-start}#volley[data-ready=true]:after{display:none}
