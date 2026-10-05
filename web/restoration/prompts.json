@@ -1,0 +1,14 @@
+[
+  {
+    "name": "workshop",
+    "prompt": "Use case: background-extraction. Edit target: attached approved workshop concept sheet. Turn this exact approved artwork into a transparent game sprite atlas. Preserve all three restoration versions and their recognizable shapes, colors, ink lines, materials, construction and differences. Remove all headings, numbers, paper, shadows on paper and all background. Actual transparent alpha. Arrange the three versions left to right in THREE EQUAL WIDTH CELLS of a landscape 1536x1024 canvas. Each object must fit wholly inside its own third with generous transparent margins at all sides; no touching adjoining cells. Same scale and baseline across all three. Keep complete structural bases and dock platforms.   NO TEXT, NO numbers, NO labels. Do not redesign or add details. Output only three complete isolated approved sprites on genuine transparency."
+  },
+  {
+    "name": "ferry",
+    "prompt": "Use case: background-extraction. Edit target: attached approved ferry concept sheet. Turn this exact approved artwork into a transparent game sprite atlas. Preserve all three restoration versions and their recognizable shapes, colors, ink lines, materials, construction and differences. Remove all headings, numbers, paper, shadows on paper and all background. Actual transparent alpha. Arrange the three versions left to right in THREE EQUAL WIDTH CELLS of a landscape 1536x1024 canvas. Each object must fit wholly inside its own third with generous transparent margins at all sides; no touching adjoining cells. Same scale and baseline across all three. Keep complete structural bases and dock platforms. Preserve the water immediately beneath hull and dock as a small clean edged painted water footing, transparent beyond it.  NO TEXT, NO numbers, NO labels. Do not redesign or add details. Output only three complete isolated approved sprites on genuine transparency."
+  },
+  {
+    "name": "lighthouse",
+    "prompt": "Use case: background-extraction. Edit target: attached approved lighthouse concept sheet. Turn this exact approved artwork into a transparent game sprite atlas. Preserve all three restoration versions and their recognizable shapes, colors, ink lines, materials, construction and differences. Remove all headings, numbers, paper, shadows on paper and all background. Actual transparent alpha. Arrange the three versions left to right in THREE EQUAL WIDTH CELLS of a landscape 1536x1024 canvas. Each object must fit wholly inside its own third with generous transparent margins at all sides; no touching adjoining cells. Same scale and baseline across all three. Keep complete structural bases and dock platforms.  Keep the level three light beam short so it fits fully within the third cell, not outside canvas. NO TEXT, NO numbers, NO labels. Do not redesign or add details. Output only three complete isolated approved sprites on genuine transparency."
+  }
+]

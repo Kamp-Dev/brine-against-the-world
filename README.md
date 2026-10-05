@@ -93,3 +93,6 @@ Open Camp or tap the Next unlock banner to manage Harbor, Contracts, Weapons, Fo
 Every victory earns timber; captains and contracts supply brass and charts. District captains grant guaranteed first-clear rewards. Weapon mastery and form practice come from successful contacts; buildings unlock their selectable paths. Field-guide research grants an enemy-specific damage bonus after 15 defeats. One crew can run a guaranteed 3-, 15-, or 45-minute expedition, including while the game is closed. No daily streak or prestige reset is required.
 
 Browser and Unity both save the new progression. Legacy saves retain upgrades and credit an earlier first-district clear toward the Workshop permit. Captain names and action types use the existing enemy art; character animation assets were not regenerated and no GodModeAI credits were used. The economy is a first playable balance pass, with deterministic reward, save, and claim checks.
+
+Restoration artwork: Workshop, Ferry, and Lighthouse now use three illustrated stages in Camp and the scrolling harbor, with matching Unity assets. The atlases retain transparent backgrounds; source frames are selected without resizing the saved artwork. See web/restoration/prompts.json for the built-in image-generation preparation prompts. No GodModeAI credits were used. Preview all levels at harbor-review.html.
+
