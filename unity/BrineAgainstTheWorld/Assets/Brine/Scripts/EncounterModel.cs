@@ -78,6 +78,7 @@ namespace BrineGame
   public bool Buy(string kind){if(kind!="damage"&&kind!="shell"&&kind!="speed"&&kind!="scavenging"&&kind!="patch"&&kind!="tide")return false;int cost=Cost(kind);if(Gold<cost||Rank(kind)>=Cap(kind))return false;Gold-=cost;if(kind=="damage")Upgrades.damage++;else if(kind=="speed")Upgrades.speed++;else if(kind=="scavenging")Upgrades.scavenging++;else if(kind=="patch")Upgrades.patch++;else if(kind=="tide")Upgrades.tide++;else {Upgrades.shell++;if(State!=EncounterState.Defeat)PlayerHealth=Math.Min(MaxPlayerHealth,PlayerHealth+25);}return true;}
   public int FarmStage=>Math.Max(1,Best-(Best%5==0?1:0));
   public void Retry(){UltimateTime=0;Stage=FarmStage;Farming=Best>0;PlayerHealth=MaxPlayerHealth;Paused=false;StartEncounter();}
+  public bool FarmLevel(int stage){if(stage<1||stage>Best||UltimateActive||State==EncounterState.Defeat||(Farming&&stage==Stage))return false;Stage=stage;Farming=true;StartEncounter();return true;}
   public void ToggleFarm(){if(UltimateActive||Best==0||State==EncounterState.Defeat)return;Farming=!Farming;Stage=Farming?FarmStage:Best+1;StartEncounter();}
   public bool Volley(){if(UltimateActive||State!=EncounterState.Fight||Paused||Charge<100)return false;Charge=0;burst=3;return true;}
   void Enter(EncounterState state){State=state;Age=0;}

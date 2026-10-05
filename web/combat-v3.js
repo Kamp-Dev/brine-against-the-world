@@ -52,6 +52,7 @@
   buy(kind){if(!Object.hasOwn(this.upgrades,kind)||this.upgrades[kind]>=this.cap(kind))return false;const cost=this.cost(kind);if(this.gold<cost)return false;this.gold-=cost;this.upgrades[kind]++;if(kind==='shell'&&this.state!=='defeat')this.playerHp=Math.min(this.maxPlayerHp,this.playerHp+25);return true}
   get farmStage(){return Math.max(1,this.best-(this.best%5===0?1:0))}
   retry(){this.ultimateTime=0;this.stage=this.farmStage;this.farming=this.best>0;this.playerHp=this.maxPlayerHp;this.paused=false;this.startEncounter()}
+  farmLevel(stage){if(!Number.isInteger(stage)||stage<1||stage>this.best||this.ultimateActive||this.state==='defeat'||this.farming&&stage===this.stage)return false;this.stage=stage;this.farming=true;this.startEncounter();return true}
   toggleFarm(){if(this.ultimateActive||this.best===0||this.state==='defeat')return;this.farming=!this.farming;this.stage=this.farming?this.farmStage:this.best+1;this.startEncounter()}
   volley(){if(this.ultimateActive||this.state!=='fight'||this.paused||this.charge<100)return false;this.charge=0;this.burst=3;return true}
   enter(state){this.state=state;this.age=0}

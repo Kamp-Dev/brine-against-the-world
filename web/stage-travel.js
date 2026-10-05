@@ -1,0 +1,5 @@
+const stageTravel=document.createElement('nav');stageTravel.id='stage-travel';stageTravel.setAttribute('aria-label','Select a cleared stretch to farm');$('masthead').append(stageTravel);
+const stageSlots=[[72,277],[414,279],[751,345],[1132,277],[1454,278],[1778,204]];
+for(let i=0;i<6;i++){const b=document.createElement('button');b.type='button';const [x,w]=stageSlots[i];b.style.cssText=`left:${(x-32)/1984*100}%;top:${(386-45)/580*100}%;width:${w/1984*100}%;height:${188/580*100}%`;stageTravel.append(b);}
+stageTravel.onclick=e=>{const b=e.target.closest('button');if(b&&!b.disabled&&model.farmLevel(Number(b.dataset.stage))){persist();refresh();}};
+function refreshStageTravel(){BrineRoute.routeTiles(model.stage,model.best,model.state).forEach((t,i)=>{const b=stageTravel.children[i];b.dataset.stage=t.stage;b.disabled=t.stage>model.best||model.ultimateActive||model.state==='defeat';b.title=t.stage>model.best?'Clear this stretch to farm it':model.ultimateActive?'Finish the transformation before traveling':'Farm stretch '+t.stage+(t.boss?' · boss':'');b.setAttribute('aria-label',b.title);b.setAttribute('aria-current',t.current?'step':'false');});}

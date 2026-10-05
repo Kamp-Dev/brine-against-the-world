@@ -113,3 +113,16 @@
 #comic-notice[data-kind=ready] button.comic-open{background:#c45332;color:#fff0c6}#comic-notice button.comic-close{width:8cqw;height:8cqw;font-size:5cqw}
 #comic-notice[data-kind=done] .comic-open{display:none}
 #next-goal .goal-copy{justify-content:flex-start}#volley[data-ready=true]:after{display:none}
+
+/* Approved illustrated plate finish, fitted without stretching corner artwork. */
+#battle-actions button.painted-harbor-panel,#weapon-card.painted-harbor-panel,#form-card.painted-harbor-panel,.upgrade-card.painted-harbor-panel{isolation:isolate;border:0;border-radius:0;background:none!important;box-shadow:none!important;clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px),0 8px)}
+.harbor-panel-art{position:absolute;inset:0;z-index:-1;width:100%;height:100%;pointer-events:none}
+#battle-actions button.painted-harbor-panel{padding:3% 4%;grid-template-rows:55% 36%;gap:2% 4%}
+#battle-actions #volley:disabled{color:#b8c2ae}#battle-actions #volley[data-ready=true]{color:#fff1cd;animation:none}
+#battle-actions .charge-track{left:8%;width:84%;bottom:4px;height:2px;background:linear-gradient(to right,#ef9878 var(--charge,0%),#3b6061 0)}
+#weapon-card.painted-harbor-panel{padding:4% 5%}#weapon-card>small{letter-spacing:.08cqw}
+#form-card.painted-harbor-panel{background:none}#ultimate-art{border-right-color:#753c2a}#ultimate[data-ready=true] strong{color:#fff7db}#ultimate:after{background:linear-gradient(to right,#f4e4b7 var(--charge,0%),#783e2c 0);border-color:#713720}
+.upgrade-card.painted-harbor-panel{padding:3% 3% 2%;gap:2%;grid-template-rows:20% 23% 29% 18%}
+.upgrade-card .price{border-radius:0;background:#123d43;border:1px solid #092329;color:#fff0c6}.upgrade-card:disabled .price{background:#778c7b;color:#fff0c6}.upgrade-card .price:after{color:#ef9878}.rank-meter{border-color:#092329;background:#214b50}.rank-meter i{background:#d16c47}
+#swap{border:1px solid #092329;border-radius:0;box-shadow:1px 1px 0 #092329;background:#164650;color:#fff0c6}
+#stage-travel{position:absolute;inset:0;pointer-events:none}#stage-travel button{position:absolute;pointer-events:auto;background:none;border:0;padding:0;clip-path:polygon(8% 0,92% 0,100% 20%,100% 80%,92% 100%,8% 100%,0 80%,0 20%)}#stage-travel button:disabled{cursor:default}#stage-travel button:not(:disabled):hover{background:#fff0c618}#stage-travel button:focus-visible{outline:3px solid #f29c7e;outline-offset:-5px}

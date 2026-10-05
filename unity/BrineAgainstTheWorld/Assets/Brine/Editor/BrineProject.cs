@@ -81,6 +81,11 @@ public static class BrineProject
         Require(restored.State==EncounterState.Defeat && restored.PlayerHealth==0,"enemy causes defeat");
         int bank=restored.Gold;restored.Retry();Require(restored.PlayerHealth==restored.MaxPlayerHealth && restored.Gold==bank && restored.Farming && restored.Stage==4,"retry preserves progress");
         restored.ToggleFarm();Require(restored.Stage==5 && !restored.Farming,"return to frontier");
+        Require(restored.FarmLevel(2) && restored.Stage==2 && restored.Farming,"choose cleared farm");
+        Require(!restored.FarmLevel(5) && !restored.FarmLevel(0),"reject uncleared farm");
+        var farmSave=restored.Save(1000);var farmCopy=new EncounterModel(data);farmCopy.Load(farmSave,1000);
+        Require(farmCopy.Stage==2 && farmCopy.Farming,"selected farm survives save");
+        restored.ToggleFarm();Require(restored.Stage==5 && !restored.Farming,"selected farm returns to frontier");
         Debug.Log("BRINE_MODEL_CHECKS_PASS");
     }
     public static void BuildAndTest()
@@ -131,3 +136,4 @@ public sealed class BrineTextureImport : AssetPostprocessor
         importer.maxTextureSize = 4096; importer.npotScale = TextureImporterNPOTScale.None;
     }
 }
+

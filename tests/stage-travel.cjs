@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict'),{Encounter}=require('../web/combat-v3.js'),settings=require('../web/gameplay.json');
+const m=new Encounter(settings);m.best=24;m.stage=25;m.startEncounter();m.playerHp=50;
+for(const stage of [0,-1,25,1.5,NaN])assert.equal(m.farmLevel(stage),false);
+assert(m.farmLevel(5));assert.equal(m.stage,5);assert(m.farming);assert(m.boss);assert.equal(m.best,24);assert.equal(m.playerHp,50,'travel cannot heal');
+assert.equal(m.farmLevel(5),false,'reselecting the same farm cannot restart attacks');
+m.state='lower';m.age=settings.lowerDuration;m.tick(.02,{x:215,y:500});assert.equal(m.stage,5,'farming repeats selected level');
+const copy=new Encounter(settings);copy.load(m.save(1000),1000);assert.equal(copy.stage,5);assert(copy.farming,'chosen farm survives reload');
+copy.toggleFarm();assert.equal(copy.stage,25);assert.equal(copy.farming,false,'push forward returns to frontier');
+m.ultimateTime=4;assert.equal(m.farmLevel(4),false);m.ultimateTime=0;m.state='defeat';assert.equal(m.farmLevel(4),false);
+console.log('PASS: selected cleared levels repeat and persist, boss farming, frontier return, invalid/locked stages and no travel healing.');

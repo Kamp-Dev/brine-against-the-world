@@ -47,6 +47,7 @@ function updateHDControls(){
  const routeKey=[model.stage,model.best,model.state==='reward'||model.state==='lower'].join(':');
  if($('numbered-route').dataset.key!==routeKey){$('numbered-route').innerHTML=BrineRoute.routeMarkup(model.stage,model.best,model.state);$('numbered-route').dataset.key=routeKey;}
  $('route-heading').querySelector('small').textContent=model.farming?'SALVAGE RUN':'NUMBERED ROUTE';
+ if(typeof refreshStageTravel==='function')refreshStageTravel();
  BrineRoute.paint($('route-art'),model.stage,model.best,model.state,BrineCombat.routes[model.route].name);
 }
 let selectedFont='Bangers';try{selectedFont=localStorage.getItem('brine-ui-font')||selectedFont}catch{};if(!['Bangers','Bungee','Barlow Condensed'].includes(selectedFont))selectedFont='Bangers';
