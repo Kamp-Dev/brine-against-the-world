@@ -13,7 +13,7 @@ $('training-show').onclick=()=>{if(model.journey.awaitingStart){model.journey.aw
 function badge(el,kind){if(!el)return;el.dataset.journeyBadge=kind||'';}
 function locked(el,id){const yes=!J.available(model,id);el.dataset.locked=String(yes);if(yes){el.disabled=true;el.title=J.requirement(id);el.setAttribute('aria-label',J.rules[id][0]+' locked. '+J.requirement(id));}return yes;}
 function refreshJourney(){if(!model.journey)return;if(journeySource!==model.journey){journeySource=model.journey;lessonKey='';manualKey='';trainingMinimized=false;}
- const l=J.scan(model),j=model.journey;$('training-show').textContent=j.awaitingStart?'START TRAINING':'SHOW ME';
+ const l=J.scan(model),j=model.journey;$('training-show').textContent=j.awaitingStart?'START TRAINING':'SHOW ME';$('training-skip').disabled=!!j.awaitingStart;
  for(const k of ['damage','shell','speed','scavenging','patch','tide']){const el=$('upgrade-'+k);if(locked(el,k)){el.querySelector('.stat').textContent=J.requirement(k);el.querySelector('.price').textContent='LOCKED';}badge(el,J.available(model,k)&&!j.seen.includes(k)?'NEW':'');}
  for(const k of ['scrap','repeater','lowtide']){if(locked($(k),k))$(k).querySelector('span').textContent=J.requirement(k);badge($(k),J.available(model,k)&&!j.seen.includes(k)?'NEW':'');}
  if(locked($('volley'),'volley')){setActionLabel('volley','3-SHOT VOLLEY','LOCKED · '+J.requirement('volley'));$('volley').dataset.ready=false;}
