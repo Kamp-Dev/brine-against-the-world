@@ -1,3 +1,4 @@
+const salvageLedger=new Image();salvageLedger.src='ui/salvage-ledger.png';
 // Scalable comic UI; character art and animations are unchanged.
 let harborTab='road',gearPage='weapons';
 function openHarbor(tab){harborTab=tab;$('drawer').hidden=tab==='road';$('drawer-title').textContent=tab==='guns'?'GEAR':tab==='kit'?'WORKSHOP':tab==='camp'?'HARBOR':tab.toUpperCase();for(const p of document.querySelectorAll('[data-panel]'))p.hidden=p.dataset.panel!==tab;for(const name of ['road','guns','kit','camp'])$('nav-'+name).setAttribute('aria-current',name===tab?'page':'false');refresh();}
@@ -26,7 +27,7 @@ function harborHUD(){
  const navIndex={road:0,guns:1,camp:2}[harborTab];if(navIndex!==undefined)highlightNavigationIcon(navIndex);
  for(const [x,w,name,hp,max] of [[8,132,'BRINE · LV '+model.level,model.playerHp,model.maxPlayerHp],[309,132,model.enemy.name.toUpperCase(),model.hp,model.maxHp]]){ticket(x,142,w,49);ink(name,x+11,148,13,dark,'left',false,w-22);healthBar(x+9,166,w-18,17,hp,max);ink(hp+' / '+max,x+w/2,168,13,cream,'center',false,w-24)}
  if(model.state==='fight'){ink(model.submerged?'BURROWED':model.guarded?'SHIELD UP':model.enemy.action.toUpperCase(),437,195,10,cream,'right')}
- ticket(8,675,434,35);ink('SALVAGE',19,684,17,dark);ink(model.gold.toLocaleString(),429,680,24,dark,'right',false,205);
+ if(salvageLedger.complete&&salvageLedger.naturalWidth){ctx.drawImage(salvageLedger,32/2048*salvageLedger.width,202/683*salvageLedger.height,1986/2048*salvageLedger.width,278/683*salvageLedger.height,8,675,434,38);ctx.fillStyle=cream;ctx.font='19px Bungee';ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillText(model.gold.toLocaleString(),421,695,166);ctx.textAlign='left';}else{ticket(8,675,434,38);ink('SALVAGE',19,684,17,dark);ink(model.gold.toLocaleString(),429,680,24,dark,'right',false,205);}
  if(model.paused){ticket(153,194,144,22);ink('PAUSED · CAMP TO RESUME',225,200,9,dark,'center')}
 }
 function setActionLabel(id,title,detail){$(id).querySelector('strong').textContent=title;$(id).querySelector('small').textContent=detail;}

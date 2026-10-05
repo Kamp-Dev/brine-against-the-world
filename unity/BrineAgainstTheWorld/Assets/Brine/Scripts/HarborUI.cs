@@ -17,6 +17,7 @@ namespace BrineGame {
   bool Button(string label,float x,float y,float w,float h,bool orange=false){Fill(x,y,w,h,Dark);Fill(x+2,y+2,w-4,h-4,orange?Orange:Teal);Text(label,x+4,y+3,w-8,h-6,14,Cream,TextAnchor.MiddleCenter);return Hot(x,y,w,h,label);}
   void Health(float x,string name,int hp,int max){Ticket(x,142,132,49);Text(name,x+9,146,114,19,13);Fill(x+9,166,114,17,Dark);Fill(x+11,168,110,13,Teal);Fill(x+11,168,110*Mathf.Clamp01(hp/(float)Math.Max(1,max)),13,Orange);Text(hp+" / "+max,x+11,167,110,16,12,Cream,TextAnchor.MiddleCenter);}
 
+  Texture2D salvageLedger,objectiveSign;
   Texture2D approvedRoute,liveRoute;Font routeFont;
   void RouteCut(Texture2D tex,Rect source,Rect dest){float scale=440f/1984;GUI.DrawTextureWithTexCoords(new Rect(5+(dest.x-32)*scale,4+(dest.y-45)*scale,dest.width*scale,dest.height*scale),tex,new Rect(source.x/2048,1-(source.y+source.height)/683,source.width/2048,source.height/683));}
   void RouteText(string value,float cx,float cy,float width,string color,int size=150){float scale=440f/1984;var st=new GUIStyle{font=routeFont!=null?routeFont:impact,fontSize=Mathf.RoundToInt(size*scale),alignment=TextAnchor.MiddleCenter};st.normal.textColor=C(color);GUI.Label(new Rect(5+(cx-width/2-32)*scale,4+(cy-95-45)*scale,width*scale,190*scale),value,st);}
@@ -41,7 +42,7 @@ namespace BrineGame {
    GUI.enabled=volley;if(ActionCard("3-SHOT VOLLEY",volley?"READY - FIRE":m.UltimateActive?"MELEE ACTIVE":m.Charge>=100?"NEXT BATTLE":"CHARGING "+m.Charge+"%",232,true,volley,m.Charge))Act(()=>m.Volley());GUI.enabled=true;
    Ticket(9,437,164,114);Text("EQUIPPED WEAPON",17,443,147,13,9,Teal);bool blade=m.UltimateActive&&m.SelectedForm=="samurai";Text(blade?"BREAKWATER":m.Equipped.name.ToUpper(),17,458,147,24,22);GUI.DrawTexture(new Rect(18,484,140,43),blade?sword:guns[m.Weapon],ScaleMode.ScaleToFit);if(Button("SWAP",109,526,55,19))tab="gear";
    DrawFormCard();
-   DrawUpgrades();Ticket(8,675,434,35);Text("SALVAGE",19,680,160,26,20);Text(m.Gold.ToString("N0"),210,678,219,28,24,Dark,TextAnchor.MiddleRight);
+   DrawUpgrades();if(salvageLedger==null)salvageLedger=Resources.Load<Texture2D>("ui/salvage-ledger");if(salvageLedger!=null){GUI.DrawTextureWithTexCoords(new Rect(8,675,434,38),salvageLedger,new Rect(32f/2048,1-480f/683,1986f/2048,278f/683));Text(m.Gold.ToString("N0"),255,681,166,26,22,Cream,TextAnchor.MiddleRight);}else{Ticket(8,675,434,38);Text("SALVAGE",19,680,160,26,20);Text(m.Gold.ToString("N0"),210,678,219,28,24,Dark,TextAnchor.MiddleRight);}
    GUI.DrawTextureWithTexCoords(new Rect(0,716,450,84),plate,new Rect(0,0,1,84f/800));
    string[] tabs={"road","gear","camp"};for(int i=0;i<3;i++){if(Hot(5+i*149,723,140,73,tabs[i])){tab=tabs[i];menuScroll=Vector2.zero;}if(tab==tabs[i])HighlightNavigation(i);}
    if(m.Paused){Ticket(153,194,144,22);Text("PAUSED / CAMP TO RESUME",153,196,144,18,9,Dark,TextAnchor.MiddleCenter);}
