@@ -12,7 +12,7 @@ comicToast.onfocusin=()=>comicPaused=true;comicToast.onfocusout=()=>{comicPaused
 function refreshComicNotifications(){
  if(!model.progress)return;
  if(comicSource!==model.progress){comicSource=model.progress;comicQueue.length=0;dismissComic();}
- const {events,available}=comicTracker.scan(model.progress);comicReady=available;
+ const result=comicTracker.scan(model.progress),allowed=e=>e.tab!=='contracts'||typeof BrineJourney==='undefined'||BrineJourney.available(model,'contracts');const events=result.events.filter(allowed),available=result.available.filter(allowed);comicReady=available;
  comicQueue.push(...events);
  // A collected reward must not leave a stale collection prompt in the queue.
  for(let i=comicQueue.length-1;i>=0;i--)if(comicQueue[i].collect&&!available.some(x=>x.id===comicQueue[i].id))comicQueue.splice(i,1);

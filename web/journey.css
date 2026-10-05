@@ -1,0 +1,19 @@
+[data-locked="true"]{filter:saturate(.2);opacity:.75!important}
+.upgrade-card[data-locked="true"] .rank-meter{visibility:hidden}
+.upgrade-card[data-locked="true"] .stat{font-size:2.1cqw}
+#progress-tabs button,#progress-content button{position:relative}
+[data-journey-badge]:not([data-journey-badge=""])::after{content:attr(data-journey-badge);position:absolute;right:3px;top:-5px;z-index:8;background:#f08b74;color:#082f38;border:2px solid #082f38;box-shadow:0 1px 0 #f1e2be;padding:1px 5px;font:700 13px 'Barlow Condensed',sans-serif;line-height:16px;border-radius:3px;pointer-events:none}
+.nav[data-journey-badge="!"]::after{right:12%;top:8%;font-size:22px;border-radius:50%;width:22px;height:22px;text-align:center;line-height:22px}
+#field-training{position:absolute;z-index:18;left:5%;right:5%;top:calc(52cqw + var(--battle-extra) * .3);padding:8px 10px;background:#f1e2be;color:#092329;border:3px solid #092329;box-shadow:3px 3px 0 #be572e;font:600 clamp(12px,2.8cqw,16px) 'Barlow Condensed',sans-serif}
+#field-training[hidden]{display:none}
+#field-training>div{display:flex;justify-content:space-between;align-items:center}
+#field-training strong{font-family:var(--comic);font-size:clamp(16px,4cqw,23px)}
+#field-training p{margin:4px 0 7px}
+#field-training button{border:1px solid #092329;background:#174952;color:#f1e2be;padding:4px 8px;font:700 12px 'Barlow Condensed',sans-serif;min-height:28px}
+#field-training #training-skip{background:transparent;color:#092329;margin-left:8px}
+#field-training #training-hide{background:transparent;color:#092329;font-size:20px;padding:0 6px}
+.training-target{outline:3px solid #f08b74!important;outline-offset:2px}
+#field-manual{width:100%;margin-bottom:8px;background:#f1e2be;color:#092329;border:2px solid #092329;font-family:var(--comic);padding:8px}
+#manual-content{margin-bottom:12px}
+
+.task-ready{display:inline-block;background:#f08b74;border:2px solid #092329;border-radius:50%;padding:0 7px;color:#092329}
