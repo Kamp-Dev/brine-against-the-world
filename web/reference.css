@@ -111,3 +111,4 @@
 .ref-xp{height:.75cqw;border:0;border-radius:.3cqw;margin-top:.3cqw}
 #reference-header #deck-tools{top:.5cqw;height:12.5cqw;background-size:476% auto;background-position:right center}
 .ref-health{width:28%}.ref-health>strong{font-size:3cqw}.ref-hp{height:3.1cqw}.ref-hp b{font-size:2.7cqw}#ref-xp-text{font-size:2.2cqw}
+#form-status{position:absolute;top:43cqw;right:3%;max-width:66%;z-index:4;background:#123b40e8;color:#fff0cd;padding:.7cqw 1cqw;border-left:.5cqw solid #ed7953;font:700 2.1cqw 'Barlow Condensed';pointer-events:none}

@@ -5,7 +5,7 @@ const sample=m=>scope.sampleStepShell(m,data),origin={x:190,y:500};
 for(const hz of [30,60,120]){
  const m=new Encounter(settings);m.state='fight';m.enemyX=330;m.hp=m.maxHp=100000;m.playerHp=100000;m.enemyCycle=-10000;m.ultimateCharge=100;
  assert(m.ultimate());let firstHit=null,previousShow=false,swaps=0,previousHp=m.hp;
- for(let i=0;i<hz*10;i++){
+ for(let i=0;i<hz*22;i++){
   const s=sample(m);assert(s.frame>=0&&s.frame<s.clip.frames);assert(Number.isFinite(s.squash));
   if(s.show!==previousShow){assert(s.cover>.8,'model swap hidden by local burst');swaps++;previousShow=s.show;}
   const phase=m.ultimatePhase;m.tick(1/hz,origin);
@@ -63,7 +63,7 @@ for(const hz of [30,60,120]){
   assert.equal(m.meleeAdvance,held,'Step Shell holds its defeated-enemy position');assert(!m.meleeWalking,'waiting does not play the walk');const s=sample(m);if(!(m.meleeCycle>0&&m.meleeCycle<m.meleeDuration)){assert.equal(s.clip.kind,'walk');waitingFrames.add(s.frame);animated=true;}assert.equal(s.hop,undefined,'no synthetic vertical hop');if(m.state==='travel')traveled=true;
  }}
  assert(animated&&traveled&&waitingFrames.size>10,'approved walk loops in place while a new enemy enters');m.paused=true;const before=sample(m).frame;m.tick(.1,origin);assert.equal(sample(m).frame,before,'pause freezes walk');m.paused=false;
- for(let i=0;i<hz*10;i++)m.tick(1/hz,origin);assert.equal(m.ultimatePhase,'normal');assert.equal(m.meleeAdvance,0,'normal form returns to its lane');assert.equal(sample(m).hop,undefined);
+ for(let i=0;i<hz*55;i++)m.tick(1/hz,origin);assert.equal(m.ultimatePhase,'normal');assert.equal(m.meleeAdvance,0,'normal form returns to its lane');assert.equal(sample(m).hop,undefined);
 }
 console.log('PASS: Step Shell holds position and loops the approved walk between enemies; pause and Ultimate expiry behave correctly.');
 
@@ -82,3 +82,5 @@ for(const hz of [30,60,120]){
  m.paused=true;before=m.distance;m.tick(.1,origin);assert.equal(m.distance,before,'pause stops scenery');m.paused=false;m.state='fight';m.meleeIdleActive=false;m.meleeCycle=.2;before=m.distance;m.tick(1/hz,origin);assert.equal(m.distance,before,'scenery stops for punches');
 }
 console.log('PASS: scenery starts with waiting shuffle, keeps a steady travel pace, and stops for pause/combat.');
+
+

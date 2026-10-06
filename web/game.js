@@ -16,7 +16,7 @@ function refresh(){
  const canVolley=!model.ultimateActive&&model.charge>=100&&model.state==='fight'&&!model.paused;$('volley').disabled=!canVolley;$('volley').dataset.ready=canVolley;setActionLabel('volley','3-SHOT VOLLEY',(model.state==='defeat'?'REFIT FIRST':model.paused?'PAUSED':canVolley?'READY — FIRE':model.charge>=100?'NEXT BATTLE':'CHARGING '+model.charge+'%'));$('volley').title='Hits charge three rapid shots. Fire when ready during battle.';
  $('farm').disabled=model.ultimateActive||model.best===0||model.state==='defeat';setActionText('farm',model.state==='defeat'?'ROAD BLOCKED\nREFIT FIRST':model.farming?'PUSH FORWARD\nSTRETCH '+(model.best+1):model.best===0?'GATHER SALVAGE\nCLEAR STRETCH 1':'GATHER SALVAGE\nREPEAT ROAD');$('farm').dataset.ready=!$('farm').disabled;$('farm').title=model.farming?'Leave farming and challenge the next uncleared stretch':'Repeat cleared ground to earn salvage';
  $('retry').hidden=model.state!=='defeat';$('pause').textContent=model.paused?'Resume':'Pause';$('save-note').textContent=saveNote;
- const ult=$('ultimate');ult.disabled=model.paused||model.state!=='fight'||model.ultimateCharge<100||model.ultimateActive;ult.setAttribute('aria-label',model.ultimateActive?formName()+' active, '+model.ultimateSeconds+' seconds remaining':formName()+' melee Ultimate, '+model.ultimateCharge+'% charged');
+ const ult=$('ultimate');ult.disabled=model.paused||model.state==='defeat'||(model.ultimateActive?model.ultimatePhase!=='melee':model.state!=='fight'||model.ultimateCharge<100||model.lowTideTime>0);ult.setAttribute('aria-label',model.ultimateActive?formName()+' active, '+model.ultimateSeconds+' seconds remaining':formName()+' melee Ultimate, '+model.ultimateCharge+'% charged');
  const quick=$('ultimate-quick');quick.disabled=ult.disabled;quick.dataset.ready=!ult.disabled;quick.textContent=model.ultimateActive?'MELEE · '+model.ultimateSeconds+'s':model.ultimateCharge>=100?formName()+' · '+(model.state==='fight'?'UNLEASH':'READY'):formName()+' · '+model.ultimateCharge+'%';
  updateHDControls();
  $('workshop').disabled=model.modRank>=3||model.gold<model.modCost();$('workshop').textContent=model.modRank>=3?'ATTACHMENT MAXED':equipped().name+' attachment '+(model.modRank+1)+'/3 · '+model.modCost()+' salvage';
@@ -87,7 +87,7 @@ function effects(){
 
  for(const s of model.enemyShots){if(s.kind==='slam'||s.kind==='burrow'){ctx.strokeStyle=s.kind==='slam'?'#b65332':'#746348';ctx.lineWidth=5;ctx.beginPath();ctx.arc(s.x,570,s.kind==='slam'?22:13,Math.PI,Math.PI*2);ctx.stroke();}else{ctx.save();ctx.translate(s.x,s.y);ctx.rotate(model.time*8);path([[-6,0],[0,-5],[6,1],[0,5]],s.kind==='burst'?'#426d68':'#ae6a48');ctx.restore();}}
 
- for(const s of model.shots){const travel=s.x-s.startX;ctx.save();ctx.translate(s.x,s.y);
+ for(const s of model.shots){const travel=s.x-s.startX;ctx.save();ctx.translate(s.x,s.y);if(model.lowTideTime>0){ctx.globalAlpha=.65;ctx.scale(.8,.8);}
   if(['repeater','riveter','harpoon'].includes(s.weapon)){ctx.strokeStyle='#244f54';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(-Math.min(65,travel),0);ctx.lineTo(0,0);ctx.stroke();ctx.strokeStyle='#a4ddd0';ctx.lineWidth=2;ctx.stroke()}
   else if(['lowtide','boiler'].includes(s.weapon)){for(let i=-2;i<=2;i++){const y=i*Math.min(7,travel*.04);path([[-8,y-2],[3,y-2],[6,y+1],[-5,y+3]],i%2?'#c86a3c':'#f4d695','#322d26',1)}}
   else path([[-9,-3],[2,-3],[6,0],[2,3],[-9,3]],'#f5e1b1','#302f24',2);ctx.restore();
@@ -111,6 +111,7 @@ function effects(){
   }
   if(e.type!=='hit'&&e.type!=='flash'&&e.type!=='repair'){ctx.textAlign='center';ctx.fillStyle=e.type==='reward'?'#203d2b':'#793319';ctx.font='bold 16px system-ui';ctx.fillText(e.type==='reward'?'+'+e.damage+' salvage':e.type==='repair'?'+'+e.damage+' repair':e.type==='miss'?'BURROWED':'−'+e.damage,e.x,e.y-28-(1-e.life)*18);ctx.textAlign='left'}
  }
+ if(model.lowTideTime>0){ctx.save();for(let n=0;n<4;n++){const t=(model.time*.65+n*.25)%1;ctx.globalAlpha=(1-t)*.35;ctx.fillStyle='#e8dec3';ctx.beginPath();ctx.ellipse(124+model.meleeAdvance+Math.sin(t*6+n)*13,480-t*65,4+t*8,3+t*7,0,0,7);ctx.fill();}ctx.restore();}
  drawComicDamageNumbers(ctx,model.effects,BrineTideglass.format);
 }
 function render(t){if(ready&&last&&t-last<1000/BrineDisplay.fps-1){requestAnimationFrame(render);return;}const dt=last?Math.min((t-last)/1000,.1):0;last=t;if(ready){origin=muzzle(blendedPose().grip);origin.x+=model.meleeAdvance||0;if(!document.hidden)BrineSpeed.advance(dt,model,()=>{const p=muzzle(blendedPose().grip);p.x+=model.meleeAdvance||0;return p;});if(typeof renderReferenceBattle==='function'){renderReferenceBattle();}else{harborBackdrop();ctx.save();ctx.beginPath();ctx.rect(5,52,440,382+BrineDisplay.extra);ctx.clip();ctx.translate(0,-143+BrineDisplay.extra);enemy();actor();effects();ctx.restore();harborHUD();}refresh()}requestAnimationFrame(render)}

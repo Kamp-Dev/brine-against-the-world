@@ -1,0 +1,13 @@
+Ride the Tide — browser balance
+Step Shell: 18s start, +3s per kill, 22s remaining-time ceiling, 45s total lifetime.
+Samurai: 14s start, +5s per kill, 20s remaining-time ceiling, 35s total lifetime.
+Both: +3s at each boss 75/50/25% health milestone, once per encounter even if healed.
+Entry/exit transformations retain their 0.4s transitions. Extensions do not restart entry.
+Strain grows 0.6/s for Step Shell and 1/s for Samurai. Recovery is 5–10s based on Strain.
+Low Tide: gun damage x0.6, incoming damage x1.25, no ultimate charge accumulation.
+Tap an active melee form to withdraw: normal exit animation, half recovery.
+Steam and lighter projectiles indicate recovery. Timer and penalties remain visible.
+No gameplay pauses or hit-stop introduced. Save/reload preserves recovery debt; time away
+counts toward recovery. Unity has not been ported in this browser pass.
+Tests: all 23 suites, including transitions, timing, extension ceilings, healing exploit
+prevention, early withdrawal, recovery damage/charge behavior and save/load.

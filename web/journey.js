@@ -14,7 +14,7 @@ const lessons=[
  ['shell','Protect your shell','Shell raises maximum health and repairs some damage immediately. Buy one rank.','#upgrade-shell',m=>m.upgrades.shell>0],
  ['speed','Keep firing','Speed shortens the wait between shots. Buy a rank to try it.','#upgrade-speed',m=>m.upgrades.speed>0],
  ['volley','Three shots, one tap','Hits charge Volley. When READY, tap it during a battle to fire three quick shots.','#volley',m=>m.journey.actions.includes('volley')],
- ['step-shell','Meet Step Shell','Hits charge your form. Tap when READY during battle for heavy melee and 75% damage protection.','#ultimate',m=>m.journey.actions.includes('step-shell')],
+ ['step-shell','Meet Step Shell','Step Shell lasts 18 seconds with 75% protection. Kills add 3s; boss quarters add 3s. Strain causes Low Tide: weaker guns, more damage taken, no form charge. Tap the active form to withdraw for half recovery.','#ultimate',m=>m.journey.actions.includes('step-shell')],
  ['workshop','Reopen the Workshop','Open Camp, restore the Workshop with boss materials, then fit attachments in Gear.','#nav-camp',m=>m.progress.build[0]>0],
  ['repeater','A different kind of shot','Open Gear and equip Tideline. Your weapons keep their own attachments and mastery.','#nav-guns',m=>m.journey.actions.includes('repeater')],
  ['contracts','Work worth claiming','Open Camp > Contracts. Track a job, finish it, then claim its cargo. The ! stays until collected.','#nav-camp',m=>m.progress.completed>0],
@@ -23,7 +23,7 @@ const lessons=[
  ['tide','Charge your form faster','Tide Charge adds more form charge to each successful hit. Swipe the upgrades to find it.','#upgrade-tide',m=>m.upgrades.tide>0],
  ['lowtide','Try the heavy gun','Equip Low Tide in Gear. Its slower shots make a larger impact.','#nav-guns',m=>m.journey.actions.includes('lowtide')],
  ['ferry','Send out a crew','Restore Ferry Dock in Camp, then open Expeditions and send a crew. They work while you are away.','#nav-camp',m=>m.journey.actions.includes('dispatch')],
- ['samurai','Learn the blade','Swipe the form card left to select Samurai, then activate it when READY during battle.','#form-card',m=>m.journey.actions.includes('samurai')],
+ ['samurai','Learn the blade','Samurai starts at 14s and earns 5s per kill. Boss quarters add 3s. It builds Strain faster; withdraw early to halve Low Tide recovery.','#form-card',m=>m.journey.actions.includes('samurai')],
  ['lighthouse','Choose your specialty','Restore the Lighthouse in Camp. After 12 melee contacts, choose a form specialization.','#nav-camp',m=>m.progress.formPath.some(Boolean)]
 ].map(([id,title,text,target,complete])=>({id,title,text,target,complete}));
 function active(m){const j=m.journey;if(j.replay)return lessons.find(l=>l.id===j.replay&&available(m,l.id));return lessons.find(l=>available(m,l.id)&&!j.done.includes(l.id));}
