@@ -131,3 +131,10 @@
 #field-training #training-hide{font-size:max(24px,5cqw);min-width:max(44px,8cqw);flex-shrink:0}
 #field-training #training-skip{margin-left:2cqw}
 #campaign-banner[data-ready="true"]{min-height:max(44px,6cqw);top:calc(77cqw - max(44px,6cqw));}
+
+#campaign-banner[data-ready="true"]{display:flex;align-items:center;justify-content:center;gap:1.2cqw;padding:.3cqw 1.5cqw}
+#campaign-banner[data-ready="true"]:before{content:'';display:block;flex:0 0 auto;width:max(32px,6cqw);height:max(32px,6cqw);background:url('ui/cargo-crate-v1.png') center/contain no-repeat}
+#campaign-banner[data-ready="true"]:before{transform-origin:50% 85%;animation:cargo-crate-shake 3.2s ease-in-out infinite}
+@keyframes cargo-crate-shake{0%,22%,100%{transform:translateX(0) rotate(0)}4%,12%{transform:translateX(-1px) rotate(-7deg)}8%,16%{transform:translateX(1px) rotate(7deg)}19%{transform:rotate(-3deg)}}
+@keyframes cargo-crate-nudge{0%,15%,100%{transform:rotate(0)}5%{transform:rotate(-2deg)}10%{transform:rotate(2deg)}}
+@media(prefers-reduced-motion:reduce){#campaign-banner[data-ready="true"]:before{animation:cargo-crate-nudge 4s ease-in-out infinite}}
