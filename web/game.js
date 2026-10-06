@@ -6,7 +6,7 @@ $('form-choice').onchange=()=>{model.chooseForm($('form-choice').value);persist(
 function refresh(){
  refreshTicketControls();
  $('form-choice').value=model.selectedForm;$('form-choice').disabled=model.ultimateActive;
- for(const id of ['scrap','repeater','lowtide']){$(id).setAttribute('aria-pressed',model.weapon===id);$(id).disabled=model.best<model.settings.weapons.find(w=>w.id===id).unlock}
+ for(const id of model.settings.weapons.map(w=>w.id)){$(id).setAttribute('aria-pressed',model.weapon===id);$(id).disabled=model.best<model.settings.weapons.find(w=>w.id===id).unlock}
  $('stats').textContent='Salvage '+model.gold+' · Cleared '+model.best+' · Level '+model.level;
  $('status').textContent=model.paused?'Paused.':model.state==='defeat'?'Shell cracked. Your salvage and upgrades are safe. Refit to try again.':model.state==='reward'?'Road clear. +'+model.lastReward+' salvage.':model.farming?'Gathering salvage on cleared ground.':'Pushing toward stretch '+model.stage+(model.boss?' — boss ahead.':'.');
  for(const w of model.settings.weapons)$(w.id).querySelector('span').textContent=model.best<w.unlock?'Clear stretch '+w.unlock+' to unlock':w.description;
@@ -25,8 +25,8 @@ function refresh(){
  $('loadout').textContent=model.damage+' damage · '+model.interval.toFixed(2)+'s between shots';
  $('defeat-refit').hidden=model.state!=='defeat'||harborTab!=='road';$('live-summary').textContent='Stretch '+model.stage+', '+equipped().name+', health '+model.playerHp+' of '+model.maxPlayerHp+', '+model.gold+' salvage';
 }
-for(const id of ['scrap','repeater','lowtide'])$(id).onclick=()=>{model.equip(id);persist();refresh()};
-for(const kind of ['damage','shell','speed','scavenging','patch','tide'])$('upgrade-'+kind).onclick=()=>{model.buy(kind);persist();refresh()};
+for(const id of model.settings.weapons.map(w=>w.id))$(id).onclick=()=>{model.equip(id);persist();refresh()};
+for(const kind of Object.keys(model.upgrades))$('upgrade-'+kind).onclick=()=>{model.buy(kind);persist();refresh()};
 $('pause').onclick=()=>{model.paused=!model.paused;refresh()};
 $('retry').onclick=()=>{model.retry();persist();refresh()};
 $('farm').onclick=()=>{model.toggleFarm();persist();refresh()};
@@ -88,17 +88,21 @@ function effects(){
  for(const s of model.enemyShots){if(s.kind==='slam'||s.kind==='burrow'){ctx.strokeStyle=s.kind==='slam'?'#b65332':'#746348';ctx.lineWidth=5;ctx.beginPath();ctx.arc(s.x,570,s.kind==='slam'?22:13,Math.PI,Math.PI*2);ctx.stroke();}else{ctx.save();ctx.translate(s.x,s.y);ctx.rotate(model.time*8);path([[-6,0],[0,-5],[6,1],[0,5]],s.kind==='burst'?'#426d68':'#ae6a48');ctx.restore();}}
 
  for(const s of model.shots){const travel=s.x-s.startX;ctx.save();ctx.translate(s.x,s.y);
-  if(s.weapon==='repeater'){ctx.strokeStyle='#244f54';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(-Math.min(65,travel),0);ctx.lineTo(0,0);ctx.stroke();ctx.strokeStyle='#a4ddd0';ctx.lineWidth=2;ctx.stroke()}
-  else if(s.weapon==='lowtide'){for(let i=-2;i<=2;i++){const y=i*Math.min(7,travel*.04);path([[-8,y-2],[3,y-2],[6,y+1],[-5,y+3]],i%2?'#c86a3c':'#f4d695','#322d26',1)}}
+  if(['repeater','riveter','harpoon'].includes(s.weapon)){ctx.strokeStyle='#244f54';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(-Math.min(65,travel),0);ctx.lineTo(0,0);ctx.stroke();ctx.strokeStyle='#a4ddd0';ctx.lineWidth=2;ctx.stroke()}
+  else if(['lowtide','boiler'].includes(s.weapon)){for(let i=-2;i<=2;i++){const y=i*Math.min(7,travel*.04);path([[-8,y-2],[3,y-2],[6,y+1],[-5,y+3]],i%2?'#c86a3c':'#f4d695','#322d26',1)}}
   else path([[-9,-3],[2,-3],[6,0],[2,3],[-9,3]],'#f5e1b1','#302f24',2);ctx.restore();
  }
  for(const e of model.effects){
-  if(e.weapon!=='melee'&&(e.type==='hit'||e.type==='flash')){const t=1-e.life/e.duration,impact=e.type==='hit',k=impact?1:.42;ctx.save();ctx.translate(e.x,e.y);ctx.scale(k,k);ctx.globalAlpha=Math.max(0,1-t);
-   if(e.weapon==='lowtide'||e.weapon==='melee'){
+  if(e.weapon!=='melee'&&(e.type==='hit'||e.type==='flash')){const t=1-e.life/e.duration,impact=e.type==='hit',k=impact?Math.min(2,e.power||1):.42;ctx.save();ctx.translate(e.x,e.y);ctx.scale(k,k);ctx.globalAlpha=Math.max(0,1-t);
+   if(e.weapon==='boiler'){
+    const points=Array.from({length:20},(_,i)=>{const a=i*Math.PI/10,r=(i%2?12:28)*(1+t);return [Math.cos(a)*r,Math.sin(a)*r]});path(points,'#f3d798','#172d30',3);ctx.rotate(.15);path(points.map(([x,y])=>[x*.55,y*.55]),'#d46a43','#172d30',2);
+   }else if(e.weapon==='harpoon'){
+    for(let i=0;i<6;i++){ctx.save();ctx.rotate(i*Math.PI/3);path([[6+t*12,0],[20+t*24,-3],[38+t*30,0],[20+t*24,3]],'#f08b74','#172d30',2);ctx.restore();}
+   }else if(['lowtide','melee'].includes(e.weapon)){
     for(let i=0;i<5;i++){const angle=i*1.256,r=8+t*23;ctx.fillStyle=i%2?'#a99674':'#e3c48c';ctx.strokeStyle='#514938';ctx.lineWidth=2;ctx.beginPath();ctx.arc(Math.cos(angle)*r,Math.sin(angle)*r,5+t*10,0,7);ctx.fill();ctx.stroke()}
     ctx.strokeStyle='#c66036';ctx.lineWidth=4*(1-t)+1;ctx.beginPath();ctx.arc(0,0,4+t*39,0,7);ctx.stroke();
     for(let i=0;i<9;i++){let angle=i*2.4,r=10+t*46;ctx.fillStyle='#5b4b32';ctx.fillRect(Math.cos(angle)*r,Math.sin(angle)*r+t*t*20,4,3)}
-   }else if(e.weapon==='repeater'){
+   }else if(['repeater','riveter','harpoon'].includes(e.weapon)){
     ctx.strokeStyle='#69aaa2';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(0,0,3+t*14,7+t*27,0,0,7);ctx.stroke();
     for(let i=0;i<6;i++){const angle=i*Math.PI/3,r=5+t*32;path([[Math.cos(angle)*r,Math.sin(angle)*r],[Math.cos(angle)*r+10,Math.sin(angle)*r-2],[Math.cos(angle)*r+15,Math.sin(angle)*r],[Math.cos(angle)*r+10,Math.sin(angle)*r+2]],'#c2e5d5','#285358',1)}
    }else{
@@ -117,11 +121,11 @@ function hud(){
  if(model.state==='defeat'||model.paused){ctx.fillStyle='#17221ee8';ctx.fillRect(26,237,398,122);ctx.fillStyle='#f6ead2';ctx.font='bold 24px system-ui';ctx.fillText(model.paused?'TAKE A BREATHER.':'SHELL CRACKED.',46,278);ctx.font='13px system-ui';ctx.fillText(model.paused?'Resume when you’re ready.':'Refit below. Your upgrades stay with you.',46,311)}
 }
 const loader=BrineLoading;
-Promise.all(['animation.json','gameplay.json','enemies/bounds.json','parallax.json','step-shell.json','enemy-motion.json','samurai/animation.json'].map(url=>loader.json(url+'?v=comic-hd-2'))).then(async([d,s,b,parallax,ultimate,motion,samurai])=>{
- enemyMotionConfig=motion;stepShellConfig=ultimate;samuraiConfig=samurai;config=d;enemyBounds=b;parallaxData=parallax;model.settings=s;model.reset();try{model.load(JSON.parse(localStorage.getItem(SAVE_KEY)))}catch{saveNote='Could not read the saved game. This session starts fresh.'}
+Promise.all(['animation.json','gameplay.json','enemies/bounds.json','parallax.json','step-shell.json','enemy-motion.json','samurai/animation.json'].map(url=>loader.json(url+'?v=forge-24'))).then(async([d,s,b,parallax,ultimate,motion,samurai])=>{
+ s=BrineTideglass.settings(s);enemyMotionConfig=motion;stepShellConfig=ultimate;samuraiConfig=samurai;config=d;enemyBounds=b;parallaxData=parallax;model.settings=s;model.reset();try{model.load(JSON.parse(localStorage.getItem(SAVE_KEY)))}catch{saveNote='Could not read the saved game. This session starts fresh.'}
  showOffline();persist();
  const pending=[loader.image(walk,d.walk.sheet),loader.image(fire,d.fire.sheet),loader.image(harborPlate,'ui/ticket-board.png'),loader.image(harborClean,'ui/harbor-clean.png')];
- for(const w of s.weapons)pending.push(loader.image(weaponImages[w.id]=new Image(),'weapons/'+w.art+'.png'));
+ for(const w of s.weapons)pending.push(loader.image(weaponImages[w.id]=new Image(),w.image||'weapons/'+w.art+'.png'));
  for(const enemy of BrineCombat.enemies)pending.push(loader.image(enemyImages[enemy.art]=new Image(),'enemies/'+enemy.art+'.png?v=comic-hd-2'));
  for(const kind of ['punch','walk'])pending.push(loader.image(stepShellImages[kind],stepShellConfig[kind].sheet+'?v=comic-hd-2'));
  for(const l of parallax.layers)pending.push(loader.image(sceneryImages[l.image]=new Image(),'scenery/'+l.image+'.png'));

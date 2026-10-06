@@ -156,3 +156,14 @@ html{min-height:100%;background:#061a1d}body{min-height:100vh;min-height:100dvh;
 #battle-speed{position:absolute;z-index:4;top:48cqw;left:3%;width:7cqw;height:7cqw;min-height:0;border:2px solid #092329;border-radius:3px;background:#f1e2be;color:#092329;font:3cqw var(--comic);padding:0;box-shadow:1px 2px 0 #092329}
 #battle-speed[data-fast="true"]{background:#f08b74}
 #speed-choice{width:100%;min-height:36px;background:#f1e2be;color:#092329;font:inherit;border:2px solid #092329}
+
+/* Workshop expansion follows the existing painted harbor tickets. */
+.tideglass-bank{display:flex;gap:12px;align-items:center;background:#143f46;color:#f1e2be;border:3px solid #092329;padding:10px;box-shadow:3px 3px 0 #bb5d3e;margin:10px 3px 14px}
+.tideglass-bank>span{color:#f08b74;font-size:32px}.tideglass-bank strong,.tideglass-bank small{display:block}.tideglass-bank small{font-family:"Barlow Condensed",sans-serif;font-size:14px}
+#progress-content [data-forge-panel] .goal-card{border-radius:2px;border:2px solid #092329;border-left:6px solid #be593b;margin:12px 0;padding:12px}
+[data-forge-panel] button{min-height:40px;margin:5px 5px 0 0;white-space:normal}[data-forge-panel] select{font:inherit;background:#f1e2be;color:#092329;min-height:38px;border:2px solid #092329}
+#campaign-banner{position:absolute;top:48cqw;left:24%;width:72%;min-height:7cqw;z-index:4;background:#143f46;color:#f1e2be;border:2px solid #092329;font:2.7cqw var(--comic);padding:2px}
+#campaign-banner[hidden]{display:none}.weapons strong{overflow-wrap:anywhere}.weapons button img{object-fit:contain}
+
+#progress-tabs{display:flex;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;gap:5px}#progress-tabs button{flex:0 0 auto;padding:5px 12px!important;min-height:32px}#progress-tabs::-webkit-scrollbar{display:block;height:3px}#progress-tabs::-webkit-scrollbar-thumb{background:#bf6345}
+#weapon-card[data-long-name="true"] #weapon-title{font-size:2.65cqw;letter-spacing:-.04cqw}

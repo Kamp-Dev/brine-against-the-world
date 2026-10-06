@@ -9,8 +9,8 @@ for(const [id,form] of [['form-step','step-shell'],['form-samurai','samurai']])$
 function refreshTicketControls(){
  for(const [id,form] of [['form-step','step-shell'],['form-samurai','samurai']]){$(id).disabled=model.ultimateActive;$(id).setAttribute('aria-pressed',model.selectedForm===form)}
  $('weapon-list').hidden=false;$('gear-weapons').setAttribute('aria-pressed',true);
- const stats={damage:`${model.damage} → ${model.damage+4}`,shell:`${model.maxPlayerHp} → ${model.maxPlayerHp+25}`,speed:`${(1/model.interval).toFixed(1)} → ${(1/model.interval*(1+.08/(1+model.upgrades.speed*.08))).toFixed(1)}/s`,scavenging:`+${model.upgrades.scavenging*5}% → +${(model.upgrades.scavenging+1)*5}%`,patch:`${model.recoveryPercent}% → ${model.recoveryPercent+1}%`,tide:`${model.chargePerHit} → ${model.chargePerHit+1}`};
- const descriptions={damage:'Damage per hit',shell:'Maximum shell health',speed:'Shots per second',scavenging:'Bonus salvage from wins and away earnings',patch:'Maximum health restored after each win',tide:'Melee-form charge gained per successful hit'};
+ const stats=Object.fromEntries(Object.keys(model.upgrades).map(k=>[k,model.upgradePreview(k)]));
+ const descriptions={...Object.fromEntries(Object.entries(BrineTideglass.upgrades).map(([k,u])=>[k,u.description])),damage:'Damage per hit',shell:'Maximum shell health',speed:'Shots per second',scavenging:'Bonus salvage from wins and away earnings',patch:'Maximum health restored after each win',tide:'Melee-form charge gained per successful hit'};
  for(const k of Object.keys(stats)){const b=$('upgrade-'+k),max=model.upgrades[k]>=model.cap(k);b.disabled=max||model.gold<model.cost(k);const rank=Math.min(model.cap(k),Math.max(0,model.upgrades[k]));b.querySelector('.rank-meter i').style.width=(rank/model.cap(k)*100)+'%';b.querySelector('.rank-meter b').textContent=rank+' / '+model.cap(k);b.querySelector('.rank-meter').setAttribute('aria-label','Rank '+rank+' of '+model.cap(k));b.querySelector('.stat').textContent=max?'MAX':stats[k];b.querySelector('.price').textContent=max?'MAXED':model.cost(k).toLocaleString();b.querySelector('.sr-only').textContent=descriptions[k];b.title=descriptions[k]+' · rank '+model.upgrades[k]+' / '+model.cap(k);b.setAttribute('aria-label',b.title+(max?' · fully upgraded':' · '+model.cost(k)+' salvage'));}
 
 }
@@ -44,20 +44,21 @@ function updateHDControls(){
  const ult=$('ultimate');ult.dataset.ready=!ult.disabled;ult.dataset.active=model.ultimateActive;
  ult.querySelector('strong').textContent=model.ultimateActive?formName()+' ACTIVE':formName();ult.querySelector('small').textContent=model.ultimateActive?model.ultimateSeconds+'s REMAINING':model.paused?'PAUSED':model.ultimateCharge>=100?(model.state==='fight'?'READY — TAP TO TRANSFORM':'READY · NEXT BATTLE'):'CHARGING '+model.ultimateCharge+'%';ult.style.setProperty('--charge',(model.ultimateActive?Math.max(0,model.ultimateTime/8.8*100):model.ultimateCharge)+'%');
  const samurai=model.selectedForm==='samurai';const formArt='ui/'+(samurai?'samurai':'step-shell')+'-emblem.png';if($('ultimate-art').getAttribute('src')!==formArt)$('ultimate-art').src=formArt;$('ultimate-role').textContent=samurai?'SERIES SLASH / 75% GUARD':'HEAVY MELEE / 75% GUARD';$('form-dots').textContent=samurai?'○ ●':'● ○';$('form-swipe-hint').firstChild.textContent=model.ultimateActive?'FORM LOCKED · ':'SWIPE TO SELECT · ';
- const sword=model.ultimateActive&&model.selectedForm==='samurai';$('weapon-card').dataset.weapon=sword?'sword':'gun';const image=sword?'samurai/katana.png':'weapons/'+equipped().art+'.png';if($('weapon-preview').getAttribute('src')!==image)$('weapon-preview').src=image;$('weapon-title').textContent=sword?'BREAKWATER':equipped().name.toUpperCase();
- $('route-heading').querySelector('b').textContent=BrineCombat.routes[model.route].name.toUpperCase();
- const routeKey=[model.stage,model.best,model.state==='reward'||model.state==='lower'].join(':');
- if($('numbered-route').dataset.key!==routeKey){$('numbered-route').innerHTML=BrineRoute.routeMarkup(model.stage,model.best,model.state);$('numbered-route').dataset.key=routeKey;}
+ const sword=model.ultimateActive&&model.selectedForm==='samurai';$('weapon-card').dataset.weapon=sword?'sword':'gun';const image=sword?'samurai/katana.png':(equipped().image||'weapons/'+equipped().art+'.png');if($('weapon-preview').getAttribute('src')!==image)$('weapon-preview').src=image;$('weapon-title').textContent=sword?'BREAKWATER':equipped().name.toUpperCase();$('weapon-card').dataset.longName=equipped().name.length>9;
+ const run=model.forge?.run,routeBest=run?model.stage-(run.complete?0:1):model.best,routeName=run?BrineTideglass.campaigns[run.id].name:BrineCombat.routes[model.route].name;
+ $('route-heading').querySelector('b').textContent=routeName.toUpperCase();
+ const routeKey=[model.stage,routeBest,model.state==='reward'||model.state==='lower'].join(':');
+ if($('numbered-route').dataset.key!==routeKey){$('numbered-route').innerHTML=BrineRoute.routeMarkup(model.stage,routeBest,model.state);$('numbered-route').dataset.key=routeKey;}
  $('route-heading').querySelector('small').textContent=model.farming?'SALVAGE RUN':'NUMBERED ROUTE';
  if(typeof refreshStageTravel==='function')refreshStageTravel();
- BrineRoute.paint($('route-art'),model.stage,model.best,model.state,BrineCombat.routes[model.route].name);
+ BrineRoute.paint($('route-art'),model.stage,routeBest,model.state,routeName);
 }
 let selectedFont='Bangers';try{selectedFont=localStorage.getItem('brine-ui-font')||selectedFont}catch{};if(!['Bangers','Bungee','Barlow Condensed'].includes(selectedFont))selectedFont='Bangers';
 function applyFont(name){selectedFont=name;document.documentElement.dataset.font=name;document.documentElement.style.setProperty('--comic','"'+name+'"');$('font-choice').value=name;document.fonts.load('16px "'+name+'"');}
 $('font-choice').onchange=()=>{applyFont($('font-choice').value);try{localStorage.setItem('brine-ui-font',selectedFont)}catch{}};applyFont(selectedFont);
 const upgradeTrack=$('upgrade-track');
 function scrollUpgrades(direction){upgradeTrack.scrollBy({left:direction*upgradeTrack.clientWidth*.9,behavior:'smooth'})}
-function updateUpgradePaging(){const step=upgradeTrack.firstElementChild.offsetWidth+upgradeTrack.clientWidth*.02;const first=Math.round(upgradeTrack.scrollLeft/step)+1;$('upgrade-position').textContent='SWIPE UPGRADES · '+first+'–'+Math.min(6,first+2)+' OF 6';document.querySelector('.swipe-track i').style.transform='translateX('+(upgradeTrack.scrollLeft/Math.max(1,upgradeTrack.scrollWidth-upgradeTrack.clientWidth)*100)+'%)';}
+function updateUpgradePaging(){const step=upgradeTrack.firstElementChild.offsetWidth+upgradeTrack.clientWidth*.02;const first=Math.round(upgradeTrack.scrollLeft/step)+1;$('upgrade-position').textContent='SWIPE UPGRADES · '+first+'–'+Math.min(upgradeTrack.children.length,first+2)+' OF '+upgradeTrack.children.length;document.querySelector('.swipe-track i').style.transform='translateX('+(upgradeTrack.scrollLeft/Math.max(1,upgradeTrack.scrollWidth-upgradeTrack.clientWidth)*100)+'%)';}
 upgradeTrack.addEventListener('scroll',updateUpgradePaging,{passive:true});window.addEventListener('resize',updateUpgradePaging);upgradeTrack.addEventListener('keydown',event=>{if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault();scrollUpgrades(event.key==='ArrowRight'?1:-1)}});
 let dragStart=null,suppressUpgradeClick=false;
 upgradeTrack.addEventListener('pointerdown',e=>{suppressUpgradeClick=false;if(e.pointerType==='touch'||e.button!==0)return;dragStart={x:e.clientX,left:upgradeTrack.scrollLeft,id:e.pointerId};});

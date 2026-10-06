@@ -1,0 +1,30 @@
+const assert=require('node:assert/strict');
+const {Encounter}=require('../web/combat-v3.js'),P=require('../web/progression.js'),J=require('../web/journey.js'),F=require('../web/tideglass.js'),settings=require('../web/gameplay.json');J.install(Encounter,P);F.install(Encounter,P,J);
+const origin={x:210,y:460};
+const m=new Encounter(settings);assert.equal(m.settings.weapons.length,6);assert.equal(Object.keys(m.upgrades).length,9);assert(!m.enterCampaign(0,1));assert(!m.buyOverclock('power'));assert(!m.equip('riveter'));
+m.best=210;m.xp=30*26**2;m.gold=1e7;m.upgrades.damage=18;m.upgrades.speed=17;m.upgrades.shell=19;m.playerHp=m.maxPlayerHp;
+const dps=[];for(const w of m.settings.weapons){assert(m.equip(w.id));dps.push([w.name,m.damage,+(m.damage/m.interval).toFixed(1)]);}console.log('Gun baseline at level 27 / Damage 18 / Speed 17:',JSON.stringify(dps));
+m.weapon='scrap';const before=m.damage;m.forge.tideglass=100;assert(m.buyOverclock('power'));assert.equal(m.forge.tideglass,70);assert(m.damage>before);assert(!m.buyOverclock('bad'));
+const oldGold=m.gold;m.upgrades.damage=29;assert(m.cost('damage')<50000);m.upgrades.damage=18;
+const base=m.save(1000),copy=new Encounter(settings);assert(copy.load(base,1000));assert.deepEqual(copy.save(1000),base,'Expanded saves roundtrip');
+const legacy=JSON.parse(JSON.stringify(base));delete legacy.forge;delete legacy.upgrades.focus;delete legacy.upgrades.rupture;delete legacy.upgrades.plating;const l=new Encounter(settings);assert(l.load(legacy,1000));assert(l.gold>legacy.gold,'Earlier expensive purchases credited');const credited=l.gold;l.load(l.save(1000),1000);assert.equal(l.gold,credited,'Credit is one-time');
+const bad=new Encounter(settings);bad.load({...base,forge:{version:1,tideglass:-5,overclock:{power:Infinity},cleared:[999,-2],run:{id:999}}},1000);assert.equal(bad.forge.tideglass,0);assert.equal(bad.forge.overclock.power,0);assert.equal(bad.forge.run,null);
+function forceWin(v){v.state='fight';v.hp=1;v.hitEnemy(999999,'melee',460);}
+const road={best:m.best,stage:m.stage,hp:m.playerHp,route:m.route,gold:m.gold};assert(m.enterCampaign(0,1));assert(!m.enterCampaign(0,2));assert(!m.chooseRoute(1));assert(!m.farmLevel(1));assert(!m.buyOverclock('power'));for(let i=0;i<5;i++){forceWin(m);if(i<4)m.startEncounter();}
+assert(m.forge.run.complete);assert(m.paused);assert.equal(m.best,road.best);assert.equal(m.gold,road.gold);assert.equal(m.forge.tideglass,70);
+const complete=m.save(1000),resume=new Encounter(settings);assert(resume.load(complete,1000));assert(resume.forge.run.complete);assert(resume.paused);assert(resume.claimCampaign());assert.equal(resume.forge.tideglass,120);assert.equal(resume.stage,road.stage);assert.equal(resume.playerHp,road.hp);assert(!resume.claimCampaign());assert.equal(resume.forge.cleared[0],1);assert.equal(resume.campaignReward(0,1).glass,8);assert(!resume.enterCampaign(0,3));assert(resume.enterCampaign(0,2));assert(resume.leaveCampaign());
+const active=new Encounter(settings);active.load(base,1000);assert(active.enterCampaign(1,1));forceWin(active);active.startEncounter();const savedRun=active.save(1000);const reloaded=new Encounter(settings);reloaded.load(savedRun,1000);assert.equal(reloaded.forge.run.wave,1);assert.equal(reloaded.stage,22);reloaded.state='defeat';reloaded.playerHp=0;assert(reloaded.retry());assert.equal(reloaded.forge.run.wave,0);assert.equal(reloaded.playerHp,reloaded.maxPlayerHp);assert(reloaded.leaveCampaign());
+function target(weapon,stage=1){const t=new Encounter(settings);t.best=210;t.stage=stage;t.weapon=weapon;t.startEncounter();t.state='fight';t.hp=t.maxHp=1e7;return t;}
+let t=target('riveter');for(let i=0;i<5;i++)t.hitEnemy(100,'riveter',460);assert.equal(t.maxHp-t.hp,600);
+t=target('boiler');for(let i=0;i<3;i++)t.hitEnemy(100,'boiler',460);assert.equal(t.maxHp-t.hp,500);
+t=target('harpoon',3);t.hitEnemy(100,'harpoon',460);assert.equal(t.maxHp-t.hp,100);
+t=target('harpoon',5);t.hitEnemy(100,'harpoon',460);assert.equal(t.maxHp-t.hp,135);
+t=target('scrap');t.upgrades.focus=20;t.upgrades.rupture=20;for(let i=0;i<5;i++)t.hitEnemy(100,'scrap',460);assert.equal(t.maxHp-t.hp,800,'Two 250% critical hits among five hits');
+t=target('scrap');t.upgrades.plating=20;t.playerHp=100;t.enemyShots=[{x:0,y:500,damage:50}];t.tick(.01,origin);assert.equal(t.playerHp,60);
+for(const id of [0,1,2]){const a=new Encounter(settings);a.load(base,1000);a.upgrades.focus=10;a.upgrades.rupture=10;a.upgrades.plating=10;a.weapon='boiler';a.enterCampaign(id,1);for(let time=0;time<240&&!a.forge.run.complete&&a.state!=='defeat';time+=.02){a.ultimate();a.volley();a.tick(.02,origin);}assert(a.forge.run.complete,'Representative veteran clears campaign '+id);assert.equal(a.best,210);}
+console.log('PASS: unlocks, expanded saves, old-save credit once, malformed data, all campaign clears, road isolation, first/repeat rewards, duplicate prevention, resume/retry/leave, Overclock costs, weapon mechanics, criticals and bulkhead.');
+
+// Progression checkpoints: first available campaign is viable without Overclock.
+for(const [best,level,rank,id]of [[10,3,4,0],[25,5,7,1],[50,9,10,2]]){const a=new Encounter(settings);a.best=best;a.xp=30*(level-1)**2;for(const k of ['damage','shell','speed'])a.upgrades[k]=rank;a.playerHp=a.maxPlayerHp;assert(a.enterCampaign(id,1));for(let t=0;t<240&&!a.forge.run.complete&&a.state!=='defeat';t+=.02){a.volley();a.ultimate();a.tick(.02,origin);}assert(a.forge.run.complete,'Campaign viable at unlock '+best);assert.equal(a.forge.tideglass,0,'No paid power required');}
+for(const rate of [1,2,3]){const a=new Encounter(settings);a.load(base,1000);a.enterCampaign(0,1);const timer=require('../web/battle-speed.js').stepper();for(let frame=0;frame<3600&&!a.forge.run.complete;frame++)timer.advance(1/60,rate,a,()=>origin);assert(a.forge.run.complete);assert(a.claimCampaign());assert.equal(a.forge.tideglass,120);}
+console.log('PASS: entry campaigns viable at stretches 10/25/50 with ordinary upgrades; identical rewards at 1x/2x/3x.');

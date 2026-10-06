@@ -1,0 +1,35 @@
+TIDEGLASS EXPANSION — browser playtest, 2026-10-05
+
+Research and choices
+Melvor Idle: official publisher describes combat areas, dungeons, equipment tiers and interacting skills. Use optional combat routes with explicit rewards and build progression.
+https://www.jagex.com/news/melvor-idle-s-new-expansion-atlas-of-discovery-launching-this-september
+The Tower: official module announcement describes additional modules and paid ticket packs. Brine uses transparent, direct permanent upgrades; no random draws or rotating sales are implemented.
+https://www.techtreegames.com/post/featured-module-banners-starting-next-week
+These sources inform structure, not numerical balance. Values below are Brine-specific playtest values.
+
+Overclock
+Tideglass is earned by completing campaigns. Hot Load +10% all damage/rank, Deep Shell +10% maximum health/rank, Quick Steam +3% gun firing rate/rank. Ten ranks each. Cost 30 + 20 * current rank. 1,200 Tideglass to cap one track, 3,600 for all tracks. Permanent additive percentages within each track; multiplication between tracks and other systems. No money purchase flow or paid entitlement exists. Any future real-money implementation needs account-linked currency and validated purchases rather than trusting a browser save.
+
+Campaigns
+Breakwater Sweep unlocks after stretch 10, Sluice Siege after 25, Old Salt Foundry after 50. Each has ten tiers of five battles. Tier strength increases by 15 road stretches. Each finishes with a captain. Existing six enemy models and three scenery routes are reused. No new enemy artwork in this pass.
+First-clear Tideglass: 40 / 55 / 75 by campaign + 10 * tier. Replays: 6 + 2 * tier. Salvage: (100 + starting campaign stage * 25) * tier. Full first-clear rewards across all campaigns = 3,350 Tideglass. Replays can earn the remainder; no purchase required.
+Campaign rewards are explicitly claimed once, saved while waiting, and retained across reloads. Campaign victories do not advance road best/stage or grant road district permits. Mastery and contract kills count. Road health and ability charges are restored afterward. Campaign retry resets the five-battle run. Entry is free and has no energy timer.
+
+Weapons
+Rivet Rattle (stretch 20): fifth successful hit deals 2x damage.
+Keelspike (35): ignores guard, +35% gun damage versus captains.
+Boilerjaw (50): third successful hit deals 3x damage.
+New scalable SVG weapon silhouettes use the existing cream/teal/salmon harbor palette. Shared animation anchors, no GMA calls.
+Flat character/upgrade damage bonuses scale with gun interval, keeping sustained baseline output comparable. Each gun retains its own mastery and attachments. Melee damage normalizes this interval scaling so slower guns do not arbitrarily double sword/fist damage.
+
+Upgrades
+Cost exponent changed from 1.5 to 1.3. Existing saves receive the difference for previously bought original upgrades once, as salvage. Current ranks are preserved.
+Damage and Shell gain +10% milestone scaling per ten ranks. Workshop damage applies to full scaled damage. Patch Up gains 2 percentage points healing per rank. Tide Charge gains 2 charge per hit per rank.
+Deadeye: +2% critical rate per rank (20 ranks), deterministic accumulated contact cadence to avoid random dry streaks. Rupture: +5 percentage points critical multiplier per rank (150% base, 20 ranks). Bulkhead: 1% incoming damage reduction/rank (20 ranks), multiplicative with form protection.
+Attachment prices 90 / 450 / 1800; already owned attachments retained.
+
+Validation
+Automated: legacy saves and one-time credits, new saves, malformed values, unlock gates, all three campaigns, first/repeat reward claims, duplicate claim prevention, resume/retry/leave, no road frontier changes, new weapon mechanics, criticals, mitigation, 1x/2x/3x rewards.
+Representative ordinary builds cleared first tiers at their unlock checkpoints (stretches 10/25/50), without Overclock, with timely ability usage. This is not a substitute for longer player testing or evidence of final monetization balance.
+Browser: equipped Boilerjaw, played and claimed Breakwater Sweep, verified 50 Tideglass/250 salvage and road restoration, purchased Hot Load and checked +10% damage. Isolated test save; live player saves not reset.
+Unity does not yet include this browser expansion.
