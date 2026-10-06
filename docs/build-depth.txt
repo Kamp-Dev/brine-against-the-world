@@ -1,0 +1,21 @@
+BUILD EXPANSION — balance and save notes
+
+Advanced upgrades remain visible in Combat, Survival and Loot.
+Splinter Shot: stretch 18, 1% chance/rank, 25 ranks; 35% base gun damage follow-up.
+Hull Crack: stretch 22, unlimited ranks; maximum armor break = 60*r/(r+20) percent, reached after ten primary hits. Also adds half that percentage as damage. Resets on the next enemy.
+Undertow: stretch 28, unlimited ranks; 1% damage/rank/stack, maximum ten stacks; decays two stacks/second outside combat.
+Last Stand: stretch 32, 20 ranks; 2% protection/rank for three seconds when a hit would put health at or below 30%. 25-second cooldown, saved across reloads. Does not resurrect Brine.
+Scrap Jackpot: stretch 16, 20 ranks; 1% chance/rank to triple road kill salvage. No campaign or away-income multiplication.
+Second Wind: stretch 24, 20 ranks; 2% shorter Low Tide/rank, maximum 40%. Applies before early-withdrawal discount.
+
+Costs use the existing salvage curve. All new ranks default to zero in old saves. Existing upgrades and mastery selections are preserved. Training lessons explain unlocks. Hold-to-upgrade applies to all six.
+
+Weapon branches reuse Workshop mastery (20/60/140 successful primary gun hits). Select one branch per gun in Build > Weapon Branches; freely change between transformations.
+Plugger: Hardened slug bypasses guard; Heavy breech gives 40% damage per tier, with 20% longer firing intervals.
+Rivet Rattle: Long burst boosts every fifth double hit by 25% per tier; Split rivets keeps 15% faster fire per tier and adds a 12%-per-tier follow-up every third hit.
+Keelspike: Captain breaker multiplies existing boss damage by 1+15% per tier; Barbed line keeps faster fire and applies two Hull Crack stacks if trained. Primary shots bypass guard.
+Boilerjaw: Pressure chamber boosts third-hit triple explosions by 25% per tier; Quick vent keeps faster fire and heals 1% maximum health per tier on every third primary contact.
+Tideline and Low Tide retain their distinct existing branches.
+
+Secondary shots do not trigger more secondary shots, crit rolls, passive burst counters, mastery XP, or ability charge. They can finish enemies and award normal kill rewards. This prevents recursive build exploits.
+All timers use battle time, respecting 1x/2x/3x. No art-generation credits used.

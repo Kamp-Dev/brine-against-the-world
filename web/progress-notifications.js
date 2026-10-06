@@ -13,7 +13,7 @@ function create(){let previous=null,source=null,priorReady=new Set();return {sca
   if(previous.expedition&&!p.expedition)events.push({title:'CARGO COLLECTED!',detail:P.expeditions[previous.expedition.id].name+' · materials delivered',tab:'expeditions'});
   p.build.forEach((v,i)=>{if(v>previous.build[i])events.push({title:v===3?'RESTORATION COMPLETE!':'HARBOR UPGRADED!',detail:P.buildings[i].name+' · level '+v+' / 3',tab:'harbor'});});
   p.district.forEach((v,i)=>{if(v&&!previous.district[i])events.push({title:'DISTRICT RECLAIMED!',detail:P.captains[i].name+' defeated · rewards delivered',tab:'districts'});});
-  p.weaponXP.forEach((v,i)=>{if(P.tier(v)>P.tier(previous.weaponXP[i]))events.push({title:'MASTERY UP!',detail:['Plugger','Repeater','Low Tide'][i]+' · tier '+P.tier(v),tab:'mastery'});});
+  p.weaponXP.forEach((v,i)=>{if(P.tier(v)>P.tier(previous.weaponXP[i]))events.push({title:'MASTERY UP!',detail:['Plugger','Tideline','Low Tide','Rivet Rattle','Keelspike','Boilerjaw'][i]+' · tier '+P.tier(v),tab:'mastery'});});
   p.formXP.forEach((v,i)=>{if(v>=12&&previous.formXP[i]<12)events.push({title:'FORM PRACTICED!',detail:(i?'Samurai':'Step Shell')+' · '+(p.build[2]?'specializations ready':'restore Lighthouse to specialize'),tab:'forms'});});
   p.guide.forEach((v,i)=>{if(v>=15&&previous.guide[i]<15)events.push({title:'ENEMY STUDIED!',detail:P.foes[i].replaceAll('-',' ')+' · +10% damage unlocked',tab:'guide'});});
  }

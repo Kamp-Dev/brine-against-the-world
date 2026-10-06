@@ -25,6 +25,7 @@ function refresh(){
  $('loadout').textContent=model.damage+' damage · '+model.interval.toFixed(2)+'s between shots';
  $('defeat-refit').hidden=model.state!=='defeat'||harborTab!=='road';$('live-summary').textContent='Stretch '+model.stage+', '+equipped().name+', health '+model.playerHp+' of '+model.maxPlayerHp+', '+model.gold+' salvage';
 }
+for(const [id,u] of Object.entries(BrineBuild.upgrades)){const b=$('upgrade-damage').cloneNode(true);b.id='upgrade-'+id;b.querySelector('strong').textContent=u.name.toUpperCase();$('upgrade-track').append(b);}
 for(const id of model.settings.weapons.map(w=>w.id))$(id).onclick=()=>{model.equip(id);persist();refresh()};
 for(const kind of Object.keys(model.upgrades))$('upgrade-'+kind).onclick=()=>{model.buy(kind);persist();refresh()};
 $('pause').onclick=()=>{model.paused=!model.paused;refresh()};
@@ -87,7 +88,7 @@ function effects(){
 
  for(const s of model.enemyShots){if(s.kind==='slam'||s.kind==='burrow'){ctx.strokeStyle=s.kind==='slam'?'#b65332':'#746348';ctx.lineWidth=5;ctx.beginPath();ctx.arc(s.x,570,s.kind==='slam'?22:13,Math.PI,Math.PI*2);ctx.stroke();}else{ctx.save();ctx.translate(s.x,s.y);ctx.rotate(model.time*8);path([[-6,0],[0,-5],[6,1],[0,5]],s.kind==='burst'?'#426d68':'#ae6a48');ctx.restore();}}
 
- for(const s of model.shots){const travel=s.x-s.startX;ctx.save();ctx.translate(s.x,s.y);if(model.lowTideTime>0){ctx.globalAlpha=.65;ctx.scale(.8,.8);}
+ for(const s of model.shots){const travel=s.x-s.startX;ctx.save();ctx.translate(s.x,s.y);if(s.secondary)ctx.scale(.55,.55);if(model.lowTideTime>0){ctx.globalAlpha=.65;ctx.scale(.8,.8);}
   if(['repeater','riveter','harpoon'].includes(s.weapon)){ctx.strokeStyle='#244f54';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(-Math.min(65,travel),0);ctx.lineTo(0,0);ctx.stroke();ctx.strokeStyle='#a4ddd0';ctx.lineWidth=2;ctx.stroke()}
   else if(['lowtide','boiler'].includes(s.weapon)){for(let i=-2;i<=2;i++){const y=i*Math.min(7,travel*.04);path([[-8,y-2],[3,y-2],[6,y+1],[-5,y+3]],i%2?'#c86a3c':'#f4d695','#322d26',1)}}
   else path([[-9,-3],[2,-3],[6,0],[2,3],[-9,3]],'#f5e1b1','#302f24',2);ctx.restore();
@@ -109,9 +110,10 @@ function effects(){
     for(let i=0;i<8;i++){const angle=i*2.4,r=4+t*29;ctx.save();ctx.translate(Math.cos(angle)*r,Math.sin(angle)*r+t*t*24);ctx.rotate(angle+t*3);ctx.fillStyle=i%2?'#f7e4ba':'#b98b52';ctx.strokeStyle='#483e2f';ctx.lineWidth=1;ctx.fillRect(-3,-3,6,6);ctx.strokeRect(-3,-3,6,6);ctx.restore()}
    }ctx.restore();
   }
-  if(e.type!=='hit'&&e.type!=='flash'&&e.type!=='repair'){ctx.textAlign='center';ctx.fillStyle=e.type==='reward'?'#203d2b':'#793319';ctx.font='bold 16px system-ui';ctx.fillText(e.type==='reward'?'+'+e.damage+' salvage':e.type==='repair'?'+'+e.damage+' repair':e.type==='miss'?'BURROWED':'−'+e.damage,e.x,e.y-28-(1-e.life)*18);ctx.textAlign='left'}
+  if(e.type!=='hit'&&e.type!=='flash'&&e.type!=='repair'&&e.type!=='jackpot'&&e.type!=='laststand'){ctx.textAlign='center';ctx.fillStyle=e.type==='reward'?'#203d2b':'#793319';ctx.font='bold 16px system-ui';ctx.fillText(e.type==='reward'?'+'+e.damage+' salvage':e.type==='repair'?'+'+e.damage+' repair':e.type==='miss'?'BURROWED':'−'+e.damage,e.x,e.y-28-(1-e.life)*18);ctx.textAlign='left'}
  }
  if(model.lowTideTime>0){ctx.save();for(let n=0;n<4;n++){const t=(model.time*.65+n*.25)%1;ctx.globalAlpha=(1-t)*.35;ctx.fillStyle='#e8dec3';ctx.beginPath();ctx.ellipse(124+model.meleeAdvance+Math.sin(t*6+n)*13,480-t*65,4+t*8,3+t*7,0,0,7);ctx.fill();}ctx.restore();}
+ drawBuildFeedback(ctx,model);
  drawComicDamageNumbers(ctx,model.effects,BrineTideglass.format);
 }
 function render(t){if(ready&&last&&t-last<1000/BrineDisplay.fps-1){requestAnimationFrame(render);return;}const dt=last?Math.min((t-last)/1000,.1):0;last=t;if(ready){origin=muzzle(blendedPose().grip);origin.x+=model.meleeAdvance||0;if(!document.hidden)BrineSpeed.advance(dt,model,()=>{const p=muzzle(blendedPose().grip);p.x+=model.meleeAdvance||0;return p;});if(typeof renderReferenceBattle==='function'){renderReferenceBattle();}else{harborBackdrop();ctx.save();ctx.beginPath();ctx.rect(5,52,440,382+BrineDisplay.extra);ctx.clip();ctx.translate(0,-143+BrineDisplay.extra);enemy();actor();effects();ctx.restore();harborHUD();}refresh()}requestAnimationFrame(render)}
