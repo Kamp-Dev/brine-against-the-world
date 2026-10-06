@@ -206,3 +206,8 @@
 #comic-notice .comic-copy{top:0;bottom:0}
 #comic-notice .comic-copy strong{position:absolute;top:18%;left:0;right:0}
 #comic-notice .comic-copy p{top:68%;bottom:auto}
+
+#campaign-repeat-dismiss,#comic-notice[data-kind=done] button.comic-close{position:absolute;display:block;z-index:9;right:2.6%;top:41cqw;width:5cqw;height:5cqw;min-width:24px;min-height:24px;background:#f5e8c4;border:1px solid #08252d;border-radius:50%;color:#08252d;font:700 20px/1 sans-serif;padding:0;cursor:pointer}
+#campaign-repeat-dismiss[hidden]{display:none}
+#comic-notice[data-kind=done] button.comic-close{top:-1cqw;right:-1cqw;z-index:2}
+#screen:has(#comic-notice:not([hidden])) #campaign-repeat-dismiss{visibility:hidden}

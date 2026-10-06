@@ -29,7 +29,7 @@ function refreshComicNotifications(){
  // A collected reward must not leave a stale collection prompt in the queue.
  for(let i=comicQueue.length-1;i>=0;i--)if(comicQueue[i].collect&&!available.some(x=>x.id===comicQueue[i].id))comicQueue.splice(i,1);
  if(comicCurrent?.collect&&!available.some(x=>x.id===comicCurrent.id))dismissComic();
- if(!document.hidden&&!comicPaused&&!comicToast.contains(document.activeElement)&&performance.now()>comicUntil)dismissComic();
+ if(!document.hidden&&performance.now()>comicUntil&&(!comicCurrent?.collect||!comicPaused&&!comicToast.contains(document.activeElement)))dismissComic();
  if(!comicCurrent&&comicQueue.length&&!document.hidden&&$('welcome').hidden&&$('loading').hidden){
   comicCurrent=comicQueue.shift();comicUntil=performance.now()+8000;comicToast.dataset.kind=comicCurrent.collect?'ready':'done';
   renderComicTicket();
