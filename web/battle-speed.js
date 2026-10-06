@@ -5,7 +5,7 @@
  if(typeof module!=='undefined'){module.exports={valid,stepper};return;}
  let speed=1;try{speed=valid(localStorage.getItem('brine-battle-speed'));}catch{}
  const timer=stepper(),button=document.getElementById('battle-speed'),choice=document.getElementById('speed-choice');
- function paint(){button.textContent='SPEED '+speed+'×';button.dataset.fast=speed>1;button.setAttribute('aria-label','Battle speed '+speed+' times. Activate to change speed.');choice.value=String(speed);}
+ function paint(){button.textContent=speed+'x';button.dataset.fast=speed>1;button.setAttribute('aria-label','Battle speed '+speed+' times. Activate to change speed.');choice.value=String(speed);}
  function set(value){speed=valid(value);try{localStorage.setItem('brine-battle-speed',speed);}catch{}paint();}
  button.onclick=()=>set(speed===3?1:speed+1);choice.onchange=()=>set(choice.value);
  root.BrineSpeed={advance(dt,model,origin){timer.advance(dt,speed,model,origin);},reset:()=>timer.reset()};

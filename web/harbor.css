@@ -153,6 +153,6 @@ html{min-height:100%;background:#061a1d}body{min-height:100vh;min-height:100dvh;
 #weapon-card[data-weapon="sword"] #weapon-title{font-size:2.65cqw;letter-spacing:-.04cqw}
 #weapon-card #swap{width:100%;min-width:0;max-width:100%;justify-self:stretch;padding:0 3%;white-space:nowrap}
 
-#battle-speed{position:absolute;z-index:4;top:49cqw;left:40%;width:20%;height:5.5cqw;min-height:20px;border:2px solid #092329;border-radius:3px;background:#f1e2be;color:#092329;font:2.5cqw var(--comic);padding:0;box-shadow:1px 2px 0 #092329}
+#battle-speed{position:absolute;z-index:4;top:48cqw;left:3%;width:7cqw;height:7cqw;min-height:0;border:2px solid #092329;border-radius:3px;background:#f1e2be;color:#092329;font:3cqw var(--comic);padding:0;box-shadow:1px 2px 0 #092329}
 #battle-speed[data-fast="true"]{background:#f08b74}
 #speed-choice{width:100%;min-height:36px;background:#f1e2be;color:#092329;font:inherit;border:2px solid #092329}
