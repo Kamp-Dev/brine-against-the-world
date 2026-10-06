@@ -33,5 +33,5 @@ function showCampaignEntry(id,tier){
  campaignEntryTimer=setTimeout(()=>{
   campaignEntryTimer=null;panel.hidden=true;
   if(model.enterCampaign(id,tier)){persist();forgeKey='';openHarbor('road');refresh();}
- },3000);
+ },1500);
 }

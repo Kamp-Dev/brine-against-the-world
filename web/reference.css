@@ -166,6 +166,6 @@
 #campaign-entry small{color:#ee9675;font-size:2.8cqw;letter-spacing:.12em}
 #campaign-entry strong{font-size:5cqw;text-transform:uppercase}
 #campaign-entry span{font-size:3cqw}
-#campaign-entry i{height:3px;background:#ee9675;transform-origin:left;animation:campaign-arrive 3s ease-out both}
+#campaign-entry i{height:3px;background:#ee9675;transform-origin:left;animation:campaign-arrive 1.5s ease-out both}
 @keyframes campaign-arrive{from{transform:scaleX(.05)}to{transform:scaleX(1)}}
 @media(prefers-reduced-motion:reduce){#campaign-entry i{animation:none}}
