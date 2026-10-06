@@ -138,3 +138,14 @@
 @keyframes cargo-crate-shake{0%,22%,100%{transform:translateX(0) rotate(0)}4%,12%{transform:translateX(-1px) rotate(-7deg)}8%,16%{transform:translateX(1px) rotate(7deg)}19%{transform:rotate(-3deg)}}
 @keyframes cargo-crate-nudge{0%,15%,100%{transform:rotate(0)}5%{transform:rotate(-2deg)}10%{transform:rotate(2deg)}}
 @media(prefers-reduced-motion:reduce){#campaign-banner[data-ready="true"]:before{animation:cargo-crate-nudge 4s ease-in-out infinite}}
+
+/* Approved concept 03: inked cream ticket, gold burst and check tab. */
+#campaign-banner[data-ready="true"]{left:29%;width:68%;height:max(56px,14cqw);min-height:0;top:calc(77cqw - max(56px,14cqw));border:0;box-shadow:none;background:transparent url('ui/cargo-comic-tab-v1.png') center/100% 130% no-repeat;display:block;padding:0;overflow:visible}
+#campaign-banner[data-ready="true"]:active{background-color:transparent;filter:brightness(1.07)}
+#campaign-banner[data-ready="true"]:before{position:absolute;left:1.5%;top:4%;width:24%;height:94%;animation:cargo-crate-shake-often 1.6s ease-in-out infinite}
+.cargo-title{position:absolute;left:25%;right:20%;top:18%;font:700 5cqw/1 'Barlow Condensed';color:#08252d;text-align:center;letter-spacing:.1cqw}
+.cargo-subtitle{position:absolute;left:25%;right:20%;top:68%;font:700 1.9cqw/1 'Barlow Condensed';color:#08252d;text-align:center;letter-spacing:.08cqw}
+/* Double the keyframe percentages while halving the cycle: identical shake, shorter rest. */
+@keyframes cargo-crate-shake-often{0%,44%,100%{transform:translateX(0) rotate(0)}8%,24%{transform:translateX(-1px) rotate(-7deg)}16%,32%{transform:translateX(1px) rotate(7deg)}38%{transform:rotate(-3deg)}}
+@keyframes cargo-crate-nudge-often{0%,30%,100%{transform:rotate(0)}10%{transform:rotate(-2deg)}20%{transform:rotate(2deg)}}
+@media(prefers-reduced-motion:reduce){#campaign-banner[data-ready="true"]:before{animation:cargo-crate-nudge-often 2s ease-in-out infinite}}
