@@ -30,7 +30,6 @@ function active(m){const j=m.journey;if(j.replay)return lessons.find(l=>l.id===j
 function scan(m){for(const l of lessons)if(available(m,l.id)&&l.complete(m)&&!m.journey.done.includes(l.id))m.journey.done.push(l.id);return active(m);}
 function finish(m,id){if(!m.journey.done.includes(id))m.journey.done.push(id);m.journey.replay=null;}
 function install(C,P){if(C.prototype.journeyInstalled)return;C.prototype.journeyInstalled=true;const owners=new WeakMap();
- const start=C.prototype.startEncounter;C.prototype.startEncounter=function(){start.call(this);const growth=1+.08*Math.min(12,Math.max(0,this.stage-3))**2;this.hp=this.maxHp=Math.round(this.maxHp*growth);};
  const reset=C.prototype.reset;C.prototype.reset=function(){reset.call(this);this.journey=fresh();owners.set(this.progress,this);};
  const save=C.prototype.save;C.prototype.save=function(...args){return {...save.apply(this,args),journey:JSON.parse(JSON.stringify(this.journey))};};
  const load=C.prototype.load;C.prototype.load=function(data,...args){this.loadingJourney=true;let ok;try{ok=load.call(this,data,...args);}finally{this.loadingJourney=false;}if(!ok)return ok;owners.set(this.progress,this);
