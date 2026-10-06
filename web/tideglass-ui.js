@@ -29,5 +29,5 @@ function showCampaignEntry(id){
  if(!panel){panel=document.createElement('div');panel.id='campaign-entry';panel.setAttribute('role','status');panel.innerHTML='<small>SETTING SAIL</small><strong></strong><span>Entering battle…</span><i aria-hidden="true"></i>';$('screen').append(panel);}
  panel.querySelector('strong').textContent=Forge.campaigns[id].name;
  clearTimeout(campaignEntryTimer);panel.hidden=false;
- campaignEntryTimer=setTimeout(()=>{panel.hidden=true;},850);
+ campaignEntryTimer=setTimeout(()=>{panel.hidden=true;},5000);
 }
