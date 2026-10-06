@@ -19,7 +19,7 @@ function renderReferenceBattle(){
  const pageInfo={road:['ROAD','Skills & equipment.','road'],guns:['GEAR','Guns & loadouts.','gear'],build:['BUILD','Upgrades & Overclock.','build'],voyage:['VOYAGE','Campaigns & expeditions.','voyage'],camp:['HARBOR','Restore & reclaim.','harbor'],journal:['JOURNAL','Training & field guide.','gear'],settings:['SETTINGS','Play your way.','salvage']};
  const descriptions={damage:'Increase damage per hit.',shell:'Increase max health.',speed:'Fire rate; excess adds damage.',focus:'Critical hit chance.',rupture:'Critical hit damage.',plating:'Reduce incoming damage.',scavenging:'More salvage per win.',patch:'Recover health after wins.',tide:'Charge melee forms faster.'};
  const iconMap={damage:'damage',shell:'shell',speed:'speed',focus:'focus',rupture:'damage',plating:'shell',scavenging:'salvage',patch:'hull',tide:'power'};
- const track=$('upgrade-track');track.setAttribute('aria-label','Core upgrades');$('deck-upgrades').querySelector('h2').textContent='CORE UPGRADES';$('deck-upgrades').querySelector('p').hidden=true;
+ const track=$('upgrade-track');track.setAttribute('aria-label','Core upgrades');$('deck-upgrades').querySelector('h2').textContent='CORE UPGRADES';$('deck-upgrades').querySelector('p').hidden=false;$('deck-upgrades').querySelector('p').textContent='Tap to upgrade · Hold to buy repeatedly';
  const advanced=document.createElement('section');advanced.id='reference-advanced';advanced.innerHTML='<h2>ADVANCED UPGRADES</h2><div id="reference-advanced-track" aria-label="Advanced upgrades by category"></div>';$('deck-upgrades').after(advanced);
  for(const [id,desc] of Object.entries(descriptions)){
   const b=$('upgrade-'+id);b.classList.add('reference-row');b.querySelector('svg').style.display='none';
