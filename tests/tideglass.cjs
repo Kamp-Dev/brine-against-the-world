@@ -32,3 +32,14 @@ console.log('PASS: entry campaigns viable at stretches 10/25/50 with ordinary up
 // Cargo must not stop road ticks, steal subsequent road rewards, or rewind on claim.
 const idle=new Encounter(settings);idle.load(complete,1000);const elapsed=idle.time;idle.tick(.1,origin);assert(idle.time>elapsed);idle.state='fight';idle.hp=1;const earned=idle.gold;idle.hitEnemy(999999,'melee',460);assert(idle.gold>earned);assert.equal(idle.forge.run.wave,5);assert(idle.farmLevel(2));const location=idle.stage;assert(idle.claimCampaign());assert.equal(idle.stage,location);assert(!idle.claimCampaign());
 const oldComplete=JSON.parse(JSON.stringify(complete));delete oldComplete.forge.run.roadRestored;oldComplete.paused=true;const migrated=new Encounter(settings);migrated.load(oldComplete,1000);assert(!migrated.paused);assert.equal(migrated.stage,road.stage);assert(migrated.forge.run.complete);assert(migrated.claimCampaign());
+
+// Voyage can launch directly from a lost, paused, travelling or active road fight.
+for(const state of ['defeat','travel','fight','reward']){
+ const direct=new Encounter(settings);direct.best=25;direct.stage=26;direct.state=state;direct.paused=true;direct.journey.awaitingStart=true;
+ if(state==='defeat')direct.playerHp=0;
+ if(state==='fight'){direct.ultimateTime=10;direct.meleeAdvance=100;}
+ assert(direct.enterCampaign(0,1), 'Direct entry from '+state);
+ assert.equal(direct.journey.awaitingStart,false);assert.equal(direct.state,'travel');assert.equal(direct.paused,false);assert.equal(direct.ultimateActive,false);
+ assert.equal(direct.playerHp,direct.maxPlayerHp);assert.equal(direct.stage,6);
+ assert(direct.leaveCampaign());assert.equal(direct.stage,26);assert(direct.playerHp>0);
+}
