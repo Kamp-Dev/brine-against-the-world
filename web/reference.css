@@ -85,3 +85,19 @@
 .ref-health{border-image-slice:7}
 .ref-bank:last-child .ref-icon{mask:none;background:url('ui/reference/tideglass-color.png') center/contain no-repeat}
 #drawer #upgrade-track .reference-row{height:max(52px,9.5cqw)}
+/* Restore the route above a larger, shared battle window. */
+#screen{--deck-top:98cqw}
+#screen>#masthead{position:absolute;top:0;left:1%;width:98%;height:28.65cqw;margin:0;z-index:7}
+#reference-header{background:none;height:13.6cqw;pointer-events:none}
+#reference-header:after{display:none}
+#reference-header #deck-tools{left:78%;top:.3cqw;width:21%;height:12.9cqw;pointer-events:auto;background:url('ui/reference/header.png') right center/476% 100% no-repeat}
+#reference-hud{top:30cqw}
+#battle-speed{top:42cqw}
+#deck-backing{top:77cqw}
+#battle-actions{top:78cqw}
+#reference-banner{top:88cqw}
+#deck-home,#drawer{top:98cqw}
+#defeat-refit{top:53cqw}
+#campaign-banner{top:70cqw}
+#comic-notice,#welcome{top:98cqw}
+#field-training{top:98cqw!important}

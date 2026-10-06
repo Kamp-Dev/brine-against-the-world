@@ -13,3 +13,5 @@ Checked at 320x740, 390x844 and reference proportions. Purchases were checked wi
 separate temporary save fixture; user progress was not reset. All 21 existing suites
 passed. No GodModeAI credits were used. This update targets the browser UI; Unity UI
 has not been ported in this pass.
+
+October 6: Restored the numbered route above battle across all tabs, retained Journal/Settings, removed the Road duplicate, and doubled the battle window height. Stage farming verified from Build; all 21 suites passed.

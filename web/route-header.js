@@ -25,6 +25,8 @@
    if(t.complete)cut(original,[276,364,91,82],[d[0]+(t.boss?d[2]/2+65:d[2]-66),364,91,82]);
   });
   if(route.toUpperCase()!=='DRY DOCKS'){cut(live,[1080,275,850,17],[1080,106,865,172]);c.fillStyle='#003742';c.font='bold 145px "Barlow Condensed"';c.textAlign='center';c.textBaseline='middle';c.fillText(route.toUpperCase(),1512,194,825);}
+  if(canvas.dataset.headerTools==='true'){const copy=document.createElement('canvas');copy.width=1984;copy.height=274;copy.getContext('2d').drawImage(canvas,0,0,1984,274,0,0,1984,274);c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,1984,274);c.drawImage(copy,0,0,1550,274);}
+
  }
  root.BrineRoute={routeTiles,routeMarkup,paint};if(typeof module==='object')module.exports=root.BrineRoute;
 })(typeof globalThis==='object'?globalThis:this);

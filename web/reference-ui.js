@@ -1,9 +1,9 @@
 // Approved reference: original cropped artwork surrounds live, accessible controls.
 function renderReferenceBattle(){
- const top=50,bottom=157;
+ const top=130,bottom=346;
  ctx.clearRect(0,0,450,BrineDisplay.height);fill(0,0,450,BrineDisplay.height,'#003742');
  ctx.save();ctx.beginPath();ctx.rect(6,top,438,bottom-top);ctx.clip();fill(6,top,438,bottom-top,'#e9ddb5');
- const sceneScale=.55,sceneY=bottom-577*sceneScale;
+ const sceneScale=.75,sceneY=bottom-577*sceneScale;
  ctx.save();ctx.translate(0,sceneY);ctx.scale(sceneScale,sceneScale);
  for(const l of parallaxData.layers){const travel=model.distance*l.speed/l.period,base=Math.floor(travel),offset=(travel-base)*l.period;for(let tile=-1;tile<4;tile++){const flip=(base+tile)%2!==0;ctx.save();ctx.translate(tile*l.period-offset+(flip?l.period:0),l.y);ctx.scale(flip?-1:1,1);ctx.drawImage(sceneryImages[l.image],0,0,l.period+.5,l.height);ctx.restore();}if(l===parallaxData.layers[0]&&typeof drawHarborGrowth==='function'){ctx.save();ctx.translate(0,249);drawHarborGrowth(ctx,model);ctx.restore();}}
  ctx.restore();ctx.save();ctx.translate(48,bottom-577*.72);ctx.scale(.72,.72);enemy();actor();effects();ctx.restore();ctx.restore();
@@ -12,8 +12,8 @@ function renderReferenceBattle(){
  const screen=$('screen');screen.dataset.layout='reference';BrineDisplay.apply();
  const header=document.createElement('header');header.id='reference-header';header.setAttribute('aria-label','Brine Against the World');screen.append(header);
  header.append($('deck-tools'));$('deck-tools').children[0].textContent='JOURNAL';$('deck-tools').children[1].textContent='SETTINGS';
- // The numbered route remains interactive on Road; it no longer takes battle space.
- $('deck-home').append($('masthead'));
+ // Keep the route visible above battle on every tab.
+ screen.append($('masthead'));$('route-art').dataset.headerTools='true';
  const hud=document.createElement('section');hud.id='reference-hud';hud.setAttribute('aria-label','Battle health');hud.innerHTML='<div class="ref-health"><strong id="ref-player-name"></strong><div class="ref-hp"><i></i><b></b></div><span id="ref-xp-text"></span><div class="ref-xp"><i></i></div></div><div class="ref-health enemy-health"><strong id="ref-enemy-name"></strong><div class="ref-hp"><i></i><b></b></div></div>';screen.append(hud);
  const banner=document.createElement('section');banner.id='reference-banner';banner.innerHTML='<i class="ref-icon" id="ref-page-icon"></i><strong id="ref-page-title">ROAD</strong><span id="ref-page-description">Skills & equipment.</span><div class="ref-bank"><i class="ref-icon" style="--icon:url(ui/reference/icon-salvage.png)"></i><span>SALVAGE<b id="ref-salvage"></b></span></div><div class="ref-bank"><i class="ref-icon" style="--icon:url(ui/reference/icon-tideglass.png)"></i><span>TIDEGLASS<b id="ref-glass"></b></span></div>';screen.append(banner);
  const pageInfo={road:['ROAD','Skills & equipment.','road'],guns:['GEAR','Guns & loadouts.','gear'],build:['BUILD','Upgrades & Overclock.','build'],voyage:['VOYAGE','Campaigns & expeditions.','voyage'],camp:['HARBOR','Restore & reclaim.','harbor'],journal:['JOURNAL','Training & field guide.','gear'],settings:['SETTINGS','Play your way.','salvage']};
