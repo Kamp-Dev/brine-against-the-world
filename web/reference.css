@@ -149,3 +149,9 @@
 @keyframes cargo-crate-shake-often{0%,44%,100%{transform:translateX(0) rotate(0)}8%,24%{transform:translateX(-1px) rotate(-7deg)}16%,32%{transform:translateX(1px) rotate(7deg)}38%{transform:rotate(-3deg)}}
 @keyframes cargo-crate-nudge-often{0%,30%,100%{transform:rotate(0)}10%{transform:rotate(-2deg)}20%{transform:rotate(2deg)}}
 @media(prefers-reduced-motion:reduce){#campaign-banner[data-ready="true"]:before{animation:cargo-crate-nudge-often 2s ease-in-out infinite}}
+
+/* Compact cargo ticket beneath the enemy health label. */
+#campaign-banner[data-ready="true"]{left:auto;right:2.6%;width:52%;height:max(44px,10.7cqw);top:41cqw}
+.cargo-title{font-size:3.9cqw}
+.cargo-subtitle{font-size:1.6cqw;letter-spacing:.02cqw}
+#screen:has(#campaign-banner[data-ready="true"]:not([hidden])) #form-status{top:54cqw}
