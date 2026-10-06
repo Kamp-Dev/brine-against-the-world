@@ -6,7 +6,7 @@ $('screen').append(comicToast);
 function openComicReward(tab){progressTab=tab;openHarbor('camp');progressKey='';refreshProgressionUI();}
 function dismissComic(){comicCurrent=null;comicToast.hidden=true;}
 comicToast.querySelector('.comic-close').onclick=dismissComic;
-comicToast.querySelector('.comic-open').onclick=()=>{const event=comicCurrent;if(!event)return;const collected=BrineNotifications.claim(model.progress,event);dismissComic();if(collected){persist();progressKey='';}refresh();};
+comicToast.querySelector('.comic-open').onclick=()=>{const event=comicCurrent;if(!event)return;const collected=event.repeat?P.selectContract(model.progress,event.repeat):BrineNotifications.claim(model.progress,event);dismissComic();if(collected){persist();progressKey='';}refresh();};
 comicToast.onpointerenter=()=>comicPaused=true;comicToast.onpointerleave=()=>{comicPaused=false;comicUntil=performance.now()+4000;};
 comicToast.onfocusin=()=>comicPaused=true;comicToast.onfocusout=()=>{comicPaused=false;comicUntil=performance.now()+4000;};
 function refreshComicNotifications(){
@@ -20,10 +20,10 @@ function refreshComicNotifications(){
  if(!document.hidden&&!comicPaused&&!comicToast.contains(document.activeElement)&&performance.now()>comicUntil)dismissComic();
  if(!comicCurrent&&comicQueue.length&&!document.hidden&&$('welcome').hidden&&$('loading').hidden){
   comicCurrent=comicQueue.shift();comicUntil=performance.now()+8000;comicToast.dataset.kind=comicCurrent.collect?'ready':'done';
-  comicToast.querySelector('strong').textContent=comicCurrent.collect?'COLLECT':'COMPLETE';
+  comicToast.querySelector('strong').textContent=comicCurrent.collect?'COLLECT':comicCurrent.repeat?'↻ REPEAT':'COMPLETE';
   comicToast.querySelector('p').textContent=comicCurrent.detail;
-  comicToast.querySelector('.comic-open').textContent=comicCurrent.collect?'COLLECT':'DISMISS';
-  comicToast.querySelector('.comic-open').setAttribute('aria-label',comicCurrent.title+' '+comicCurrent.detail+(comicCurrent.collect?' — collect reward':' — dismiss'));
+  comicToast.querySelector('.comic-open').textContent=comicCurrent.collect?'COLLECT':comicCurrent.repeat?'REPEAT CONTRACT':'DISMISS';
+  comicToast.querySelector('.comic-open').setAttribute('aria-label',comicCurrent.title+' '+comicCurrent.detail+(comicCurrent.collect?' — collect reward':comicCurrent.repeat?' — repeat completed contract':' — dismiss'));
   comicToast.title=comicCurrent.title+' '+comicCurrent.detail;
   comicToast.hidden=false;
  }

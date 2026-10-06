@@ -2,7 +2,7 @@
 'use strict';
 const P=typeof module!=='undefined'?require('./progression.js'):root.BrineProgression;
 function ready(p,now){return [
- ...P.contracts.flatMap((c,i)=>p.counts[i]>=c.target?[{id:'contract:'+c.id,title:'CONTRACT COMPLETE!',detail:c.name,tab:'contracts',collect:true}]:[]),
+ ...P.contracts.flatMap((c,i)=>!p.finishedContracts?.includes(c.id)&&p.counts[i]>=c.target?[{id:'contract:'+c.id,title:'CONTRACT COMPLETE!',detail:c.name,tab:'contracts',collect:true}]:[]),
  ...(p.expedition&&Math.max(now,p.clock)>=p.expedition.finish?[{id:'crew:'+p.expedition.finish,title:'CREW RETURNED!',detail:P.expeditions[p.expedition.id].name,tab:'expeditions',collect:true}]:[])
 ];}
 function claim(p,event,time=Date.now()){
@@ -18,7 +18,7 @@ function create(){let previous=null,source=null,priorReady=new Set();return {sca
  if(source!==p){previous=null;priorReady=new Set();source=p;}
  const available=ready(p,now),events=available.filter(e=>!priorReady.has(e.id));
  if(previous){
-  if(p.completed>previous.completed)events.push({title:'REWARD COLLECTED!',detail:'Contract materials added to your cargo.',tab:'contracts'});
+  if(p.completed>previous.completed)events.push({title:'REWARD COLLECTED!',detail:P.contracts.find(c=>c.id===p.lastContractClaim)?.name||'Materials delivered',tab:'contracts',repeat:p.lastContractClaim});
   if(previous.expedition&&!p.expedition)events.push({title:'CARGO COLLECTED!',detail:P.expeditions[previous.expedition.id].name+' · materials delivered',tab:'expeditions'});
   p.build.forEach((v,i)=>{if(v>previous.build[i])events.push({title:v===3?'RESTORATION COMPLETE!':'HARBOR UPGRADED!',detail:P.buildings[i].name+' · level '+v+' / 3',tab:'harbor'});});
   p.district.forEach((v,i)=>{if(v&&!previous.district[i])events.push({title:'DISTRICT RECLAIMED!',detail:P.captains[i].name+' defeated · rewards delivered',tab:'districts'});});

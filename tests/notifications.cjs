@@ -2,7 +2,7 @@ const assert=require('node:assert/strict'),P=require('../web/progression.js'),N=
 const p=P.fresh(),n=N.create();assert.equal(n.scan(p,0).events.length,0);
 p.counts[0]=12;let result=n.scan(p,0);assert.equal(result.events[0].title,'CONTRACT COMPLETE!');assert.equal(result.available.length,1);assert.equal(n.scan(p,0).events.length,0,'ready reward does not spam every frame');
 P.claimContract(p);result=n.scan(p,0);assert.equal(result.available.length,0);assert.equal(result.events[0].title,'REWARD COLLECTED!');
-p.counts[0]=12;assert.equal(n.scan(p,0).events[0].collect,true,'repeatable contracts notify on next completion');
+assert(P.selectContract(p,'road'));p.counts[0]=12;assert.equal(n.scan(p,0).events[0].collect,true,'repeatable contracts notify on next completion');
 p.expedition={id:0,finish:1000};assert.equal(n.scan(p,999).events.length,0);result=n.scan(p,1000);assert.equal(result.available.length,2);assert.equal(result.events[0].title,'CREW RETURNED!');assert.equal(n.scan(p,1001).events.length,0);
 assert.equal(N.create().scan(p,1001).events.length,2,'returning players see unclaimed rewards');P.collect(p,1001);assert.equal(n.scan(p,1001).events[0].title,'CARGO COLLECTED!');
 p.build[0]=3;p.district[0]=true;p.weaponXP[0]=60;p.formXP[0]=12;p.guide[0]=15;result=n.scan(p,1001);assert.equal(result.events.length,5);assert.equal(n.scan(p,1001).events.length,0);
@@ -16,3 +16,10 @@ assert(!N.claim(direct,contractReward,0),'No double collection');
 direct.expedition={id:0,finish:1000};const crew={id:'crew:1000',tab:'expeditions',collect:true};
 assert(!N.claim(direct,crew,999));assert(N.claim(direct,crew,1000));assert.equal(direct.expedition,null);assert(!N.claim(direct,crew,1001));
 assert(!N.claim(direct,{tab:'harbor'},1001));console.log('PASS: direct contract and crew rewards, tracked contract preserved, no early or duplicate claims');
+
+const finished=P.fresh();finished.counts[0]=12;assert(P.claimContract(finished));
+assert(finished.finishedContracts.includes('road'));assert.equal(N.ready(finished,0).length,0);
+const after=P.load(finished);assert(after.finishedContracts.includes('road'),'Completion survives reload');
+const killModel={progress:after,enemy:{art:'salt-porter'},boss:false,route:0};
+P.kill(killModel,'scrap');assert.equal(after.counts[0],0,'No automatic restart');
+assert(P.selectContract(after,'road'));P.kill(killModel,'scrap');assert.equal(after.counts[0],1,'Explicit repeat restarts tracking');
