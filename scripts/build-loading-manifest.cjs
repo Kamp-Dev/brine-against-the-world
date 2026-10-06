@@ -3,8 +3,8 @@ const base=path.join(__dirname,'../web'),read=p=>JSON.parse(fs.readFileSync(path
 const names=['animation.json','gameplay.json','enemies/bounds.json','parallax.json','step-shell.json','enemy-motion.json','samurai/animation.json'];
 const animation=read('animation.json'),step=read('step-shell.json');
 names.push(animation.walk.sheet,animation.fire.sheet,'ui/ticket-board.png','ui/harbor-clean.png',step.punch.sheet,step.walk.sheet);
-names.push('weapons/riveter.svg','weapons/harpoon.svg','weapons/boiler.svg');
-names.push(...read('gameplay.json').weapons.map(w=>'weapons/'+w.art+'.png'));
+names.push(...['scrap','repeater','lowtide','riveter','harpoon','boiler'].map(id=>'weapons/'+id+'-comic.png'));
+
 names.push(...Object.keys(read('enemies/bounds.json')).map(n=>'enemies/'+n+'.png'));
 names.push(...read('parallax.json').layers.map(l=>'scenery/'+l.image+'.png'));
 names.push(...read('samurai/animation.json').clips.map(c=>'samurai/'+c.image),'samurai/katana.png','samurai/walk-original.png');

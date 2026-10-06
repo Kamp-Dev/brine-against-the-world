@@ -122,7 +122,7 @@ function hud(){
 }
 const loader=BrineLoading;
 Promise.all(['animation.json','gameplay.json','enemies/bounds.json','parallax.json','step-shell.json','enemy-motion.json','samurai/animation.json'].map(url=>loader.json(url+'?v=forge-24'))).then(async([d,s,b,parallax,ultimate,motion,samurai])=>{
- s=BrineTideglass.settings(s);enemyMotionConfig=motion;stepShellConfig=ultimate;samuraiConfig=samurai;config=d;enemyBounds=b;parallaxData=parallax;model.settings=s;model.reset();try{model.load(JSON.parse(localStorage.getItem(SAVE_KEY)))}catch{saveNote='Could not read the saved game. This session starts fresh.'}
+ s=BrineTideglass.settings(s);for(const w of s.weapons)Object.assign(w,BrineWeaponArt[w.id]);enemyMotionConfig=motion;stepShellConfig=ultimate;samuraiConfig=samurai;config=d;enemyBounds=b;parallaxData=parallax;model.settings=s;model.reset();try{model.load(JSON.parse(localStorage.getItem(SAVE_KEY)))}catch{saveNote='Could not read the saved game. This session starts fresh.'}
  showOffline();persist();
  const pending=[loader.image(walk,d.walk.sheet),loader.image(fire,d.fire.sheet),loader.image(harborPlate,'ui/ticket-board.png'),loader.image(harborClean,'ui/harbor-clean.png')];
  for(const w of s.weapons)pending.push(loader.image(weaponImages[w.id]=new Image(),w.image||'weapons/'+w.art+'.png'));

@@ -34,7 +34,7 @@ function harborHUD(){
  ink('SALVAGE',46,693,15,dark);ink(model.gold.toLocaleString(),428,691,19,dark,'right',false,225);ctx.restore();
 
  drawCaptainBadge(ctx,model);
- if(model.paused){ticket(153,194,144,22);ink('PAUSED · CAMP TO RESUME',225,200,9,dark,'center')}
+ if(model.paused){ticket(153,194,144,22);ink('PAUSED · SETTINGS TO RESUME',225,200,9,dark,'center')}
 }
 function setActionLabel(id,title,detail){$(id).querySelector('strong').textContent=title;$(id).querySelector('small').textContent=detail;}
 function setActionText(id,text){const lines=text.split('\n');setActionLabel(id,lines[0],lines[1]||'');}

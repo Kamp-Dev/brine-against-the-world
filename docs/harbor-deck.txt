@@ -1,0 +1,36 @@
+Harbor Deck browser UI
+
+Road: equipped gun, selected form, attachment slot and current goal. No stat upgrades.
+Gear: six guns, per-gun attachment fitting and melee form selection.
+Build: nine stat upgrades, Overclock, weapon mastery and form specialization.
+Voyage: campaigns, expeditions and district travel.
+Harbor: restoration and contracts.
+Journal and Settings are direct buttons in the battle margin.
+
+The battle canvas and its camera transform do not change when selecting a page.
+The shared action rail contains farming/frontier travel, volley and form activation.
+Only the lower page scrolls. Navigation and currency balances remain fixed.
+On tall phones, the battle ends at approximately 54% of the viewport; it is
+identical across all destinations. Existing shorter-view sizing remains supported.
+Old reward and training links route to the appropriate new destination.
+Existing save format and unlock rules are retained. No currency reset or new purchases.
+
+Gun assets
+Six approved Harbor Armory designs were converted to a transparent sprite atlas
+using built-in image generation (no GodModeAI use). Sprite slicing preserves alpha.
+Individual sprites: web/weapons/*-comic.png. Grip, split and muzzle coordinates:
+web/weapon-art.js. Existing gun mechanics and effects are unchanged.
+Prompt: Convert the six approved gun designs into a clean transparent game sprite
+atlas, three columns and two rows, facing right with horizontal barrels. Preserve
+the chunky inked cream/olive/salmon/teal comic designs: Plugger shell pistol,
+Tideline ribbed teal carbine, Low Tide orange bell, Rivet Rattle olive double barrel
+and curved magazine, Keelspike harpoon and rope spool, Boilerjaw pressure pot.
+No labels or divider lines; intact silhouettes and transparent trigger holes.
+
+Validation
+Existing full gameplay/asset suite passed. Isolated browser save used to check
+all six equipment selections, stat-rank purchase and Overclock balance deduction.
+At 390x844 all five destinations returned identical canvas bounds and action-rail
+position. At 320x740 no horizontal page overflow, all nine upgrade controls and
+all five navigation targets present, no broken DOM images or browser errors.
+This release updates the browser game. Unity UI is not ported by this change.
