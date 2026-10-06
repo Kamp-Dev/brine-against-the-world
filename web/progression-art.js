@@ -17,6 +17,6 @@ function drawHarborGrowth(c,m){const p=m.progress;if(!p)return;c.save();c.beginP
  const x=((90+i*170-m.distance*.12)%600+600)%600-70;
  c.drawImage(im,(l-1)*512,f.y,512,f.h,x,(i===1?309:264)-h,w,h);
 }
-if(p.district[m.route]){c.fillStyle='#f19a76';if(m.route===0){c.fillRect(415,140,2,60);c.beginPath();c.moveTo(417,140);c.lineTo(440,150);c.lineTo(417,161);c.fill();}else if(m.route===1){c.fillStyle='#375e5b';c.fillRect(417,155,13,48);c.fillStyle='#ffe0a0';c.beginPath();c.arc(423,151,8,0,7);c.fill();}else{c.fillStyle='#b5aa87';c.beginPath();c.moveTo(412,202);c.lineTo(418,155);c.lineTo(425,141);c.lineTo(432,155);c.lineTo(438,202);c.closePath();c.fill();c.stroke();c.fillStyle='#f09a76';c.fillRect(420,169,10,4);}}c.restore();}
+if(p.district[m.route]){c.fillStyle='#f19a76';if(m.route===0){c.fillRect(415,140,2,60);c.beginPath();c.moveTo(417,140);c.lineTo(440,150);c.lineTo(417,161);c.fill();}else if(m.route===1){c.fillStyle='#375e5b';c.fillRect(417,155,13,48);c.fillStyle='#ffe0a0';c.beginPath();c.arc(423,151,8,0,7);c.fill();}}c.restore();}
 // UI overlay: isolate text settings and render after combat effects.
 function drawCaptainBadge(c,m){if(!m.boss)return;c.save();c.fillStyle='#092329';c.fillRect(151,140,148,36);c.fillStyle='#b95735';c.fillRect(154,143,142,30);c.textAlign='center';c.textBaseline='top';c.fillStyle='#fff0c6';c.font='bold 8px "Barlow Condensed"';c.fillText('CAPTAIN',225,146,132);c.font='bold 12px "Barlow Condensed"';c.fillText(BrineProgression.captains[m.route].name.toUpperCase(),225,156,132);c.restore();}

@@ -15,19 +15,23 @@ refreshProgressionUI=function(){progressionBeforeForge();if(!['campaigns','overc
  $('progress-content').innerHTML=html+'</section>';
 };
 $('progress-content').addEventListener('change',e=>{if(e.target.dataset.campaignTier!==undefined){campaignTiers[+e.target.dataset.campaignTier]=+e.target.value;forgeKey='';refreshProgressionUI();}});
-$('progress-content').addEventListener('click',e=>{const b=e.target.closest('[data-forge]');if(!b||b.disabled)return;const a=b.dataset.forge,id=b.dataset.id;let ok=false;if(a==='clock')ok=model.buyOverclock(id);if(a==='enter'){ok=model.enterCampaign(+id,campaignTiers[+id]);if(ok)showCampaignEntry(+id);}if(a==='leave')ok=model.leaveCampaign();if(a==='claim'){const cid=model.forge.run?.id;ok=model.claimCampaign();if(ok)campaignTiers[cid]=Math.min(10,model.forge.cleared[cid]+1);}if(a==='retry')ok=model.retry();if(a==='return')ok=true;if(ok){persist();forgeKey='';if(['enter','retry','return','leave'].includes(a))openHarbor('road');refresh();}});
+$('progress-content').addEventListener('click',e=>{const b=e.target.closest('[data-forge]');if(!b||b.disabled)return;const a=b.dataset.forge,id=b.dataset.id;let ok=false;if(a==='clock')ok=model.buyOverclock(id);if(a==='enter'){showCampaignEntry(+id,campaignTiers[+id]);return;}if(a==='leave')ok=model.leaveCampaign();if(a==='claim'){const cid=model.forge.run?.id;ok=model.claimCampaign();if(ok)campaignTiers[cid]=Math.min(10,model.forge.cleared[cid]+1);}if(a==='retry')ok=model.retry();if(a==='return')ok=true;if(ok){persist();forgeKey='';if(['enter','retry','return','leave'].includes(a))openHarbor('road');refresh();}});
 const forgeRefresh=refresh;refresh=function(){forgeRefresh();const r=model.forge.run;campaignBanner.hidden=!r;campaignBanner.dataset.ready=String(!!r?.complete);campaignBanner.setAttribute('aria-label',r?.complete?'Collect campaign cargo':'View campaign progress');if(r){if(!r.complete){for(const b of stageTravel.children){b.disabled=true;b.title='Return to the road to farm';b.setAttribute('aria-label',b.title);}}if(r.complete){if(!campaignBanner.querySelector('.cargo-title'))campaignBanner.innerHTML='<span class="cargo-title">COLLECT</span><span class="cargo-subtitle">CAMPAIGN CARGO</span>';}else campaignBanner.textContent=Forge.campaigns[r.id].name.toUpperCase()+' · '+Math.min(5,r.wave+1)+'/5';if(!r.complete){$('farm').disabled=true;for(let i=0;i<3;i++)$('route-'+i).disabled=true;}if(r.complete){badge($('nav-camp'),'!');badge($('next-goal'),'!');$('goal-eyebrow').textContent='CAMPAIGN COMPLETE';$('goal-detail').textContent='Collect your Tideglass · tap here';$('pause').disabled=false;}}else $('pause').disabled=false;
  for(const b of $('progress-tabs').children)if(b.dataset.progressTab==='campaigns')badge(b,r?.complete?'!':'');
  $('mod-info').textContent='Rank '+model.modRank+'/3 · attachment power scales with this gun’s firing interval. Fitted to this gun; visible on its barrel.';
  };
 const forgeGoal=$('next-goal').onclick;$('next-goal').onclick=()=>{if(model.forge.run?.complete){progressTab='campaigns';openHarbor('camp');}else forgeGoal();};
 
-// A short scene transition; the idle simulation continues underneath.
+// Keep road simulation running; create the campaign only after arrival.
 let campaignEntryTimer;
-function showCampaignEntry(id){
+function showCampaignEntry(id,tier){
+ if(campaignEntryTimer||model.forge.run)return;
  let panel=document.getElementById('campaign-entry');
  if(!panel){panel=document.createElement('div');panel.id='campaign-entry';panel.setAttribute('role','status');panel.innerHTML='<small>SETTING SAIL</small><strong></strong><span>Entering battle…</span><i aria-hidden="true"></i>';$('screen').append(panel);}
  panel.querySelector('strong').textContent=Forge.campaigns[id].name;
- clearTimeout(campaignEntryTimer);panel.hidden=false;
- campaignEntryTimer=setTimeout(()=>{panel.hidden=true;},5000);
+ panel.hidden=false;openHarbor('road');
+ campaignEntryTimer=setTimeout(()=>{
+  campaignEntryTimer=null;panel.hidden=true;
+  if(model.enterCampaign(id,tier)){persist();forgeKey='';openHarbor('road');refresh();}
+ },3000);
 }
