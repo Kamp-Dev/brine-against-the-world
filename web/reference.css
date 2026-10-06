@@ -155,3 +155,7 @@
 .cargo-title{font-size:3.9cqw}
 .cargo-subtitle{font-size:1.6cqw;letter-spacing:.02cqw}
 #screen:has(#campaign-banner[data-ready="true"]:not([hidden])) #form-status{top:54cqw}
+
+#campaign-banner[data-ready="true"]{width:40%}
+.cargo-title{font-size:3.4cqw;letter-spacing:0}
+.cargo-subtitle{font-size:1.4cqw;letter-spacing:0}
