@@ -101,3 +101,13 @@
 #campaign-banner{top:70cqw}
 #comic-notice,#welcome{top:98cqw}
 #field-training{top:98cqw!important}
+/* Quiet health labels: no cropped scene pixels or stacked picture frames. */
+.ref-health{width:26%;height:auto;padding:.7cqw .9cqw .8cqw;border:.25cqw solid #082d34;border-image:none;border-radius:1.1cqw;background:#f5e9c9;box-shadow:.25cqw .35cqw 0 #082d34;overflow:hidden}
+.enemy-health{height:auto;align-self:flex-start}
+.ref-health>strong{font-size:2.45cqw;line-height:1.15;padding:0 .1cqw .25cqw}
+.ref-hp{height:2.7cqw;margin:.2cqw 0 .35cqw;border:.18cqw solid #173b40;border-radius:.3cqw;overflow:hidden}
+.ref-hp b{font-size:2.2cqw;line-height:1.1}
+#ref-xp-text{font-size:1.85cqw;line-height:1.1;display:block}
+.ref-xp{height:.75cqw;border:0;border-radius:.3cqw;margin-top:.3cqw}
+#reference-header #deck-tools{top:.5cqw;height:12.5cqw;background-size:476% auto;background-position:right center}
+.ref-health{width:28%}.ref-health>strong{font-size:3cqw}.ref-hp{height:3.1cqw}.ref-hp b{font-size:2.7cqw}#ref-xp-text{font-size:2.2cqw}
