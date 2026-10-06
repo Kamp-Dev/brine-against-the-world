@@ -167,3 +167,10 @@ html{min-height:100%;background:#061a1d}body{min-height:100vh;min-height:100dvh;
 
 #progress-tabs{display:flex;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;gap:5px}#progress-tabs button{flex:0 0 auto;padding:5px 12px!important;min-height:32px}#progress-tabs::-webkit-scrollbar{display:block;height:3px}#progress-tabs::-webkit-scrollbar-thumb{background:#bf6345}
 #weapon-card[data-long-name="true"] #weapon-title{font-size:2.65cqw;letter-spacing:-.04cqw}
+
+/* Equipment cards expand with wrapped copy; spacing never depends on list height. */
+#weapon-list .weapons{display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;gap:10px;align-content:start}
+#drawer #weapon-list .weapons button{display:grid;grid-template-columns:minmax(0,23%) minmax(0,1fr);grid-template-rows:auto auto;gap:5px 12px;height:auto;min-height:76px;margin:0;padding:12px;align-items:start;white-space:normal;overflow:visible}
+#weapon-list .weapons button img{grid-column:1;grid-row:1 / 3;align-self:center;width:100%;height:auto;max-height:64px;object-fit:contain}
+#weapon-list .weapons button strong{grid-column:2;grid-row:1;display:block;min-width:0;line-height:1.25;overflow-wrap:normal;word-break:normal}
+#weapon-list .weapons button>span{grid-column:2;grid-row:2;display:block;min-width:0;font-family:"Barlow Condensed",sans-serif;line-height:1.4;overflow-wrap:break-word;white-space:normal}
