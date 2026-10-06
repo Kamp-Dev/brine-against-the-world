@@ -19,8 +19,8 @@ function renderReferenceBattle(){
  const pageInfo={road:['ROAD','Skills & equipment.','road'],guns:['GEAR','Guns & loadouts.','gear'],build:['BUILD','Upgrades & Overclock.','build'],voyage:['VOYAGE','Campaigns & expeditions.','voyage'],camp:['HARBOR','Restore & reclaim.','harbor'],journal:['JOURNAL','Training & field guide.','gear'],settings:['SETTINGS','Play your way.','salvage']};
  const descriptions={damage:'Increase damage per hit.',shell:'Increase max health.',speed:'Fire rate; excess adds damage.',focus:'Critical hit chance.',rupture:'Critical hit damage.',plating:'Reduce incoming damage.',scavenging:'More salvage per win.',patch:'Recover health after wins.',tide:'Charge melee forms faster.'};
  const iconMap={damage:'damage',shell:'shell',speed:'speed',focus:'focus',rupture:'damage',plating:'shell',scavenging:'salvage',patch:'hull',tide:'power'};
- const track=$('upgrade-track');$('deck-upgrades').querySelector('h2').textContent='CORE UPGRADES';$('deck-upgrades').querySelector('p').hidden=true;
- const advanced=document.createElement('section');advanced.id='reference-advanced';advanced.innerHTML='<h2>ADVANCED <small>SWIPE FOR MORE</small></h2><div id="reference-advanced-track" tabindex="0" aria-label="Swipe advanced upgrades"></div>';$('deck-upgrades').after(advanced);
+ const track=$('upgrade-track');track.setAttribute('aria-label','Core upgrades');$('deck-upgrades').querySelector('h2').textContent='CORE UPGRADES';$('deck-upgrades').querySelector('p').hidden=true;
+ const advanced=document.createElement('section');advanced.id='reference-advanced';advanced.innerHTML='<h2>ADVANCED UPGRADES</h2><div id="reference-advanced-track" aria-label="Advanced upgrades by category"></div>';$('deck-upgrades').after(advanced);
  for(const [id,desc] of Object.entries(descriptions)){
   const b=$('upgrade-'+id);b.classList.add('reference-row');b.querySelector('svg').style.display='none';
   const icon=document.createElement('i');icon.className='ref-icon ref-upgrade-icon';icon.style.setProperty('--icon','url(ui/reference/icon-'+iconMap[id]+'.png)');b.prepend(icon);
@@ -28,7 +28,12 @@ function renderReferenceBattle(){
   const rank=document.createElement('span');rank.className='ref-rank';b.append(rank);
   const buy=document.createElement('span');buy.className='ref-buy';buy.textContent='UPGRADE';b.append(buy);
  }
- for(const id of ['focus','rupture','plating','scavenging','patch','tide'])$('reference-advanced-track').append($('upgrade-'+id));
+ for(const [name,ids] of [['Combat',['focus','rupture','tide']],['Survival',['plating','patch']],['Loot',['scavenging']]]){
+  const group=document.createElement('section');group.className='ref-upgrade-category';group.setAttribute('aria-label',name+' upgrades');
+  const heading=document.createElement('h3');heading.textContent=name;group.append(heading);
+  for(const id of ids)group.append($('upgrade-'+id));
+  $('reference-advanced-track').append(group);
+ }
  for(const [id,icon] of [['farm','push'],['volley','volley']]){const b=$(id);b.querySelector('svg').style.display='none';const image=document.createElement('i');image.className='ref-action-icon ref-icon';image.style.setProperty('--icon','url(ui/reference/icon-'+icon+'.png)');b.prepend(image);}
  for(const [id,icon] of [['road','road'],['guns','gear'],['build','build'],['voyage','voyage'],['camp','harbor']]){$('nav-'+id).querySelector('svg').style.display='none';const i=document.createElement('i');i.className='ref-icon';i.style.setProperty('--icon','url(ui/reference/icon-'+icon+'.png)');$('nav-'+id).prepend(i);}
  const previous=refresh;refresh=function(){previous();const page=screen.dataset.deck||'road',info=pageInfo[page];$('ref-page-title').textContent=info[0];$('ref-page-description').textContent=info[1];$('ref-page-icon').style.setProperty('--icon','url(ui/reference/icon-'+info[2]+'.png)');banner.dataset.page=page;advanced.hidden=page!=='build';

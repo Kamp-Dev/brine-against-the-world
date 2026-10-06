@@ -43,7 +43,7 @@
 .ref-buy{display:flex;align-items:center;justify-content:center;background:var(--ref-teal);background-size:14cqw;border:.8cqw solid transparent;border-image:url('ui/reference/button-frame.png') 10 stretch;color:#fff3d9;font:700 2.6cqw 'Barlow Condensed';text-align:center}
 .reference-row .ref-buy{position:absolute;left:84%;width:16%;top:5%;height:88%}
 #reference-advanced h2{display:flex;align-items:center;justify-content:space-between}#reference-advanced h2 small{font:700 1.5cqw 'Barlow Condensed';color:#546963}
-#reference-advanced-track{display:flex;gap:1cqw;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x}#reference-advanced-track .reference-row{scroll-snap-align:start;touch-action:pan-x!important}
+#reference-advanced-track{display:grid;gap:1.4cqw;touch-action:pan-y}.ref-upgrade-category{display:grid;gap:.6cqw;min-width:0}#drawer .ref-upgrade-category h3{margin:0;padding:.5cqw .8cqw;background:#174750;color:#fff0ce;font:700 2.8cqw 'Barlow Condensed';text-transform:uppercase;border-left:.7cqw solid #ef7854}#reference-advanced-track .reference-row{touch-action:pan-y!important}
 .deck-group{border:0;padding:0;margin:0 0 1cqw}#deck-overclock{border:1cqw solid transparent;border-image:url('ui/reference/panel-frame.png') 10 stretch;background:var(--ref-paper)}
 #drawer #deck-overclock>h2{display:flex;align-items:center;gap:1cqw;background:#ed643d url('ui/reference/salmon.png') center/100% 100%;color:#fff6da;font-size:3.6cqw;padding:.5cqw .7cqw;margin:0}.deck-group h2 .ref-icon{height:4.5cqw;width:4.5cqw}.deck-group h2 small{font:700 2.2cqw 'Barlow Condensed';text-transform:none}
 #deck-overclock .tideglass-bank,#deck-overclock [data-forge-panel]>p{display:none}
