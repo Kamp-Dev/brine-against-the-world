@@ -18,8 +18,8 @@ function create(){let previous=null,source=null,priorReady=new Set();return {sca
  if(source!==p){previous=null;priorReady=new Set();source=p;}
  const available=ready(p,now),events=available.filter(e=>!priorReady.has(e.id));
  if(previous){
-  if(p.completed>previous.completed)events.push({title:'REWARD COLLECTED!',detail:P.contracts.find(c=>c.id===p.lastContractClaim)?.name||'Materials delivered',tab:'contracts',repeat:p.lastContractClaim});
-  if(previous.expedition&&!p.expedition)events.push({title:'CARGO COLLECTED!',detail:P.expeditions[previous.expedition.id].name+' · materials delivered',tab:'expeditions'});
+  if(p.completed>previous.completed)events.push({id:'contract:'+p.lastContractClaim,title:'REWARD COLLECTED!',detail:P.contracts.find(c=>c.id===p.lastContractClaim)?.name||'Materials delivered',tab:'contracts',repeat:p.lastContractClaim});
+  if(previous.expedition&&!p.expedition)events.push({id:'crew:'+previous.expedition.finish,repeatCrew:previous.expedition.id,title:'CARGO COLLECTED!',detail:P.expeditions[previous.expedition.id].name+' · materials delivered',tab:'expeditions'});
   p.build.forEach((v,i)=>{if(v>previous.build[i])events.push({title:v===3?'RESTORATION COMPLETE!':'HARBOR UPGRADED!',detail:P.buildings[i].name+' · level '+v+' / 3',tab:'harbor'});});
   p.district.forEach((v,i)=>{if(v&&!previous.district[i])events.push({title:'DISTRICT RECLAIMED!',detail:P.captains[i].name+' defeated · rewards delivered',tab:'districts'});});
   p.weaponXP.forEach((v,i)=>{if(P.tier(v)>P.tier(previous.weaponXP[i]))events.push({title:'MASTERY UP!',detail:['Plugger','Tideline','Low Tide','Rivet Rattle','Keelspike','Boilerjaw'][i]+' · tier '+P.tier(v),tab:'mastery'});});

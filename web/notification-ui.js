@@ -6,25 +6,33 @@ $('screen').append(comicToast);
 function openComicReward(tab){progressTab=tab;openHarbor('camp');progressKey='';refreshProgressionUI();}
 function dismissComic(){comicCurrent=null;comicToast.hidden=true;}
 comicToast.querySelector('.comic-close').onclick=dismissComic;
-comicToast.querySelector('.comic-open').onclick=()=>{const event=comicCurrent;if(!event)return;const collected=event.repeat?P.selectContract(model.progress,event.repeat):BrineNotifications.claim(model.progress,event);dismissComic();if(collected){persist();progressKey='';}refresh();};
+comicToast.querySelector('.comic-open').onclick=()=>{
+ const event=comicCurrent;if(!event)return;
+ if(event.repeat||event.repeatCrew!==undefined){
+  const ok=event.repeat?P.selectContract(model.progress,event.repeat):P.dispatch(model.progress,event.repeatCrew,Date.now());
+  if(ok){dismissComic();persist();progressKey='';}refresh();return;
+ }
+ const crew=model.progress.expedition?.id;
+ if(BrineNotifications.claim(model.progress,event)){
+  comicCurrent={...event,collect:false,title:'REWARD COLLECTED!',repeat:event.tab==='contracts'?event.id.slice('contract:'.length):undefined,repeatCrew:event.tab==='expeditions'?crew:undefined};
+  comicUntil=performance.now()+8000;renderComicTicket();persist();progressKey='';
+ }else dismissComic();
+ refresh();
+};
 comicToast.onpointerenter=()=>comicPaused=true;comicToast.onpointerleave=()=>{comicPaused=false;comicUntil=performance.now()+4000;};
 comicToast.onfocusin=()=>comicPaused=true;comicToast.onfocusout=()=>{comicPaused=false;comicUntil=performance.now()+4000;};
 function refreshComicNotifications(){
  if(!model.progress)return;
  if(comicSource!==model.progress){comicSource=model.progress;comicQueue.length=0;dismissComic();}
  const result=comicTracker.scan(model.progress),allowed=e=>e.tab!=='contracts'||typeof BrineJourney==='undefined'||BrineJourney.available(model,'contracts');const events=result.events.filter(allowed),available=result.available.filter(allowed);comicReady=available;
- comicQueue.push(...events);
+ comicQueue.push(...events.filter(e=>!(comicCurrent&&!comicCurrent.collect&&e.id===comicCurrent.id)));
  // A collected reward must not leave a stale collection prompt in the queue.
  for(let i=comicQueue.length-1;i>=0;i--)if(comicQueue[i].collect&&!available.some(x=>x.id===comicQueue[i].id))comicQueue.splice(i,1);
  if(comicCurrent?.collect&&!available.some(x=>x.id===comicCurrent.id))dismissComic();
  if(!document.hidden&&!comicPaused&&!comicToast.contains(document.activeElement)&&performance.now()>comicUntil)dismissComic();
  if(!comicCurrent&&comicQueue.length&&!document.hidden&&$('welcome').hidden&&$('loading').hidden){
   comicCurrent=comicQueue.shift();comicUntil=performance.now()+8000;comicToast.dataset.kind=comicCurrent.collect?'ready':'done';
-  comicToast.querySelector('strong').textContent=comicCurrent.collect?'COLLECT':comicCurrent.repeat?'↻ REPEAT':'COMPLETE';
-  comicToast.querySelector('p').textContent=comicCurrent.detail;
-  comicToast.querySelector('.comic-open').textContent=comicCurrent.collect?'COLLECT':comicCurrent.repeat?'REPEAT CONTRACT':'DISMISS';
-  comicToast.querySelector('.comic-open').setAttribute('aria-label',comicCurrent.title+' '+comicCurrent.detail+(comicCurrent.collect?' — collect reward':comicCurrent.repeat?' — repeat completed contract':' — dismiss'));
-  comicToast.title=comicCurrent.title+' '+comicCurrent.detail;
+  renderComicTicket();
   comicToast.hidden=false;
  }
  if(available.length){$('goal-eyebrow').textContent=available.length+' REWARD'+(available.length===1?'':'S')+' READY';$('goal-detail').textContent=available[0].detail+' · tap to collect';$('next-goal').dataset.ready=true;$('next-goal').setAttribute('aria-label','Open ready rewards: '+available[0].detail);}
@@ -32,3 +40,12 @@ function refreshComicNotifications(){
 
 
 
+
+function renderComicTicket(){
+ comicToast.dataset.kind=comicCurrent.collect?'ready':'done';
+  comicToast.querySelector('strong').textContent=comicCurrent.collect?'COLLECT':(comicCurrent.repeat||comicCurrent.repeatCrew!==undefined)?'↻ REPEAT':'COMPLETE';
+  comicToast.querySelector('p').textContent=comicCurrent.detail;
+  comicToast.querySelector('.comic-open').textContent=comicCurrent.collect?'COLLECT':(comicCurrent.repeat||comicCurrent.repeatCrew!==undefined)?'REPEAT CONTRACT':'DISMISS';
+  comicToast.querySelector('.comic-open').setAttribute('aria-label',comicCurrent.title+' '+comicCurrent.detail+(comicCurrent.collect?' — collect reward':(comicCurrent.repeat||comicCurrent.repeatCrew!==undefined)?' — repeat completed contract':' — dismiss'));
+  comicToast.title=comicCurrent.title+' '+comicCurrent.detail;
+}
