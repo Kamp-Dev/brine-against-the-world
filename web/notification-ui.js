@@ -20,9 +20,11 @@ function refreshComicNotifications(){
  if(!document.hidden&&!comicPaused&&!comicToast.contains(document.activeElement)&&performance.now()>comicUntil)dismissComic();
  if(!comicCurrent&&comicQueue.length&&!document.hidden&&$('welcome').hidden&&$('loading').hidden){
   comicCurrent=comicQueue.shift();comicUntil=performance.now()+8000;comicToast.dataset.kind=comicCurrent.collect?'ready':'done';
-  comicToast.querySelector('strong').textContent=comicCurrent.title;
+  comicToast.querySelector('strong').textContent=comicCurrent.collect?'COLLECT':'COMPLETE';
   comicToast.querySelector('p').textContent=comicCurrent.detail;
   comicToast.querySelector('.comic-open').textContent=comicCurrent.collect?'VIEW & COLLECT →':'VIEW PROGRESS →';
+  comicToast.querySelector('.comic-open').setAttribute('aria-label',comicCurrent.title+' '+comicCurrent.detail+(comicCurrent.collect?' — view and collect':' — view progress'));
+  comicToast.title=comicCurrent.title+' '+comicCurrent.detail;
   comicToast.hidden=false;
  }
  if(available.length){$('goal-eyebrow').textContent=available.length+' REWARD'+(available.length===1?'':'S')+' READY';$('goal-detail').textContent=available[0].detail+' · tap to collect';$('next-goal').dataset.ready=true;$('next-goal').setAttribute('aria-label','Open ready rewards: '+available[0].detail);}

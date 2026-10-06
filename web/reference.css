@@ -190,3 +190,19 @@
 #deck-home #next-goal[data-ready=true]>svg{display:none}
 #deck-home #next-goal[data-ready=true]:before{width:8cqw;height:8cqw;flex:none}
 @media(prefers-reduced-motion:reduce){#comic-notice .reward-crate:before,#deck-home #next-goal[data-ready=true]:before{animation:cargo-crate-nudge-often 2s ease-in-out infinite}}
+
+/* All completion notices share the campaign cargo ticket and anchor. */
+#comic-notice{left:auto;right:2.6%;top:41cqw;width:40%;height:max(44px,10.7cqw);min-height:0;padding:0;border:0;box-shadow:none;transform:none;display:block;overflow:visible;background:transparent url('ui/cargo-comic-tab-v1.png') center/100% 130% no-repeat;animation:none}
+#comic-notice:before{display:none}
+#comic-notice .reward-crate{left:1.5%;top:4%;width:24%;height:94%;aspect-ratio:auto;transform:none}
+#comic-notice .comic-copy{position:absolute;left:25%;right:20%;top:18%;bottom:12%;text-align:center;pointer-events:none}
+#comic-notice .comic-copy strong{font:700 3.4cqw/1 'Barlow Condensed',sans-serif;letter-spacing:0;color:#08252d}
+#comic-notice .comic-copy p{position:absolute;left:0;right:0;bottom:0;margin:0;font:700 1.4cqw/1 'Barlow Condensed',sans-serif;color:#08252d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase}
+#comic-notice button.comic-open,#comic-notice[data-kind=ready] button.comic-open,#comic-notice[data-kind=done] button.comic-open{position:absolute;inset:0;width:100%;height:100%;min-height:0;display:block;padding:0;border:0;background:transparent;box-shadow:none;color:transparent;font-size:0;z-index:1}
+#comic-notice button.comic-close{display:none}
+#screen:has(#comic-notice:not([hidden])) #campaign-banner[data-ready=true]{visibility:hidden}
+#screen:has(#comic-notice:not([hidden])) #form-status{top:54cqw}
+
+#comic-notice .comic-copy{top:0;bottom:0}
+#comic-notice .comic-copy strong{position:absolute;top:18%;left:0;right:0}
+#comic-notice .comic-copy p{top:68%;bottom:auto}
