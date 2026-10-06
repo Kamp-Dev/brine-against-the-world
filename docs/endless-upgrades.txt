@@ -1,0 +1,29 @@
+Endless upgrade balance — October 6, 2026
+
+Core and advanced upgrades have no designed rank ceiling except Deadeye (100 ranks,
+200% chance) and Rupture (30 ranks, 300% crit damage). Overclock ranks are unlimited.
+Weapon attachment slots, building restoration tiers and campaign tiers remain discrete
+unlock systems, not repeatable stat ranks.
+
+Crit tiers: at 150%, every hit crits and half receive a second tier. Each tier adds
+(crit multiplier minus 1) to normal damage. At 200% chance / 300% damage every hit is
+5x, not 9x. This keeps double-tier crits strong without exponential multiplication.
+
+Early prices stay unchanged through rank 30. Thereafter costs scale as rank^1.5,
+replacing exponential prices. Existing linear enemy health/damage and stage rewards
+continue beyond the former save limit of 10,000 stages. Existing rank and currency
+saves are preserved. Currency no longer stops at one billion or wraps at 32 bits.
+
+Speed gains taper after rank 30. Visible fire rate stops at 12.5 shots/sec; further
+power is transferred to shot damage so it still increases DPS without overwhelming
+animation/projectile counts. Armor scales as rank/(80+rank). Recovery and tide charge
+approach 100% with diminishing returns. These have no purchase cap.
+
+Infinite-rank bars show progress toward each next 10-rank milestone. Number formatting
+uses compact suffixes and scientific notation for extremely large values. JavaScript
+safe integer precision still bounds ranks/stages; this is not arbitrary precision.
+
+Validation: all 22 suites, including new purchases/gains through rank 100,000,
+stage 1,000,000 persistence, Overclock past 100, caps and double-tier crit output.
+Browser verified an actual rank-101 purchase with an isolated test save. This is a
+browser balance update; the separate Unity implementation is not synchronized here.
