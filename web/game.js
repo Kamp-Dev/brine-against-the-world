@@ -75,7 +75,7 @@ function enemy(){
  const profile=enemyMotionConfig.profiles.find(p=>p.action===e.action),recoil=Math.sin(Math.min(1,model.enemyAttack/.32)*Math.PI);
  const squash=1-windup*profile.squash+(e.action==='repair'?recoil*.12:0),bob=model.state==='travel'?Math.sin(model.time*6)*profile.bob:0;
  const h=e.height*.78,w=b.w/b.h*h;
- ctx.save();ctx.beginPath();ctx.rect(0,315,450,258);ctx.clip();ctx.translate(x-recoil*profile.lunge,572+bob+(model.enemyDepth||0)-windup*profile.hop);ctx.rotate(windup*profile.lean-recoil*.06);ctx.scale(1+(1-squash)*.22,squash);
+ ctx.save();/* The battle viewport owns the screen edges. Only burrowing needs a ground mask. */if(model.enemyDepth>0){ctx.beginPath();ctx.rect(-1000,-1000,3000,1573);ctx.clip();}ctx.translate(x-recoil*profile.lunge,572+bob+(model.enemyDepth||0)-windup*profile.hop);ctx.rotate(windup*profile.lean-recoil*.06);ctx.scale(1+(1-squash)*.22,squash);
  if(model.effects.some(e=>e.type==='hit'&&e.life>.48))ctx.filter='brightness(1.4)';
  ctx.drawImage(img,b.x,b.y,b.w,b.h,-w/2,-h,w,h);
  ctx.restore();if(model.enemyDepth>1){ctx.fillStyle='#b99a66';ctx.beginPath();ctx.ellipse(x,570,45,10,0,0,7);ctx.fill();}
