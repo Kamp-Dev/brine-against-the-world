@@ -114,3 +114,20 @@
 #form-status{position:absolute;top:43cqw;right:3%;max-width:66%;z-index:4;background:#123b40e8;color:#fff0cd;padding:.7cqw 1cqw;border-left:.5cqw solid #ed7953;font:700 2.1cqw 'Barlow Condensed';pointer-events:none}
 
 #deck-upgrades>p{margin:0 0 .7cqw;font:700 2.4cqw "Barlow Condensed";color:#365459}button[id^="upgrade-"],button[data-forge="clock"]{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}.hold-upgrading .ref-buy{color:#ffae82}
+
+/* Each Overclock detail owns its own line. */
+#drawer #deck-overclock .ref-clock-row{height:max(62px,11cqw)}
+#drawer .ref-clock-row h3{top:3%;left:14%;max-width:54%;line-height:1.1}
+#drawer .ref-clock-row p.ref-clock-bonus{top:36%;left:14%;max-width:54%;font-size:2.4cqw;line-height:1.1}
+#drawer .ref-clock-row p.ref-clock-rank{top:69%;left:14%;max-width:54%;font-size:2cqw;line-height:1.1;color:#496168}
+#campaign-banner[data-ready="true"]{background:#efbf58;color:#092c33;border:2px solid #ffe3a2;box-shadow:0 2px 0 #09252c;font-weight:700;font-size:2.8cqw;min-height:5cqw;cursor:pointer}
+#campaign-banner[data-ready="true"]:active{background:#ffdb82}
+
+/* Scale lessons with the game, including when a large render is reduced on mobile. */
+#field-training{left:3%;right:3%;padding:2.2cqw;border:.6cqw solid #092329;box-shadow:.7cqw .7cqw 0 #be572e;max-height:calc(100% - 114cqw);overflow:auto;font:600 max(16px,3.4cqw)/1.4 'Barlow Condensed',sans-serif}
+#field-training strong{font:700 max(20px,4.5cqw)/1.1 'Barlow Condensed',sans-serif;max-width:83%}
+#field-training p{margin:1.5cqw 0 2cqw;font:inherit;white-space:normal;overflow-wrap:anywhere}
+#field-training button{font:700 max(15px,3.2cqw)/1.15 'Barlow Condensed',sans-serif;min-height:max(44px,8cqw);padding:1.2cqw 2cqw}
+#field-training #training-hide{font-size:max(24px,5cqw);min-width:max(44px,8cqw);flex-shrink:0}
+#field-training #training-skip{margin-left:2cqw}
+#campaign-banner[data-ready="true"]{min-height:max(44px,6cqw);top:calc(77cqw - max(44px,6cqw));}
