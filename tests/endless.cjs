@@ -7,3 +7,5 @@ m.forge.overclock.power=100;assert(m.buyOverclock('power'));assert.equal(m.forge
 const a=model();a.stage=100000;a.startEncounter();const low=a.maxHp,lowReward=a.reward;a.stage=1000000;a.startEncounter();assert(a.maxHp>low&&a.reward>lowReward);
 const costs=[29,30,31,100,1000].map(r=>{a.upgrades.damage=r;return a.cost('damage')});assert(costs.every((v,i)=>!i||v>costs[i-1]));assert(F.format(1e24).length<12);
 console.log('PASS: uncapped rank purchases, useful gains through 100k, million-stage saves, bounded combat rates, two-tier crits, endless Overclock, increasing rewards and costs.');
+
+const impact=m.effects.find(e=>e.type==='hit');assert.equal(impact.critTier,2);assert.equal(impact.damage,500);assert.equal(impact.targetX,m.enemyX);assert(impact.targetY<572);

@@ -76,14 +76,14 @@ function enemy(){
  const squash=1-windup*profile.squash+(e.action==='repair'?recoil*.12:0),bob=model.state==='travel'?Math.sin(model.time*6)*profile.bob:0;
  const h=e.height*.78,w=b.w/b.h*h;
  ctx.save();/* The battle viewport owns the screen edges. Only burrowing needs a ground mask. */if(model.enemyDepth>0){ctx.beginPath();ctx.rect(-1000,-1000,3000,1573);ctx.clip();}ctx.translate(x-recoil*profile.lunge,572+bob+(model.enemyDepth||0)-windup*profile.hop);ctx.rotate(windup*profile.lean-recoil*.06);ctx.scale(1+(1-squash)*.22,squash);
- if(model.effects.some(e=>e.type==='hit'&&e.life>.48))ctx.filter='brightness(1.4)';
+ const impact=model.effects.findLast(e=>e.type==='hit'&&e.duration-e.life<.18);if(impact){const age=impact.duration-impact.life,k=(1-age/.18)*(impact.critTier?1.6:1);ctx.translate(Math.sin(age*45)*7*k,0);ctx.scale(1-.06*k,1+.045*k);if(age<.065)ctx.filter='brightness(1.35)';}
  ctx.drawImage(img,b.x,b.y,b.w,b.h,-w/2,-h,w,h);
  ctx.restore();if(model.enemyDepth>1){ctx.fillStyle='#b99a66';ctx.beginPath();ctx.ellipse(x,570,45,10,0,0,7);ctx.fill();}
 
 
 }
 function effects(){
- for(const e of model.effects)if(e.type==='hit'&&e.weapon==='melee')drawComicImpact(e);
+ for(const e of model.effects)if(e.type==='hit')drawComicImpact({...e,power:e.critTier?1.15:e.weapon==='melee'?.85:.5});
 
  for(const s of model.enemyShots){if(s.kind==='slam'||s.kind==='burrow'){ctx.strokeStyle=s.kind==='slam'?'#b65332':'#746348';ctx.lineWidth=5;ctx.beginPath();ctx.arc(s.x,570,s.kind==='slam'?22:13,Math.PI,Math.PI*2);ctx.stroke();}else{ctx.save();ctx.translate(s.x,s.y);ctx.rotate(model.time*8);path([[-6,0],[0,-5],[6,1],[0,5]],s.kind==='burst'?'#426d68':'#ae6a48');ctx.restore();}}
 
@@ -109,8 +109,9 @@ function effects(){
     for(let i=0;i<8;i++){const angle=i*2.4,r=4+t*29;ctx.save();ctx.translate(Math.cos(angle)*r,Math.sin(angle)*r+t*t*24);ctx.rotate(angle+t*3);ctx.fillStyle=i%2?'#f7e4ba':'#b98b52';ctx.strokeStyle='#483e2f';ctx.lineWidth=1;ctx.fillRect(-3,-3,6,6);ctx.strokeRect(-3,-3,6,6);ctx.restore()}
    }ctx.restore();
   }
-  if(e.type!=='flash'&&e.type!=='repair'){ctx.textAlign='center';ctx.fillStyle=e.type==='reward'?'#203d2b':'#793319';ctx.font='bold 16px system-ui';ctx.fillText(e.type==='reward'?'+'+e.damage+' salvage':e.type==='repair'?'+'+e.damage+' repair':e.type==='miss'?'BURROWED':'−'+e.damage,e.x,e.y-28-(1-e.life)*18);ctx.textAlign='left'}
+  if(e.type!=='hit'&&e.type!=='flash'&&e.type!=='repair'){ctx.textAlign='center';ctx.fillStyle=e.type==='reward'?'#203d2b':'#793319';ctx.font='bold 16px system-ui';ctx.fillText(e.type==='reward'?'+'+e.damage+' salvage':e.type==='repair'?'+'+e.damage+' repair':e.type==='miss'?'BURROWED':'−'+e.damage,e.x,e.y-28-(1-e.life)*18);ctx.textAlign='left'}
  }
+ drawComicDamageNumbers(ctx,model.effects,BrineTideglass.format);
 }
 function render(t){if(ready&&last&&t-last<1000/BrineDisplay.fps-1){requestAnimationFrame(render);return;}const dt=last?Math.min((t-last)/1000,.1):0;last=t;if(ready){origin=muzzle(blendedPose().grip);origin.x+=model.meleeAdvance||0;if(!document.hidden)BrineSpeed.advance(dt,model,()=>{const p=muzzle(blendedPose().grip);p.x+=model.meleeAdvance||0;return p;});if(typeof renderReferenceBattle==='function'){renderReferenceBattle();}else{harborBackdrop();ctx.save();ctx.beginPath();ctx.rect(5,52,440,382+BrineDisplay.extra);ctx.clip();ctx.translate(0,-143+BrineDisplay.extra);enemy();actor();effects();ctx.restore();harborHUD();}refresh()}requestAnimationFrame(render)}
 function hud(){
