@@ -8,3 +8,11 @@ assert.equal(N.create().scan(p,1001).events.length,2,'returning players see uncl
 p.build[0]=3;p.district[0]=true;p.weaponXP[0]=60;p.formXP[0]=12;p.guide[0]=15;result=n.scan(p,1001);assert.equal(result.events.length,5);assert.equal(n.scan(p,1001).events.length,0);
 assert.equal(n.scan(P.fresh(),1001).events.length,0,'fresh save clears detector without false collection notifications');
 console.log('PASS: completion transitions, no per-frame spam, repeatable contracts, expedition timing, offline-ready reminders, collection, milestones, and reset.');
+const direct=P.fresh();direct.counts[0]=P.contracts[0].target;direct.contract=P.contracts[1].id;
+const contractReward=N.ready(direct,0).find(e=>e.tab==='contracts');
+assert(N.claim(direct,contractReward,0));assert.equal(direct.contract,P.contracts[1].id,'Keep tracked contract');
+assert.equal(direct.completed,1);assert.deepEqual(direct.materials,P.contracts[0].reward);
+assert(!N.claim(direct,contractReward,0),'No double collection');
+direct.expedition={id:0,finish:1000};const crew={id:'crew:1000',tab:'expeditions',collect:true};
+assert(!N.claim(direct,crew,999));assert(N.claim(direct,crew,1000));assert.equal(direct.expedition,null);assert(!N.claim(direct,crew,1001));
+assert(!N.claim(direct,{tab:'harbor'},1001));console.log('PASS: direct contract and crew rewards, tracked contract preserved, no early or duplicate claims');

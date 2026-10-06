@@ -5,6 +5,15 @@ function ready(p,now){return [
  ...P.contracts.flatMap((c,i)=>p.counts[i]>=c.target?[{id:'contract:'+c.id,title:'CONTRACT COMPLETE!',detail:c.name,tab:'contracts',collect:true}]:[]),
  ...(p.expedition&&Math.max(now,p.clock)>=p.expedition.finish?[{id:'crew:'+p.expedition.finish,title:'CREW RETURNED!',detail:P.expeditions[p.expedition.id].name,tab:'expeditions',collect:true}]:[])
 ];}
+function claim(p,event,time=Date.now()){
+ if(!event?.collect||!ready(p,time).some(r=>r.id===event.id))return false;
+ if(event.tab==='expeditions')return P.collect(p,time);
+ if(event.tab==='contracts'){
+  const id=event.id.slice('contract:'.length),previous=p.contract;
+  try{p.contract=id;return P.claimContract(p);}finally{p.contract=previous;}
+ }
+ return false;
+}
 function create(){let previous=null,source=null,priorReady=new Set();return {scan(p,now=Date.now()){
  if(source!==p){previous=null;priorReady=new Set();source=p;}
  const available=ready(p,now),events=available.filter(e=>!priorReady.has(e.id));
@@ -19,5 +28,5 @@ function create(){let previous=null,source=null,priorReady=new Set();return {sca
  }
  previous=JSON.parse(JSON.stringify(p));priorReady=new Set(available.map(e=>e.id));return {events,available};
  }};}
-const api={create,ready};if(typeof module!=='undefined')module.exports=api;else root.BrineNotifications=api;
+const api={create,ready,claim};if(typeof module!=='undefined')module.exports=api;else root.BrineNotifications=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
