@@ -6,7 +6,7 @@
  root.BrineDisplay={extra:0,height:800,fps:60};
  let quality='auto';try{quality=localStorage.getItem('brine-display-quality')||'auto';}catch{}if(!profiles[quality])quality='auto';
  const screen=document.getElementById('screen'),canvas=document.getElementById('game'),choice=document.getElementById('quality-choice');choice.value=quality;
- function apply(){const box=screen.getBoundingClientRect();if(!box.width||!box.height)return;const s=sizing(box.width,box.height,window.devicePixelRatio||1,quality);if(screen.dataset.layout==='deck')s.extra=Math.max(0,s.height*.54-434);Object.assign(root.BrineDisplay,{extra:s.extra,height:s.height,fps:s.fps});screen.style.setProperty('--battle-extra',(s.extra*box.width/450)+'px');
+ function apply(){const box=screen.getBoundingClientRect();if(!box.width||!box.height)return;const s=sizing(box.width,box.height,window.devicePixelRatio||1,quality);if(screen.dataset.layout==='reference'){s.height=box.height*450/box.width;s.pixelsHigh=Math.round(s.height*s.width/450);s.extra=0;}if(screen.dataset.layout==='deck')s.extra=Math.max(0,s.height*.54-434);Object.assign(root.BrineDisplay,{extra:s.extra,height:s.height,fps:s.fps});screen.style.setProperty('--battle-extra',(s.extra*box.width/450)+'px');
   if(canvas.width!==s.width||canvas.height!==s.pixelsHigh){canvas.width=s.width;canvas.height=s.pixelsHigh;}
   const c=canvas.getContext('2d');c.setTransform(s.width/450,0,0,s.pixelsHigh/s.height,0,0);c.imageSmoothingEnabled=true;c.imageSmoothingQuality=quality==='performance'?'low':'high';
   document.getElementById('quality-detail').textContent=s.width+' × '+s.pixelsHigh+' render resolution · '+s.fps+' FPS target';

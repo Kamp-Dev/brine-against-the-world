@@ -1,0 +1,15 @@
+Reference UI pass
+
+The approved Build mockup is preserved in art/approved-build-ui-reference.png.
+Run scripts/extract-reference-ui.py with that path to regenerate the cropped borders,
+textures and icons. Text, currencies, health, XP, prices and ranks remain live DOM.
+
+reference-ui.js reframes the existing battle without changing character or scenery
+assets. The same camera is used in every tab. Road retains the interactive stage route.
+Core upgrades use vertical rows; advanced upgrades swipe horizontally. Only the lower
+content area scrolls. Journal and Settings remain directly available in the header.
+
+Checked at 320x740, 390x844 and reference proportions. Purchases were checked with a
+separate temporary save fixture; user progress was not reset. All 21 existing suites
+passed. No GodModeAI credits were used. This update targets the browser UI; Unity UI
+has not been ported in this pass.

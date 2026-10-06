@@ -1,0 +1,87 @@
+/* Artwork and proportions extracted from the user's 1024 x 1536 reference. */
+:root{--comic:'Barlow Condensed';--ref-paper:url('ui/reference/paper.png');--ref-teal:url('ui/reference/teal.png')}
+#screen{width:min(100%,66.6667dvh,1024px);height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));--deck-top:55cqw;background:#003742}
+#reference-header{position:absolute;inset:0 0 auto;height:11.133cqw;background:url('ui/reference/header.png') center/100% 100% no-repeat;z-index:8}
+#deck-tools{top:0;left:78.1%;width:20.2%;height:10.5cqw;gap:0}
+#deck-tools button{width:50%;height:100%;border:0;background:transparent;color:transparent;font-size:0}
+#reference-header:after{content:'';position:absolute;pointer-events:none;top:1.2cqw;left:84.9%;width:1.7cqw;height:1.8cqw;background:#003c46;border-radius:50%}
+#game{pointer-events:none}#deck-backing{top:35cqw;background:#003742 url('ui/reference/teal.png') repeat;background-size:24cqw}
+#reference-hud{position:absolute;inset:12.1cqw 2.6% auto;z-index:3;display:flex;justify-content:space-between;pointer-events:none}
+.ref-health{width:24.7%;height:11.5cqw;background:var(--ref-paper);border:1.2cqw solid transparent;border-image:url('ui/reference/hp-frame.png') 14 stretch;padding:0 .4cqw;font-family:'Barlow Condensed';color:#061f27;line-height:1.1}
+.enemy-health{height:8cqw}.ref-health>strong{display:block;font-size:2.5cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ref-hp{position:relative;height:3cqw;border:.24cqw solid #061d23;background:#173f45;margin:.4cqw 0}.ref-hp i{display:block;height:100%;background:#ee653c}.ref-hp b{position:absolute;inset:0;text-align:center;color:#fff3d4;font-size:2.45cqw;line-height:1.15}#ref-xp-text{font-size:2.1cqw}.ref-xp{height:1.3cqw;background:#25424a;border:.2cqw solid #071f26;margin-top:.2cqw}.ref-xp i{display:block;background:#b6dfdc;height:100%}
+#battle-speed{top:24.4cqw;left:3.2%;width:5.5cqw;height:5.5cqw;font:3.4cqw 'Barlow Condensed';border:.4cqw solid #092329;border-radius:0}
+#battle-actions{top:35.5cqw;left:1.5%;width:97%;height:9.2cqw;grid-template-columns:32% 34% 32%;gap:1%;z-index:6}
+#battle-actions .harbor-panel-art{display:none}
+#battle-actions button.painted-harbor-panel,#battle-actions #ultimate-quick{clip-path:none;box-shadow:none!important;border:1cqw solid transparent!important;border-image:url('ui/reference/action-frame.png') 12 stretch!important;background:var(--ref-teal)!important;background-size:20cqw!important;color:#f8efd8!important;position:relative;display:block;padding:0!important;text-align:left;overflow:hidden;font-family:'Barlow Condensed'}
+#battle-actions #volley[data-ready=true]{border-image-source:url('ui/reference/salmon-frame.png')!important;background:#ef633f url('ui/reference/salmon.png')!important;background-size:100% 100%!important}
+.ref-icon{display:block;mask:var(--icon) center/contain no-repeat;background:currentColor;flex-shrink:0}
+#battle-actions .ref-action-icon{position:absolute;left:2%;top:10%;width:29%;height:75%;color:#fff3d8}
+#battle-actions strong{position:absolute;left:35%;top:7%;font:700 2.8cqw 'Barlow Condensed';white-space:nowrap}
+#battle-actions small{position:absolute;left:35%;bottom:10%;font:700 1.85cqw 'Barlow Condensed';line-height:1.1;white-space:nowrap}
+#battle-actions #volley small,#battle-actions .ref-ready{position:absolute;left:auto;right:1%;bottom:3%;width:auto;background:#fbefd2;color:#aa432d;border:.2cqw solid #082d33;border-radius:.3cqw;padding:.2cqw .9cqw;font:700 2cqw 'Barlow Condensed';line-height:1.1;white-space:nowrap}
+#battle-actions #volley:disabled small{font-size:1.6cqw;background:transparent;border:0;color:#d1d9ca;padding:0}
+#battle-actions #ultimate-quick strong{left:25%;font-size:2.6cqw}#battle-actions #ultimate-quick .ref-action-icon{left:1%;width:20%}#battle-actions #ultimate-quick small{left:25%;font-size:1.5cqw;bottom:10%}#battle-actions #ultimate-quick .ref-ready{font-size:1.6cqw;bottom:10%;max-width:23%;overflow:hidden}#battle-actions .charge-track{display:none}
+#reference-banner{position:absolute;top:45.2cqw;left:1.5%;width:97%;height:9.4cqw;border:1.1cqw solid transparent;border-image:url('ui/reference/banner-frame.png') 14 stretch;background:var(--ref-teal);background-size:30cqw;z-index:6;display:flex;align-items:center;color:#f9ebc5;gap:1%;padding:0 1%}
+#ref-page-icon{width:8%;height:90%}#ref-page-title{font:7cqw Bungee;line-height:1;letter-spacing:-.3cqw;width:26%}#ref-page-description{font:700 2.2cqw 'Barlow Condensed';width:25%;white-space:normal}
+#reference-banner[data-page=build] #ref-page-icon{display:none}#reference-banner[data-page=build] #ref-page-title{width:35%;height:100%;background:url('ui/reference/build-title.png') left center/contain no-repeat;color:transparent}
+.ref-bank{display:flex;align-items:center;gap:.6cqw;width:20%;border-left:.15cqw solid #f6e8c5;padding-left:1.2cqw;height:90%;font:700 2cqw 'Barlow Condensed'}
+.ref-bank .ref-icon{width:5cqw;height:6cqw}.ref-bank span{min-width:0}.ref-bank b{display:block;font-size:3.2cqw;line-height:1.05}.ref-bank:last-child{width:18%}
+#deck-bank{display:none}#deck-home,#drawer{top:55cqw;bottom:14.6cqw;left:1.5%;width:97%;border:0;padding:0 2% 2%;box-shadow:none;background:transparent;scrollbar-color:#97ccd1 #07515a;scrollbar-width:thin}
+#drawer-title{display:none}#drawer{font-family:'Barlow Condensed'}#drawer h2{font:700 3.7cqw 'Barlow Condensed';margin:0 0 .6cqw;text-transform:uppercase;color:#082630}
+#deck-upgrades,#reference-advanced{padding:.8cqw 1.1cqw 1cqw;margin:0 0 .7cqw;background:var(--ref-paper);border:1cqw solid transparent;border-image:url('ui/reference/panel-frame.png') 10 stretch}
+#deck-upgrades>h2{font-size:3.7cqw;margin:0 0 .7cqw}#upgrade-track{gap:.6cqw}
+#drawer #upgrade-track .reference-row,#drawer #reference-advanced-track .reference-row{position:relative;display:block;flex:0 0 100%;width:100%;height:max(52px,10cqw);min-height:0;padding:0;margin:0;clip-path:none;box-shadow:none!important;border:1cqw solid transparent;border-image:url('ui/reference/row-frame.png') 12 stretch;background:var(--ref-paper)!important;color:#061e27;overflow:hidden;opacity:1;touch-action:pan-y}
+.reference-row .harbor-panel-art{display:none}.reference-row .ref-upgrade-icon{position:absolute;left:1%;top:4%;width:11%;height:88%;color:#062630}
+#drawer .reference-row strong{position:absolute;left:14%;top:0;font:700 2.7cqw 'Barlow Condensed';line-height:1.05;white-space:nowrap}
+.reference-row .ref-description{position:absolute;left:14%;top:30%;font:700 2.1cqw 'Barlow Condensed';line-height:1.05}
+#drawer #upgrade-track .reference-row .stat,#drawer #reference-advanced-track .reference-row .stat{position:absolute;left:14%;top:auto;bottom:0;font:700 2.8cqw 'Barlow Condensed';line-height:1.1;max-width:30%;white-space:nowrap}
+.reference-row .ref-rank{position:absolute;left:45%;top:12%;font:700 2.15cqw 'Barlow Condensed'}
+#drawer #upgrade-track .reference-row .rank-meter,#drawer #reference-advanced-track .reference-row .rank-meter{position:absolute;left:45%;top:49%;width:24%;height:30%;min-height:0;border:.25cqw solid #071f26;border-radius:.3cqw;background:#245161}
+.reference-row .rank-meter b{display:none}.reference-row .rank-meter i{height:100%;background:linear-gradient(90deg,#fba55e,#d2713d)}.reference-row .rank-meter:after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(11.111% - .2cqw),#071f26 calc(11.111% - .2cqw),#071f26 11.111%)}
+#drawer #upgrade-track .reference-row .price,#drawer #reference-advanced-track .reference-row .price{position:absolute;left:72%;top:8%;bottom:8%;width:11%;padding:0;background:none!important;border:0;color:#061f28;display:flex;align-items:center;justify-content:center;font:700 2.5cqw 'Barlow Condensed'}
+.reference-row .price:before{content:'⚙';font-size:3.5cqw;margin-right:.3cqw}.reference-row .price:after{display:none!important}
+.ref-buy{display:flex;align-items:center;justify-content:center;background:var(--ref-teal);background-size:14cqw;border:.8cqw solid transparent;border-image:url('ui/reference/button-frame.png') 10 stretch;color:#fff3d9;font:700 2.6cqw 'Barlow Condensed';text-align:center}
+.reference-row .ref-buy{position:absolute;left:84%;width:16%;top:5%;height:88%}
+#reference-advanced h2{display:flex;align-items:center;justify-content:space-between}#reference-advanced h2 small{font:700 1.5cqw 'Barlow Condensed';color:#546963}
+#reference-advanced-track{display:flex;gap:1cqw;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x}#reference-advanced-track .reference-row{scroll-snap-align:start;touch-action:pan-x!important}
+.deck-group{border:0;padding:0;margin:0 0 1cqw}#deck-overclock{border:1cqw solid transparent;border-image:url('ui/reference/panel-frame.png') 10 stretch;background:var(--ref-paper)}
+#drawer #deck-overclock>h2{display:flex;align-items:center;gap:1cqw;background:#ed643d url('ui/reference/salmon.png') center/100% 100%;color:#fff6da;font-size:3.6cqw;padding:.5cqw .7cqw;margin:0}.deck-group h2 .ref-icon{height:4.5cqw;width:4.5cqw}.deck-group h2 small{font:700 2.2cqw 'Barlow Condensed';text-transform:none}
+#deck-overclock .tideglass-bank,#deck-overclock [data-forge-panel]>p{display:none}
+#drawer #deck-overclock .ref-clock-row{position:relative;display:block;height:max(52px,9.3cqw);padding:0!important;margin:.5cqw!important;border:.8cqw solid transparent!important;border-image:url('ui/reference/row-frame.png') 12 stretch!important;box-shadow:none;background:var(--ref-paper)}
+.ref-clock-row>.ref-icon{position:absolute;left:2%;top:5%;width:10%;height:88%}#drawer .ref-clock-row h3{position:absolute;left:14%;top:6%;margin:0;font:700 2.8cqw 'Barlow Condensed'}#drawer .ref-clock-row p{position:absolute;left:14%;top:48%;margin:0;font:700 2.4cqw 'Barlow Condensed'}.ref-clock-row .progress-meter{display:none}
+#drawer .ref-clock-row button{position:absolute;right:0;top:0;width:30%;height:100%;min-height:0;margin:0;padding:0;background:transparent;color:#082630;border:0;display:flex;align-items:center;justify-content:flex-end;gap:1cqw}.ref-clock-cost{font:700 2.6cqw 'Barlow Condensed'}.ref-clock-row .ref-buy{height:86%;width:58%}
+#deck-nav{height:14.3cqw;bottom:0;left:1%;width:98%;gap:.5%;padding:.5cqw;background:var(--ref-teal);border:.5cqw solid #163e46}
+#deck-nav button:not([hidden]){border:1cqw solid transparent;border-image:url('ui/reference/nav-frame.png') 14 stretch;background:var(--ref-teal);background-size:20cqw;box-shadow:none;border-radius:0;color:#fff3d6;padding:0;gap:.4cqw;clip-path:none;font:700 3.2cqw 'Barlow Condensed'}
+#deck-nav .ref-icon{width:9cqw;height:7cqw}#deck-nav button[aria-current=page]{color:#ed7854}
+#deck-home{padding-top:1cqw}#masthead{position:relative;top:auto;left:auto;width:100%;height:29cqw;margin-top:2cqw;background:none;padding:0;border:0;z-index:1}
+#deck-home #loadout-cards{height:27cqw}#deck-home #next-goal{background:var(--ref-paper);color:#0a3038;border:.8cqw solid transparent;border-image:url('ui/reference/row-frame.png') 12 stretch}
+#drawer .goal-card:not(.ref-clock-row),#deck-slots{background:var(--ref-paper);border:1cqw solid transparent!important;border-image:url('ui/reference/row-frame.png') 12 stretch!important;box-shadow:none;border-radius:0}
+#drawer button:not(.reference-row):not([data-forge=clock]){font-family:'Barlow Condensed'}
+#defeat-refit{top:24cqw;font-family:'Barlow Condensed'}#campaign-banner{top:29cqw;left:34%;width:61%;min-height:4cqw;font:2cqw 'Barlow Condensed'}
+#comic-notice,#welcome{top:55cqw}#field-training{top:55cqw!important}
+@media(max-width:480px){.reference-row .ref-description{font-size:2.2cqw}.reference-row .ref-rank{font-size:2.2cqw}#drawer .reference-row strong{font-size:3cqw}.ref-buy{font-size:2.8cqw}.ref-health>strong{font-size:2.6cqw}}
+@media(max-height:550px){#screen{width:min(100%,440px);height:800px}}
+#drawer #deck-overclock .ref-clock-row button[data-forge=clock]{background:transparent;border:0;color:#082630;box-shadow:none;margin:0;padding:0}
+#drawer .deck-group>h2{color:#f7eccf}#drawer #deck-overclock>h2{color:#fff6da}
+#drawer .deck-group>.harbor-notice{color:#ffb392}
+#drawer [data-panel=camp]>p,#drawer [data-panel=camp]>small{color:#f7eccf}
+#battle-actions #volley:after{display:none}
+#battle-actions #ultimate-quick small{max-width:49%;white-space:normal;font-size:1.4cqw;bottom:4%}
+#drawer{color:#f8edcf}#drawer .goal-card,#drawer .reference-row,#deck-upgrades,#reference-advanced,#deck-overclock{color:#082630}
+#drawer #deck-overclock>h2,#battle-actions #volley[data-ready=true]{background-size:12cqw 7cqw!important;background-repeat:repeat!important}
+#reference-header #deck-tools button:focus-visible{outline:2px solid #ed7854}
+#drawer #weapon-list button,#drawer #deck-equip-forms button{background:var(--ref-paper);color:#082630;border:1cqw solid transparent;border-image:url('ui/reference/row-frame.png') 12 stretch;border-radius:0;padding:2cqw;min-height:17cqw;margin:0 0 1cqw}
+#drawer #weapon-list button[aria-pressed=true],#drawer #deck-equip-forms button[aria-pressed=true]{background:#ef7950 url('ui/reference/salmon.png') repeat;background-size:12cqw 7cqw}
+#drawer #weapon-list strong,#drawer h3,#weapon-title,#ultimate strong{font-family:'Barlow Condensed';font-weight:700}
+#drawer .goal-card button:not([data-forge=clock]),#drawer #deck-settings button{border:.7cqw solid transparent;border-image:url('ui/reference/button-frame.png') 10 stretch;background:var(--ref-teal);border-radius:0}
+#drawer #deck-settings{padding:2cqw;background:var(--ref-paper);color:#082630;border:1cqw solid transparent;border-image:url('ui/reference/panel-frame.png') 10 stretch}
+#loadout-cards .harbor-panel-art{display:none}#weapon-card.painted-harbor-panel,#form-card.painted-harbor-panel{border:1cqw solid transparent!important;border-image:url('ui/reference/row-frame.png') 12 stretch!important;background:var(--ref-paper)!important;border-radius:0}
+#form-card.painted-harbor-panel{background:#ef7950 url('ui/reference/salmon.png') repeat!important;background-size:12cqw 7cqw!important}
+#screen{--comic:'Barlow Condensed'!important}
+#reference-banner:not([data-page=build]) #ref-page-title{font-size:5.3cqw;width:29%;letter-spacing:-.25cqw}
+#reference-banner:not([data-page=build]) #ref-page-description{width:22%;font-size:1.9cqw;padding-left:1cqw}
+#screen #drawer button{font-family:'Barlow Condensed';font-weight:700}
+#reference-banner[data-page=settings] #ref-page-title,#reference-banner[data-page=journal] #ref-page-title{font-size:4.4cqw}
+.ref-health{border-image-slice:7}
+.ref-bank:last-child .ref-icon{mask:none;background:url('ui/reference/tideglass-color.png') center/contain no-repeat}
+#drawer #upgrade-track .reference-row{height:max(52px,9.5cqw)}
