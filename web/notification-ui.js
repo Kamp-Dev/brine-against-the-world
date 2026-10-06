@@ -1,7 +1,7 @@
 const comicTracker=BrineNotifications.create(),comicQueue=[];
 let comicCurrent=null,comicUntil=0,comicReady=[],comicPaused=false,comicSource=null;
 const comicToast=document.createElement('aside');comicToast.id='comic-notice';comicToast.hidden=true;
-comicToast.innerHTML='<span class="comic-seal" aria-hidden="true">✓</span><div class="comic-copy" role="status" aria-live="polite" aria-atomic="true"><strong></strong><p></p></div><button class="comic-open"></button><button class="comic-close" aria-label="Dismiss notification">×</button>';
+comicToast.innerHTML='<span class="comic-seal reward-crate" aria-hidden="true"></span><div class="comic-copy" role="status" aria-live="polite" aria-atomic="true"><strong></strong><p></p></div><button class="comic-open"></button><button class="comic-close" aria-label="Dismiss notification">×</button>';
 $('screen').append(comicToast);
 function openComicReward(tab){progressTab=tab;openHarbor('camp');progressKey='';refreshProgressionUI();}
 function dismissComic(){comicCurrent=null;comicToast.hidden=true;}

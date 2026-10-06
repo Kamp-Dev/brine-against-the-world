@@ -179,3 +179,14 @@
 #deck-home #next-goal:after{content:'›';position:absolute;right:2.5cqw;top:50%;transform:translateY(-50%);color:#a63f23;font:700 7cqw/1 sans-serif}
 #deck-home #next-goal[data-ready=true]{background:#f2ce79}
 #deck-home #next-goal[data-ready=true] #goal-eyebrow{color:#793219}
+
+/* One cargo crate for contracts, expeditions, restoration and milestone notices. */
+#comic-notice{padding-left:19%;background:var(--ref-paper);border-color:#123d43}
+#comic-notice .reward-crate{left:2%;top:50%;width:15%;transform:translateY(-50%);clip-path:none;background:transparent;display:block}
+#comic-notice .reward-crate:before,#deck-home #next-goal[data-ready=true]:before{content:'';display:block;width:100%;height:100%;background:url('ui/cargo-crate-v1.png') center/contain no-repeat;transform-origin:50% 85%;animation:cargo-crate-shake-often 1.6s ease-in-out infinite}
+#comic-notice .comic-copy strong{font-size:max(16px,3.5cqw);color:#082f38}
+#comic-notice .comic-copy p{font-size:max(14px,2.8cqw);line-height:1.2}
+#comic-notice button.comic-open{font-size:max(13px,2.6cqw);min-height:32px}
+#deck-home #next-goal[data-ready=true]>svg{display:none}
+#deck-home #next-goal[data-ready=true]:before{width:8cqw;height:8cqw;flex:none}
+@media(prefers-reduced-motion:reduce){#comic-notice .reward-crate:before,#deck-home #next-goal[data-ready=true]:before{animation:cargo-crate-nudge-often 2s ease-in-out infinite}}
