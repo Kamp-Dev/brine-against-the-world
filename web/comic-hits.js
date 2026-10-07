@@ -25,10 +25,7 @@ function drawBuildFeedback(c,m){
   c.strokeStyle='#08252d';c.lineWidth=4;c.lineJoin='miter';
   for(let n=0;n<Math.ceil(m.hullStacks/3);n++){c.beginPath();const x=(n-1.5)*13;c.moveTo(x,-37);c.lineTo(x+5,-24);c.lineTo(x-3,-17);c.lineTo(x+6,-3);c.stroke();}c.restore();
  }
- if(m.undertowStacks>0){
-  c.save();c.translate(165+m.meleeAdvance,480);c.globalAlpha=Math.min(.8,m.undertowStacks/10);c.strokeStyle='#ef7850';c.lineWidth=2.5;
-  for(let i=0;i<3;i++){c.beginPath();c.moveTo(-40-i*6,4+i*9);c.quadraticCurveTo(-14,12+i*8,8,5+i*7);c.stroke();}c.restore();
- }
+ // Undertow remains active without drawing stripes across Brine.
  if(m.lastStandTime>0){
   c.save();c.translate(124+m.meleeAdvance,485);c.strokeStyle='#fff0ce';c.lineWidth=4;
   for(let i=0;i<8;i++){const a=i*Math.PI/4;c.beginPath();c.moveTo(Math.cos(a)*62,Math.sin(a)*63);c.lineTo(Math.cos(a)*78,Math.sin(a)*80);c.stroke();}c.restore();
