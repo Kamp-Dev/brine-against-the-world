@@ -10,7 +10,7 @@ function install(C){
  if(C.prototype.scrapyardInstalled)return;C.prototype.scrapyardInstalled=true;
  const reset=C.prototype.reset;C.prototype.reset=function(){reset.call(this);this.shop=fresh();this.shopContacts=0;this.shopCaptions=[];this.shopCaptionNext=0;};
  const start=C.prototype.startEncounter;C.prototype.startEncounter=function(){start.call(this);this.shopContacts=0;};
- C.prototype.shopBuy=function(type,id){const i=item(type,id);if(!['shell','weapon','mod'].includes(type)||!i||owned(this,type,id)||this.best<i.unlock||this.gold<i.cost)return false;this.gold-=i.cost;this.shop.owned.push(key(type,id));return true;};
+ C.prototype.shopBuy=function(type,id){const i=item(type,id);if(!['shell','weapon','mod'].includes(type)||!i||owned(this,type,id)||this.best<(this.unlockStage?.(i.unlock)??i.unlock)||this.gold<i.cost)return false;this.gold-=i.cost;this.shop.owned.push(key(type,id));return true;};
  C.prototype.shopEquip=function(type,id){if(!['shell','weapon','mod'].includes(type))return false;if(type==='mod'&&id==='none'){delete this.shop.mods[this.weapon];return true;}if(!item(type,id)||!owned(this,type,id))return false;if(type==='mod')this.shop.mods[this.weapon]=id;else this.shop[type==='shell'?'shell':'weaponPaint']=id;return true;};
  const branch=C.prototype.branchInterval;C.prototype.branchInterval=function(){return (branch?.call(this)||1)*(this.shop?.mods[this.weapon]==='sinker'?1.2:1);};
  const hit=C.prototype.hitEnemy;C.prototype.hitEnemy=function(value,weapon,y,power=1,secondary=false){

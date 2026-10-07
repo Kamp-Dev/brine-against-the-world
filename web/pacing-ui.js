@@ -1,0 +1,10 @@
+(()=>{
+ const section=document.createElement('section');section.id='pacing-settings';section.innerHTML='<h3>BALANCED PACING · TRIAL</h3><p class="pacing-description"></p><button id="pacing-toggle"></button><p id="pacing-feedback" role="status"></p>';$('deck-settings').append(section);
+ function apply(){if(model.forge.run){document.querySelector('[aria-label="Open settings"]').click();$('pacing-feedback').textContent='Finish, collect or leave your current campaign, then start the pacing trial here.';return;}const leaving=model.pacing?.enabled;
+  if(!leaving){try{if(!localStorage.getItem(SAVE_KEY+'-before-pacing'))localStorage.setItem(SAVE_KEY+'-before-pacing',JSON.stringify(model.save()));}catch{$('pacing-feedback').textContent='Could not save a backup. Trial has not started.';return;}}
+  if(leaving?model.leavePacing():model.tryPacing()){persist();$('pacing-feedback').textContent=leaving?'Classic pacing restored. Your current resources and upgrades are kept.':'Trial started. Resources and upgrades preserved. You can return to classic pacing here.';refresh();}
+ }
+ $('pacing-toggle').onclick=apply;
+ const prior=refresh;refresh=function(){prior();const on=model.pacing?.enabled;section.querySelector('.pacing-description').textContent=on?'Trial active. Longer road battles, gentler enemy hits and larger rewards per victory. Enemy strength was calibrated once; upgrades still make you stronger.':'Try longer road battles with compact stages: stretch '+model.stage+' becomes about '+BrinePacing.compact(model.stage)+'. Your salvage, Tideglass, equipment and upgrades stay yours. A backup is saved first.';$('pacing-toggle').textContent=model.forge.run?'FINISH OR LEAVE CAMPAIGN FIRST':on?'RETURN TO CLASSIC PACING':'TRY BALANCED PACING';$('pacing-toggle').disabled=!!model.forge.run||(!on&&model.best<50);};
+ if(new URLSearchParams(location.search).get('pacing')==='trial'){const timer=setInterval(()=>{if(!ready)return;clearInterval(timer);if(!model.pacing?.enabled)apply();history.replaceState(null,'',location.pathname);},100);}
+})();
