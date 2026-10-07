@@ -1,0 +1,41 @@
+BRINE — CHALLENGES, BOSS TIMING, WEAPON ROLES AND FLEET
+Implementation and repeat review, October6 2026
+
+Implemented in order
+1. Challenge voyages: Ironclad Convoy, Repair Syndicate, Scrap Swarm. Five waves, ten tiers each, available after stretch50. Difficulty baseline is stored once when first entering a challenge, derived from existing calibrated damage and player hull, then fixed; later upgrades do not raise it. HP rises32% and attack damage16% per tier. No entry fee. Start with charged skills. Existing normal campaigns remain farmable. Active challenges survive reload and restore the correct road afterward.
+2. Combat intent: repair warning in the last second of an attack cycle; Volley interrupts it and opens2.5seconds of bonus damage. Every third boss attack warns before a1.8x heavy attack, followed by an opening. Guns deal35% more in openings, Samurai melee60%; Step Shell keeps its existing defensive role. Cues are nonblocking and do not resize the scene. At3x, cues also run faster; use1x for easier reaction.
+3. Weapon roles: Keelspike retains guard penetration/captain bonus. Challenge swarms grant Rivet Rattle110%, Tideline70%, Low Tide80% crowd damage. Plugger gains an additional20% in openings. Brick delays an enemy attack by0.6seconds, at most once per3seconds. Secondary shards do not multiply these bonuses a second time. Gear shows the equipped gun's role.
+4. Longer-term rewards: each challenge's tier3 grants shell AND weapon livery; tier5 awards a Captain trophy, tier10 an Elite trophy. Cargo uses the same single claim/repeat/dismiss banner. Repeat claims cannot duplicate the first-clear prize.
+5. Fleet: Skiff1M, Tugboat5M, Trawler20M salvage. Hull ranks1-10; crew ranks0-5. Hull purchases grow1.8x per rank; crew training costs salvage and increasing Tideglass. Hull ranks add30% of base output, crew ranks12%. Initial fleet income baseline is fixed on the first boat purchase. Automatically credits salvage in real time, including up to8h away. No additional claim ticket. Training lessons introduce challenges and fleet.
+6. Journal Captain's Log: session victories, defeats, new road stretches, net salvage change and next challenge milestone. Local only; no telemetry.
+
+Repeat review
+Same representative level63/58M build and deterministic progression policies as prior review; these are not the player's actual save. Scripted upgrade purchases every second are a stress test, not a prediction of human play.
+Road outcomes at1x,30min: untouched stage615 (previous612), upgrades784 (same), all-skills699 (previous698), selective skills791 (same). Four-hour untouched scenario eventually fails at784 (previous824): boss heavies add risk but do not make the entire road a hard gate. Fresh1h scripted paths: upgrade-only119 with20defeats, active204 with1defeat. This first-hour automation does not buy attachments, choose specializations, change guns or run campaigns, so it is not an optimized player path.
+
+Challenge comparisons
+Normal legacy campaigns in this build still finish around23seconds, largely travel time. New tier1 challenges take roughly76-185seconds depending on weapon/policy; no longer instant currency loops.
+Repair Syndicate with Boilerjaw: idle101.1seconds, timed Volley75.5seconds. Lowest health1536 versus2647 of3354. A concrete reward for reading the repair cue.
+Weapon matrix (same automatic defensive skill policy): Convoy Keelspike113.1s versus Boilerjaw126.5s; Swarm Rivet Rattle107.6s versus Boilerjaw123.7s. Some inappropriate swarm loadouts lose at the captain. Weapon roles are now measurable without flattening all gun damage.
+Tier checks1/3/5/10: unchanged build clears entry tiers; tier3 repair is beatable with timing; higher tiers require build improvement. Tier10 defeats the unchanged test build rather than granting every trophy immediately.
+Transforming automatically at every heavy warning is not always fastest. A tank form trades gun output for protection, and its recovery still matters. Use it when threatened, rather than always spending every charged ability.
+
+Economy
+Representative Skiff3717salvage/min,1M cost,~4.48h payback,~1.78M over8h. Actual fleet baseline depends on the player's calibrated away-income estimate at first purchase. Crew/hull costs rise faster than income; no unlimited exponential reinvestment loop. Fleet speed is independent of1x/2x/3x. Replay challenge currency is deliberately below the easiest late-game normal-farm rate; first clears, cosmetics and trophies are the main challenge incentives. No paid currency/purchase integration added.
+
+Validation
+30 regression suites pass. New checks cover challenge loading/saving, completed cargo claims, duplicate claims, livery ownership, fixed difficulty after upgrades, interruption windows, pause, heavy cues,3x timing, fleet idempotence/8h cap and weapon matchups.
+11 browser integration checks cover1.5s entry, correct challenge, warning/Volley, single crate, livery claim, boat/crew purchases, fleet yield and stable selection; Journal checked manually. Browser error log empty. Existing tab/focus/hold regression fixture rerun separately before publication.
+
+Corrections made during review
+Reduced initially excessive repair healing and swarm attack damage. Increased crowd-role bonuses when Boilerjaw still led the swarm benchmark. Fixed double amplification on secondary shots. Throttled fleet UI accrual to once per real second, preserving background tab controls. Improved header contrast.
+
+Remaining design limits
+Challenge swarms currently use the existing enemy art and burst attacks; they are not multiple independently rendered enemies. Trophy rewards are persistent badges, not new trophy scene art. Boats have simple in-style SVG silhouettes, not animated fleet scenes. Skill reaction windows are shorter at3x. Economy estimates and enjoyment still need actual play feedback. Browser saves remain client-side; server validation is needed before real-money purchases.
+
+Reproduce
+node tests/audit-progression.cjs
+node tests/challenge-review.cjs
+node tests/voyage-depth.cjs
+node tests/prepare-stable-tabs.cjs --depth
+Detailed results: depth-progression-audit.json, depth-tier-audit.json, depth-challenge-audit.txt.

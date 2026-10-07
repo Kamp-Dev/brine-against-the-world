@@ -11,11 +11,11 @@ function collectComic(repeat=false){
  const event=comicCurrent;if(!event)return;
  if(!event.collect){dismissComic(true);refresh();return;}
  const crew=model.progress.expedition?.id,run=model.forge?.run;
- const campaign=event.tab==='campaigns'&&run?.complete?{id:run.id,tier:run.tier}:null;
+ const campaign=event.tab==='campaigns'&&run?.complete?{id:run.id,tier:run.challengeTier||run.tier,challenge:run.challenge??null}:null;
  const claimed=campaign?model.claimCampaign():BrineNotifications.claim(model.progress,event);
  if(claimed){
   dismissComic();
-  if(repeat){if(campaign)showCampaignEntry(campaign.id,campaign.tier);else if(event.tab==='contracts')P.selectContract(model.progress,event.id.slice('contract:'.length));else if(crew!==undefined)P.dispatch(model.progress,crew,Date.now());}
+  if(repeat){if(campaign)showCampaignEntry(campaign.id,campaign.tier,campaign.challenge);else if(event.tab==='contracts')P.selectContract(model.progress,event.id.slice('contract:'.length));else if(crew!==undefined)P.dispatch(model.progress,crew,Date.now());}
   persist();progressKey='';forgeKey='';
  }else dismissComic();
  refresh();
@@ -29,7 +29,7 @@ function refreshComicNotifications(){
  if(comicSource!==model.progress){comicSource=model.progress;comicQueue.length=0;comicDismissed.clear();comicCampaign=null;dismissComic();}
  const result=comicTracker.scan(model.progress),available=[...result.available],events=result.events.filter(e=>!e.repeat&&e.repeatCrew===undefined&&e.title!=='REWARD COLLECTED!'&&e.title!=='CARGO COLLECTED!');
  const run=model.forge?.run;
- if(run?.complete){const event={id:'campaign:'+run.id+':'+run.tier,title:'CAMPAIGN COMPLETE!',detail:BrineTideglass.campaigns[run.id].name,tab:'campaigns',collect:true};available.push(event);}
+ if(run?.complete){const event={id:'campaign:'+run.id+':'+run.tier+':'+(run.challengeTier||0),title:'CAMPAIGN COMPLETE!',detail:run.challenge===undefined?BrineTideglass.campaigns[run.id].name:BrineDepth.challenges[run.challenge].name,tab:'campaigns',collect:true};available.push(event);}
 
  comicCampaign=run?{id:run.id,tier:run.tier,complete:run.complete}:null;
  comicReady=available;

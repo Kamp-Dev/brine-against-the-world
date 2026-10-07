@@ -1,0 +1,3 @@
+const {late}=require('./depth-fixture.cjs');const rows=[];
+for(const id of [0,1,2])for(const tier of [1,3,5,10])for(const policy of ['idle','reactive']){const m=late();m.depth.cleared[id]=tier-1;m.enterChallenge(id,tier);let t=0,min=m.playerHp;for(;t<600&&!m.forge.run.complete&&m.state!=='defeat';t+=.05){if(policy==='reactive'){if(m.battleIntent()==='REPAIR INCOMING · VOLLEY'||m.openingTime>0)m.volley();if(m.battleIntent()==='HEAVY ATTACK · SHELL UP'&&m.playerHp<m.maxPlayerHp*.55&&!m.ultimateActive)m.ultimate();}m.tick(.05,{x:200,y:460});min=Math.min(min,m.playerHp);}rows.push({id,tier,policy,seconds:+t.toFixed(1),result:m.forge.run.complete?'win':m.state,minHealth:Math.round(min),waves:m.forge.run.wave});}
+console.log(JSON.stringify(rows,null,2));

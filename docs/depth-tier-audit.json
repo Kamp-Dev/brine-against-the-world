@@ -1,0 +1,218 @@
+[
+  {
+    "id": 0,
+    "tier": 1,
+    "policy": "idle",
+    "seconds": 95.5,
+    "result": "win",
+    "minHealth": 1721,
+    "waves": 5
+  },
+  {
+    "id": 0,
+    "tier": 1,
+    "policy": "reactive",
+    "seconds": 98.6,
+    "result": "win",
+    "minHealth": 1575,
+    "waves": 5
+  },
+  {
+    "id": 0,
+    "tier": 3,
+    "policy": "idle",
+    "seconds": 141.5,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 4
+  },
+  {
+    "id": 0,
+    "tier": 3,
+    "policy": "reactive",
+    "seconds": 163.3,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 4
+  },
+  {
+    "id": 0,
+    "tier": 5,
+    "policy": "idle",
+    "seconds": 177.9,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 4
+  },
+  {
+    "id": 0,
+    "tier": 5,
+    "policy": "reactive",
+    "seconds": 192.6,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 4
+  },
+  {
+    "id": 0,
+    "tier": 10,
+    "policy": "idle",
+    "seconds": 43.5,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 0
+  },
+  {
+    "id": 0,
+    "tier": 10,
+    "policy": "reactive",
+    "seconds": 43.5,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 0
+  },
+  {
+    "id": 1,
+    "tier": 1,
+    "policy": "idle",
+    "seconds": 101.1,
+    "result": "win",
+    "minHealth": 1536,
+    "waves": 5
+  },
+  {
+    "id": 1,
+    "tier": 1,
+    "policy": "reactive",
+    "seconds": 75.5,
+    "result": "win",
+    "minHealth": 2647,
+    "waves": 5
+  },
+  {
+    "id": 1,
+    "tier": 3,
+    "policy": "idle",
+    "seconds": 146.4,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 4
+  },
+  {
+    "id": 1,
+    "tier": 3,
+    "policy": "reactive",
+    "seconds": 120.1,
+    "result": "win",
+    "minHealth": 1599,
+    "waves": 5
+  },
+  {
+    "id": 1,
+    "tier": 5,
+    "policy": "idle",
+    "seconds": 191.2,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 4
+  },
+  {
+    "id": 1,
+    "tier": 5,
+    "policy": "reactive",
+    "seconds": 182.2,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 4
+  },
+  {
+    "id": 1,
+    "tier": 10,
+    "policy": "idle",
+    "seconds": 28.8,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 0
+  },
+  {
+    "id": 1,
+    "tier": 10,
+    "policy": "reactive",
+    "seconds": 34.4,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 0
+  },
+  {
+    "id": 2,
+    "tier": 1,
+    "policy": "idle",
+    "seconds": 83.9,
+    "result": "win",
+    "minHealth": 1062,
+    "waves": 5
+  },
+  {
+    "id": 2,
+    "tier": 1,
+    "policy": "reactive",
+    "seconds": 85.2,
+    "result": "win",
+    "minHealth": 1266,
+    "waves": 5
+  },
+  {
+    "id": 2,
+    "tier": 3,
+    "policy": "idle",
+    "seconds": 113.5,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 4
+  },
+  {
+    "id": 2,
+    "tier": 3,
+    "policy": "reactive",
+    "seconds": 130.7,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 4
+  },
+  {
+    "id": 2,
+    "tier": 5,
+    "policy": "idle",
+    "seconds": 145.9,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 4
+  },
+  {
+    "id": 2,
+    "tier": 5,
+    "policy": "reactive",
+    "seconds": 160.4,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 4
+  },
+  {
+    "id": 2,
+    "tier": 10,
+    "policy": "idle",
+    "seconds": 20,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 0
+  },
+  {
+    "id": 2,
+    "tier": 10,
+    "policy": "reactive",
+    "seconds": 20,
+    "result": "defeat",
+    "minHealth": 0,
+    "waves": 0
+  }
+]
