@@ -30,9 +30,10 @@ function install(C){
     this.shopCaptions=this.shopCaptions.slice(-2);
    }
   }
+  if(hitEffect&&mod==='confetti')this.effects.push({type:'confetti-burst',x:hitEffect.targetX??x,y:hitEffect.targetY??y,life:.48,duration:.48});
   if(heal)this.playerHp=Math.min(this.maxPlayerHp,this.playerHp+Math.max(1,Math.round(this.maxPlayerHp*.02)));
   if(mod==='confetti'&&this.kills>kills&&!campaign){const bonus=Math.floor(this.lastReward*.15);this.gold=Math.min(Number.MAX_VALUE,this.gold+bonus);this.lastReward+=bonus;const reward=this.effects.findLast(e=>e.type==='reward');if(reward)reward.damage=this.lastReward;}
-  if(burst||heal||mod==='confetti'&&this.kills>kills)this.effects.push({type:'shop-mod',mod,x:heal?124:x,y:heal?450:y,life:.7,duration:.7});
+  if(burst||heal)this.effects.push({type:'shop-mod',mod,x:heal?124:x,y:heal?450:y,life:.7,duration:.7});
  };
  const save=C.prototype.save;C.prototype.save=function(...a){return {...save.apply(this,a),shop:JSON.parse(JSON.stringify(this.shop))};};
  const load=C.prototype.load;C.prototype.load=function(data,...a){const ok=load.call(this,data,...a);if(!ok)return ok;const s=data.shop;this.shop=fresh();if(s?.version===1){this.shop.owned=[...new Set((Array.isArray(s.owned)?s.owned:[]).filter(k=>typeof k==='string'&&['shell','weapon','mod'].includes(k.split(':')[0])&&item(...k.split(':'))))];for(const [type,field]of [['shell','shell'],['weapon','weaponPaint']])if(item(type,s[field])&&owned(this,type,s[field]))this.shop[field]=s[field];for(const w of this.settings.weapons)if(mods.some(i=>i.id===s.mods?.[w.id])&&owned(this,'mod',s.mods[w.id]))this.shop.mods[w.id]=s.mods[w.id];}return ok;};

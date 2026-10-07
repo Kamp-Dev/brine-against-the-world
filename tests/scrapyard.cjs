@@ -19,3 +19,6 @@ for(let i=0;i<300;i++)captions.hitEnemy(1,'scrap',460);assert.equal(captions.sho
 wall=20100;captions.shopRandom=()=>.9;captions.hitEnemy(1,'scrap',460);assert.equal(captions.shopCaptions.length,1,'Random check can defer a caption');
 captions.shopRandom=()=>0;captions.hitEnemy(1,'scrap',460);assert.equal(captions.shopCaptions.length,2);
 console.log('PASS: captions require ten real seconds and random hit eligibility');
+
+m=setup();m.shopBuy('mod','confetti');m.shopEquip('mod','confetti');m.hitEnemy(10,'scrap',460);assert(m.effects.some(e=>e.type==='confetti-burst'&&e.duration===.48));assert(!m.effects.some(e=>e.type==='shop-mod'&&e.mod==='confetti'));
+console.log('PASS: supplied confetti burst appears on ordinary hits without old confetti particles');
