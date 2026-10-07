@@ -222,8 +222,8 @@
 
 /* Journal artwork must not contain a permanent fake unread badge. */
 #reference-header:after{display:none}
-#reference-header #deck-tools button:first-child{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2cqw;background:#073640 var(--ref-teal) center/cover;color:#fff1d2;border:.7cqw solid transparent;border-image:url('ui/reference/action-frame.png') 12 stretch;font:700 2.1cqw/1 'Barlow Condensed';padding:.4cqw}
-#reference-header #deck-tools button:first-child svg{display:block;width:60%;height:65%;flex-shrink:1}
+#reference-header #deck-tools button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2cqw;background:#073640 var(--ref-teal) center/cover;color:#fff1d2;border:.7cqw solid transparent;border-image:url('ui/reference/action-frame.png') 12 stretch;font:700 2.1cqw/1 'Barlow Condensed';padding:.4cqw}
+#reference-header #deck-tools button svg{display:block;width:60%;height:65%;flex-shrink:1}
 
 /* Legible two-line Ultimate control, including narrow phones. */
 #battle-actions #ultimate-quick strong{left:24%;right:1%;top:3%;font-size:clamp(12px,3cqw,24px);line-height:1.1}
@@ -234,3 +234,9 @@
 #battle-pause{position:absolute;top:42cqw;left:calc(3.2% + max(24px,5.5cqw) + 4px);z-index:7;width:5.5cqw;height:5.5cqw;min-width:24px;min-height:24px;background:#f4e7c5;color:#092d35;border:.4cqw solid #092329;font:700 3.5cqw/1 'Barlow Condensed';padding:0;cursor:pointer}
 
 #pacing-settings{margin-top:20px;border-top:2px solid #153d46;padding-top:12px}#pacing-settings p{font:16px/1.35 "Barlow Condensed"}#pacing-settings button{font:700 17px "Barlow Condensed";padding:12px;white-space:normal}
+
+/* Matching live controls replace the uneven baked-in header buttons. */
+#reference-header #deck-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4cqw;background:none}
+#reference-header #deck-tools button{width:100%;min-width:0;box-sizing:border-box;height:100%}
+#reference-header #deck-tools button svg{width:5.2cqw;height:6.1cqw;flex:none}
+#reference-header #deck-tools button span{font:700 2.1cqw/1 "Barlow Condensed";white-space:nowrap}
