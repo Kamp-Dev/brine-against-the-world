@@ -211,3 +211,7 @@
 #campaign-repeat-dismiss[hidden]{display:none}
 #comic-notice[data-kind=done] button.comic-close{top:-1cqw;right:-1cqw;z-index:2}
 #screen:has(#comic-notice:not([hidden])) #campaign-repeat-dismiss{visibility:hidden}
+
+/* Every reward uses the single ticket underneath the enemy name. */
+#comic-notice button.comic-close{position:absolute;display:block;top:-1cqw;right:-1cqw;z-index:2;width:5cqw;height:5cqw;min-width:24px;min-height:24px;border:1px solid #08252d;border-radius:50%;background:#f5e8c4;color:#08252d;font:700 20px/1 sans-serif;padding:0;cursor:pointer}
+#campaign-banner,#campaign-repeat-dismiss{display:none!important}
