@@ -1,0 +1,378 @@
+{
+  "sessions": [
+    {
+      "policy": "untouched",
+      "minutes": 60,
+      "best": 4,
+      "level": 2,
+      "kills": 4,
+      "deaths": 1,
+      "purchases": 0,
+      "gold": 44,
+      "hp": 0,
+      "upgrades": {
+        "damage": 0,
+        "shell": 0,
+        "speed": 0,
+        "scavenging": 0,
+        "patch": 0,
+        "tide": 0,
+        "focus": 0,
+        "rupture": 0,
+        "plating": 0,
+        "splinter": 0,
+        "hullcrack": 0,
+        "undertow": 0,
+        "laststand": 0,
+        "jackpot": 0,
+        "secondwind": 0
+      }
+    },
+    {
+      "policy": "upgrades",
+      "minutes": 60,
+      "best": 64,
+      "level": 11,
+      "kills": 175,
+      "deaths": 28,
+      "purchases": 145,
+      "gold": 285,
+      "hp": 251,
+      "upgrades": {
+        "damage": 18,
+        "shell": 18,
+        "speed": 16,
+        "scavenging": 13,
+        "patch": 14,
+        "tide": 12,
+        "focus": 12,
+        "rupture": 11,
+        "plating": 11,
+        "splinter": 0,
+        "hullcrack": 10,
+        "undertow": 10,
+        "laststand": 0,
+        "jackpot": 0,
+        "secondwind": 0
+      }
+    },
+    {
+      "policy": "active",
+      "minutes": 60,
+      "best": 79,
+      "level": 11,
+      "kills": 176,
+      "deaths": 10,
+      "purchases": 160,
+      "gold": 2181,
+      "hp": 258,
+      "upgrades": {
+        "damage": 19,
+        "shell": 19,
+        "speed": 17,
+        "scavenging": 14,
+        "patch": 16,
+        "tide": 14,
+        "focus": 13,
+        "rupture": 12,
+        "plating": 13,
+        "splinter": 0,
+        "hullcrack": 12,
+        "undertow": 11,
+        "laststand": 0,
+        "jackpot": 0,
+        "secondwind": 0
+      }
+    },
+    {
+      "policy": "untouched",
+      "minutes": 30,
+      "best": 599,
+      "level": 64,
+      "kills": 100,
+      "deaths": 0,
+      "purchases": 0,
+      "gold": 58997085,
+      "hp": 2554,
+      "upgrades": {
+        "damage": 60,
+        "shell": 60,
+        "speed": 60,
+        "scavenging": 40,
+        "patch": 20,
+        "tide": 0,
+        "focus": 100,
+        "rupture": 30,
+        "plating": 20,
+        "splinter": 0,
+        "hullcrack": 0,
+        "undertow": 0,
+        "laststand": 0,
+        "jackpot": 0,
+        "secondwind": 0
+      }
+    },
+    {
+      "policy": "upgrades",
+      "minutes": 30,
+      "best": 721,
+      "level": 67,
+      "kills": 222,
+      "deaths": 0,
+      "purchases": 270,
+      "gold": 21358,
+      "hp": 5706,
+      "upgrades": {
+        "damage": 90,
+        "shell": 95,
+        "speed": 71,
+        "scavenging": 52,
+        "patch": 59,
+        "tide": 47,
+        "focus": 100,
+        "rupture": 30,
+        "plating": 42,
+        "splinter": 0,
+        "hullcrack": 38,
+        "undertow": 36,
+        "laststand": 0,
+        "jackpot": 0,
+        "secondwind": 0
+      }
+    },
+    {
+      "policy": "active",
+      "minutes": 30,
+      "best": 639,
+      "level": 65,
+      "kills": 140,
+      "deaths": 0,
+      "purchases": 267,
+      "gold": 497810,
+      "hp": 5480,
+      "upgrades": {
+        "damage": 89,
+        "shell": 94,
+        "speed": 71,
+        "scavenging": 52,
+        "patch": 59,
+        "tide": 47,
+        "focus": 100,
+        "rupture": 30,
+        "plating": 41,
+        "splinter": 0,
+        "hullcrack": 38,
+        "undertow": 36,
+        "laststand": 0,
+        "jackpot": 0,
+        "secondwind": 0
+      }
+    },
+    {
+      "policy": "boss-skills",
+      "minutes": 30,
+      "best": 729,
+      "level": 67,
+      "kills": 230,
+      "deaths": 0,
+      "purchases": 270,
+      "gold": 116874,
+      "hp": 5706,
+      "upgrades": {
+        "damage": 90,
+        "shell": 95,
+        "speed": 71,
+        "scavenging": 52,
+        "patch": 59,
+        "tide": 47,
+        "focus": 100,
+        "rupture": 30,
+        "plating": 42,
+        "splinter": 0,
+        "hullcrack": 38,
+        "undertow": 36,
+        "laststand": 0,
+        "jackpot": 0,
+        "secondwind": 0
+      }
+    },
+    {
+      "policy": "untouched",
+      "minutes": 240,
+      "best": 599,
+      "level": 64,
+      "kills": 100,
+      "deaths": 1,
+      "purchases": 0,
+      "gold": 58997085,
+      "hp": 0,
+      "upgrades": {
+        "damage": 60,
+        "shell": 60,
+        "speed": 60,
+        "scavenging": 40,
+        "patch": 20,
+        "tide": 0,
+        "focus": 100,
+        "rupture": 30,
+        "plating": 20,
+        "splinter": 0,
+        "hullcrack": 0,
+        "undertow": 0,
+        "laststand": 0,
+        "jackpot": 0,
+        "secondwind": 0
+      }
+    }
+  ],
+  "weapons": [
+    {
+      "weapon": "Plugger",
+      "stage": 500,
+      "seconds": 59.95,
+      "win": false,
+      "hp": 0
+    },
+    {
+      "weapon": "Tideline",
+      "stage": 500,
+      "seconds": 59.95,
+      "win": false,
+      "hp": 0
+    },
+    {
+      "weapon": "Low Tide",
+      "stage": 500,
+      "seconds": 59.95,
+      "win": false,
+      "hp": 0
+    },
+    {
+      "weapon": "Rivet Rattle",
+      "stage": 500,
+      "seconds": 59.95,
+      "win": false,
+      "hp": 0
+    },
+    {
+      "weapon": "Keelspike",
+      "stage": 500,
+      "seconds": 49.6,
+      "win": true,
+      "hp": 2192
+    },
+    {
+      "weapon": "Boilerjaw",
+      "stage": 500,
+      "seconds": 40.9,
+      "win": true,
+      "hp": 2651
+    }
+  ],
+  "routes": [
+    {
+      "route": 0,
+      "damage": 151,
+      "reward": 20688
+    },
+    {
+      "route": 1,
+      "damage": 181,
+      "reward": 25860
+    },
+    {
+      "route": 2,
+      "damage": 219,
+      "reward": 31032
+    }
+  ],
+  "campaigns": [
+    {
+      "campaign": "Breakwater Sweep",
+      "tier": 1,
+      "seconds": 23.15,
+      "glass": 8,
+      "glassPerMinute": 20.7,
+      "complete": true
+    },
+    {
+      "campaign": "Breakwater Sweep",
+      "tier": 10,
+      "seconds": 23.15,
+      "glass": 26,
+      "glassPerMinute": 67.4,
+      "complete": true
+    },
+    {
+      "campaign": "Sluice Siege",
+      "tier": 1,
+      "seconds": 23.15,
+      "glass": 8,
+      "glassPerMinute": 20.7,
+      "complete": true
+    },
+    {
+      "campaign": "Sluice Siege",
+      "tier": 10,
+      "seconds": 23.15,
+      "glass": 26,
+      "glassPerMinute": 67.4,
+      "complete": true
+    },
+    {
+      "campaign": "Old Salt Foundry",
+      "tier": 1,
+      "seconds": 23.15,
+      "glass": 8,
+      "glassPerMinute": 20.7,
+      "complete": true
+    },
+    {
+      "campaign": "Old Salt Foundry",
+      "tier": 10,
+      "seconds": 23.15,
+      "glass": 26,
+      "glassPerMinute": 67.4,
+      "complete": true
+    }
+  ],
+  "mods": [
+    {
+      "mod": "none",
+      "stage": 500,
+      "seconds": 40.95,
+      "win": true,
+      "hp": 2651
+    },
+    {
+      "mod": "sinker",
+      "stage": 500,
+      "seconds": 40.85,
+      "win": true,
+      "hp": 3110
+    },
+    {
+      "mod": "whoopee",
+      "stage": 500,
+      "seconds": 37.1,
+      "win": true,
+      "hp": 2989
+    },
+    {
+      "mod": "duck",
+      "stage": 500,
+      "seconds": 40.95,
+      "win": true,
+      "hp": 3354
+    },
+    {
+      "mod": "confetti",
+      "stage": 500,
+      "seconds": 45.15,
+      "win": true,
+      "hp": 2530
+    }
+  ],
+  "offlinePerMinute": 11018.805796334753,
+  "eightHourSalvage": 5289026
+}

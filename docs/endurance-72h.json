@@ -1,0 +1,125 @@
+[
+  {
+    "policy": "active",
+    "startGold": 0,
+    "finalStage": 199,
+    "finalGold": 147970,
+    "deaths": 590,
+    "checkpoints": [
+      {
+        "hour": 1,
+        "stage": 69,
+        "gold": 883,
+        "deaths": 9
+      },
+      {
+        "hour": 8,
+        "stage": 104,
+        "gold": 22116,
+        "deaths": 70
+      },
+      {
+        "hour": 24,
+        "stage": 149,
+        "gold": 75936,
+        "deaths": 204
+      },
+      {
+        "hour": 48,
+        "stage": 174,
+        "gold": 120233,
+        "deaths": 402
+      }
+    ]
+  },
+  {
+    "policy": "optimized",
+    "startGold": 0,
+    "finalStage": 274,
+    "finalGold": 70317,
+    "deaths": 608,
+    "checkpoints": [
+      {
+        "hour": 1,
+        "stage": 74,
+        "gold": 596,
+        "deaths": 9
+      },
+      {
+        "hour": 8,
+        "stage": 124,
+        "gold": 24525,
+        "deaths": 72
+      },
+      {
+        "hour": 24,
+        "stage": 174,
+        "gold": 27506,
+        "deaths": 211
+      },
+      {
+        "hour": 48,
+        "stage": 224,
+        "gold": 16520,
+        "deaths": 412
+      }
+    ]
+  },
+  {
+    "policy": "passive",
+    "startGold": 0,
+    "finalStage": 9,
+    "finalGold": 25202,
+    "deaths": 2,
+    "checkpoints": [
+      {
+        "hour": 24,
+        "stage": 9,
+        "gold": 8402
+      },
+      {
+        "hour": 48,
+        "stage": 9,
+        "gold": 16802
+      },
+      {
+        "hour": 72,
+        "stage": 9,
+        "gold": 25202
+      }
+    ]
+  },
+  {
+    "policy": "optimized",
+    "startGold": 2500000000,
+    "finalStage": 3924,
+    "finalGold": 5570067,
+    "deaths": 229,
+    "checkpoints": [
+      {
+        "hour": 1,
+        "stage": 2109,
+        "gold": 3348372,
+        "deaths": 0
+      },
+      {
+        "hour": 8,
+        "stage": 2774,
+        "gold": 2287758,
+        "deaths": 0
+      },
+      {
+        "hour": 24,
+        "stage": 3706,
+        "gold": 1656394,
+        "deaths": 0
+      },
+      {
+        "hour": 48,
+        "stage": 3824,
+        "gold": 1858696,
+        "deaths": 113
+      }
+    ]
+  }
+]

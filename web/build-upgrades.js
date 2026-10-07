@@ -3,7 +3,7 @@
 const upgrades={
  splinter:{name:'Splinter Shot',unlock:18,cap:25,cost:110,description:'+1% chance per rank for a follow-up shard dealing 35% gun damage. Maximum 25%.'},
  hullcrack:{name:'Hull Crack',unlock:22,cap:Infinity,cost:120,description:'Hits crack armor up to 10 stacks. Improves damage and guard penetration, with diminishing returns. Resets per enemy.'},
- undertow:{name:'Undertow',unlock:28,cap:Infinity,cost:140,description:'+1% damage per rank per hit stack, up to 10 stacks. Lose 2 stacks per second between battles.'},
+ undertow:{name:'Undertow',unlock:28,cap:Infinity,cost:140,description:'Damage grows per rank and per hit stack, up to 10 stacks. Ranks above 20 have diminishing returns. Lose 2 stacks per second between battles.'},
  laststand:{name:'Last Stand',unlock:32,cap:20,cost:150,description:'Below 30% health, reduce incoming damage by 2% per rank for 3 seconds. 25-second cooldown. Maximum 40% protection.'},
  jackpot:{name:'Scrap Jackpot',unlock:16,cap:20,cost:100,description:'+1% chance per rank for triple salvage on a road kill. Maximum 20%. Does not multiply campaign cargo or away earnings.'},
  secondwind:{name:'Second Wind',unlock:24,cap:20,cost:130,description:'Reduce Low Tide recovery by 2% per rank, up to 40%. Early withdrawal still halves recovery.'}
@@ -24,7 +24,7 @@ function install(C,P,J,F){
  const reset=C.prototype.reset;C.prototype.reset=function(){reset.call(this);this.undertowStacks=0;this.lastStandTime=0;this.lastStandCooldown=0;};
  const start=C.prototype.startEncounter;C.prototype.startEncounter=function(){start.call(this);this.hullStacks=0;};
  const cap=C.prototype.cap;C.prototype.cap=function(k){return upgrades[k]?.cap??cap.call(this,k);};
- const value=C.prototype.upgradeValue;C.prototype.upgradeValue=function(k){const r=rank(this,k);return k==='splinter'||k==='jackpot'?r:k==='hullcrack'?60*r/(r+20):k==='undertow'?10*r:k==='laststand'||k==='secondwind'?2*r:value.call(this,k);};
+ const value=C.prototype.upgradeValue;C.prototype.upgradeValue=function(k){const r=rank(this,k);return k==='splinter'||k==='jackpot'?r:k==='hullcrack'?60*r/(r+20):k==='undertow'?10*F.effective(r,20):k==='laststand'||k==='secondwind'?2*r:value.call(this,k);};
  const preview=C.prototype.upgradePreview;C.prototype.upgradePreview=function(k){if(!upgrades[k])return preview.call(this,k);const a=this.upgradeValue(k);this.upgrades[k]++;const b=this.upgradeValue(k);this.upgrades[k]--;return F.format(a)+' → '+F.format(b)+'%';};
  C.prototype.recoveryFactor=function(){return 1-Math.min(20,rank(this,'secondwind'))*.02;};
  C.prototype.armorBreak=function(){return this.upgradeValue('hullcrack')/100*Math.min(10,this.hullStacks||0)/10;};
@@ -42,7 +42,7 @@ function install(C,P,J,F){
   if(!secondary){
    if(rank(this,'hullcrack'))this.hullStacks=Math.min(10,(this.hullStacks||0)+(weapon==='harpoon'&&path==='tempo'?2:1));
    if(rank(this,'undertow'))this.undertowStacks=Math.min(10,(this.undertowStacks||0)+1);
-   value*=1+this.armorBreak()*.5;value*=1+(this.undertowStacks||0)*rank(this,'undertow')*.01;
+   value*=1+this.armorBreak()*.5;value*=1+(this.undertowStacks||0)*F.effective(rank(this,'undertow'),20)*.01;
    // Existing mastery impact applies +25% per tier; replace that factor for specialized guns.
    if(path==='impact'){
     if(weapon==='scrap')value*=(1+tier*.4)/(1+tier*.25);
