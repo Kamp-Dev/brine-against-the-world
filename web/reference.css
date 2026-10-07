@@ -230,3 +230,5 @@
 #battle-actions #ultimate-quick .ref-action-icon{left:1%;top:2%;width:20%;height:48%}
 #battle-actions #ultimate-quick small{left:2%;bottom:5%;max-width:none;font-size:clamp(10px,2.3cqw,18px);line-height:1;white-space:nowrap}
 #battle-actions #ultimate-quick .ref-ready{right:0;bottom:3%;max-width:none;font-size:clamp(10px,2.3cqw,18px);line-height:1;padding:.1cqw .45cqw;overflow:visible}
+
+#battle-pause{position:absolute;top:42cqw;left:calc(3.2% + max(24px,5.5cqw) + 4px);z-index:7;width:5.5cqw;height:5.5cqw;min-width:24px;min-height:24px;background:#f4e7c5;color:#092d35;border:.4cqw solid #092329;font:700 3.5cqw/1 'Barlow Condensed';padding:0;cursor:pointer}

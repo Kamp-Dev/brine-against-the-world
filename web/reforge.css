@@ -1,0 +1,6 @@
+#weapon-reforge{padding:3%;margin:3% 0;background:#f4e7c5;color:#092d35;border:2px solid #092d35;font-family:'Barlow Condensed'}
+#weapon-reforge h2{font-size:clamp(20px,4cqw,32px);margin:0}#weapon-reforge>p{font-size:clamp(14px,2.7cqw,22px)}
+.reforge-tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2%}.reforge-tiers article{border:2px solid #174750;padding:5%;background:#e9d9b4;min-width:0}.reforge-tiers article.equipped{outline:3px solid #cd643d}.reforge-tiers strong,.reforge-tiers b,.reforge-tiers small,.reforge-tiers span{display:block;font-size:clamp(12px,2.5cqw,20px);line-height:1.2}.reforge-tiers canvas{width:100%;height:auto}.reforge-tiers p{font-size:clamp(12px,2.5cqw,20px);min-height:3.6em;margin:4px 0}.reforge-tiers small{margin-top:8px}.reforge-tiers span{margin-top:6px;color:#31555b}
+#drawer #weapon-reforge button{width:100%;margin-top:14px;padding:12px 5px;background:#123f48;color:#fff0cc;border:2px solid #bc9a52;font:700 clamp(14px,3cqw,24px) 'Barlow Condensed';white-space:normal}#drawer #weapon-reforge button:disabled{opacity:.6}
+
+#weapon-reforge select{font:700 18px "Barlow Condensed";background:#123f48;color:#fff0cc;padding:8px;margin:8px;border:1px solid #092d35;max-width:75%}#weapon-reforge label{font-weight:700}

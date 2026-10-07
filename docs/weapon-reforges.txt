@@ -1,0 +1,9 @@
+Weapon Reforge: Gear > Loadout, with direct weapon selector and three live previews.
+Each gun owns independent permanent tiers. Stock artwork remains tier 0. Existing attachments and wonky mods remain unchanged; old saves start at Reforge 0 with their existing upgrades intact.
+Mk I Reinforced: stretch 100, 1,000,000 salvage, +15% total direct gun damage. Riveted brass jacket.
+Mk II Warbuilt: stretch 500, 10,000,000 salvage + 100 Tideglass, +35% total direct gun damage. Pressure chamber, gauge and cooling fins.
+Mk III Tideforged: stretch 1000, 50,000,000 salvage + 350 Tideglass, +65% total direct gun damage. Tideglass core, ivory armor and conduit.
+Prices are per tier, paid sequentially. Bonuses replace the previous tier multiplier, rather than adding on top. Melee is unchanged. Follow-up shards inherit their originating hit bonus without applying it twice.
+Artwork is composited from the original six guns with mechanical overlays and the equipped casing paint. Battle rendering, Road preview and Gear thumbnails share the same art. Cache is capped at 30 variants. No replacement character animation needed.
+Pause/Resume is beside battle speed and invokes the existing pause action.
+Validation: tests/reforge.cjs and all existing suites; node tests/prepare-stable-tabs.cjs --reforges creates an isolated local browser fixture checking purchases, previews, existing attachment ownership and pause/resume. Remove the generated stable-review files afterward.
