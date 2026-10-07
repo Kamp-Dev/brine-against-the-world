@@ -27,3 +27,5 @@
 
 #screen[data-deck=voyage] #drawer .voyage-briefing{border-left:4px solid #bd623f;padding-left:12px;margin:12px 0 18px}
 #screen[data-deck=voyage] #drawer .voyage-briefing b{display:block;color:#81391f;font-size:18px;letter-spacing:.04em;margin-bottom:3px}
+
+#drawer #voyage-depth .fleet-portrait{display:block;width:100%;height:clamp(150px,38cqw,240px);object-fit:contain;margin:0 auto 16px;filter:drop-shadow(0 5px 2px #193b3826)}
