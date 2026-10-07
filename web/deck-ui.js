@@ -33,10 +33,15 @@
  // Legacy reward and training links are routed straight to the new destination.
  openHarbor=function(tab){if(tab==='camp'){const target=progressTab;select(['campaigns','expeditions','districts'].includes(target)?'voyage':['overclock','mastery','forms'].includes(target)?'build':target==='guide'?'journal':'camp',target);}else select(tab==='kit'?'guns':tab==='ultimate'?'road':tab);};
  refreshProgressionUI=function(){if(drawing)return;const sections=groups[page];if(!sections){oldProgress();return;}
-  const key=JSON.stringify([page,model.progress,model.forge,model.best,model.gold,model.ultimateActive,model.state==='defeat',campaignTiers,page==='voyage'?Math.floor(Date.now()/1000):0]);
-  if(deckKey===key)return;if($('progress-content').contains(document.activeElement)&&document.activeElement.tagName==='SELECT')return;deckKey=key;drawing=true;const previous=progressTab;let html='';
-  for(const tab of sections){progressTab=tab;progressKey='';forgeKey='';oldProgress();html+='<section id="deck-'+tab+'" class="deck-group"><h2>'+({mastery:'WEAPON BRANCHES',forms:'FORM SPECIALIZATION',guide:'FIELD GUIDE',harbor:'RESTORATION'}[tab]||tab.toUpperCase())+'</h2>'+$('progress-content').innerHTML+'</section>';}
-  progressTab=previous;$('progress-content').innerHTML=html;drawing=false;
+  const key=JSON.stringify([page,{...model.progress,clock:0},model.forge,model.best,model.gold,model.ultimateActive,model.state==='defeat',campaignTiers,page==='voyage'?Math.floor(Date.now()/1000):0]);
+  if(deckKey===key)return;deckKey=key;drawing=true;const previous=progressTab;let html='';
+  // Build each section offscreen; never use the visible panel as scratch space.
+  progressRenderTarget=document.createElement('div');
+  try{for(const tab of sections){progressTab=tab;progressKey='';forgeKey='';oldProgress();html+='<section id="deck-'+tab+'" class="deck-group"><h2>'+({mastery:'WEAPON BRANCHES',forms:'FORM SPECIALIZATION',guide:'FIELD GUIDE',harbor:'RESTORATION'}[tab]||tab.toUpperCase())+'</h2>'+progressRenderTarget.innerHTML+'</section>';}}
+  finally{progressTab=previous;progressRenderTarget=null;drawing=false;}
+  const staged=document.createElement('div');staged.innerHTML=html;
+  if(window.decorateOverclock)window.decorateOverclock(staged);
+  BrineUI.patch($('progress-content'),staged.innerHTML);
  };
  const beforeRefresh=refresh;refresh=function(){beforeRefresh();quick.disabled=$('ultimate').disabled;quick.dataset.ready=!quick.disabled;quick.textContent=formName()+' · '+(model.ultimateActive?model.ultimateSeconds+'s':!J.available(model,model.selectedForm)?'LOCKED':model.paused?'PAUSED':model.ultimateCharge<100?Math.floor(model.ultimateCharge)+'%':model.state==='fight'?'READY':'NEXT BATTLE');$('defeat-refit').hidden=model.state!=='defeat';bank.textContent='SALVAGE  '+model.gold.toLocaleString()+'     /     TIDEGLASS  '+model.forge.tideglass;
   slots.innerHTML='<strong>'+(model.modRank>=3?'ATTACHMENT MAXED':'ATTACHMENT · '+model.modRank+' / 3')+'</strong><span>'+equipped().name+' · manage equipment →</span>';

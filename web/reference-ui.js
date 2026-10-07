@@ -36,6 +36,11 @@ function renderReferenceBattle(){
  }
  for(const [id,icon] of [['farm','push'],['volley','volley']]){const b=$(id);b.querySelector('svg').style.display='none';const image=document.createElement('i');image.className='ref-action-icon ref-icon';image.style.setProperty('--icon','url(ui/reference/icon-'+icon+'.png)');b.prepend(image);}
  for(const [id,icon] of [['road','road'],['guns','gear'],['build','build'],['voyage','voyage'],['camp','harbor']]){$('nav-'+id).querySelector('svg').style.display='none';const i=document.createElement('i');i.className='ref-icon';i.style.setProperty('--icon','url(ui/reference/icon-'+icon+'.png)');$('nav-'+id).prepend(i);}
+ window.decorateOverclock=function(container){
+  const oc=container.querySelector('#deck-overclock');if(oc&&!oc.dataset.reference){oc.dataset.reference='true';oc.querySelector('h2').innerHTML='OVERCLOCK <i class="ref-icon" style="--icon:url(ui/reference/icon-tideglass.png)"></i><small>Permanent Tideglass bonuses.</small>';
+   for(const button of oc.querySelectorAll('[data-forge="clock"]')){const id=button.dataset.id,card=button.closest('.goal-card'),c=BrineTideglass.clocks[id],rank=model.forge.overclock[id];card.classList.add('ref-clock-row');card.insertAdjacentHTML('afterbegin','<i class="ref-icon" style="--icon:url(ui/reference/icon-'+(id==='tempo'?'speed':id)+'.png)"></i>');card.querySelector('h3').textContent=c.name.toUpperCase();const lines=card.querySelectorAll('p');lines[0].className='ref-clock-bonus';lines[0].textContent=c.detail+' +'+rank*c.step+'%';lines[1].className='ref-clock-rank';lines[1].textContent='Rank '+rank+' · no limit';button.innerHTML='<span class="ref-clock-cost">◆ '+(rank>=c.cap?'MAX':BrineTideglass.format(BrineTideglass.cost(rank)))+'</span><span class="ref-buy">'+(rank>=c.cap?'MAXED':model.best<10?'LOCKED':'UPGRADE')+'</span>';}
+  }
+ };
  const previous=refresh;refresh=function(){previous();const page=screen.dataset.deck||'road',info=pageInfo[page];$('ref-page-title').textContent=info[0];$('ref-page-description').textContent=info[1];$('ref-page-icon').style.setProperty('--icon','url(ui/reference/icon-'+info[2]+'.png)');banner.dataset.page=page;advanced.hidden=page!=='build';
   $('ref-salvage').textContent=BrineTideglass.format(model.gold);$('ref-glass').textContent=BrineTideglass.format(model.forge.tideglass);
   $('ref-player-name').textContent='BRINE · LV '+model.level;$('ref-enemy-name').textContent=model.enemy.name.toUpperCase();
@@ -46,9 +51,7 @@ function renderReferenceBattle(){
   const q=$('ultimate-quick'),status=model.ultimateActive?model.ultimateSeconds+'s':model.lowTideTime>0?'REST '+model.recoverySeconds+'s':!J.available(model,model.selectedForm)?'LOCKED':model.paused?'PAUSED':model.ultimateCharge>=100?(model.state==='fight'?'READY':'NEXT BATTLE'):Math.floor(model.ultimateCharge)+'%';
   // The legacy refresher writes text each frame; rebuild only this small live control.
   q.innerHTML='<i class="ref-icon ref-action-icon" style="--icon:url(ui/reference/icon-form.png)"></i><strong>'+formName()+'</strong><small>'+(model.ultimateActive?'Tap to withdraw · half recovery':model.selectedForm==='samurai'?'14s · kills +5s':'18s · kills +3s')+'</small><b class="ref-ready">'+status+'</b>';
-  const oc=$('deck-overclock');if(oc&&!oc.dataset.reference){oc.dataset.reference='true';oc.querySelector('h2').innerHTML='OVERCLOCK <i class="ref-icon" style="--icon:url(ui/reference/icon-tideglass.png)"></i><small>Permanent Tideglass bonuses.</small>';
-   for(const button of oc.querySelectorAll('[data-forge="clock"]')){const id=button.dataset.id,card=button.closest('.goal-card'),c=BrineTideglass.clocks[id],rank=model.forge.overclock[id];card.classList.add('ref-clock-row');card.insertAdjacentHTML('afterbegin','<i class="ref-icon" style="--icon:url(ui/reference/icon-'+(id==='tempo'?'speed':id)+'.png)"></i>');card.querySelector('h3').textContent=c.name.toUpperCase();const lines=card.querySelectorAll('p');lines[0].className='ref-clock-bonus';lines[0].textContent=c.detail+' +'+rank*c.step+'%';lines[1].className='ref-clock-rank';lines[1].textContent='Rank '+rank+' · no limit';button.innerHTML='<span class="ref-clock-cost">◆ '+(rank>=c.cap?'MAX':BrineTideglass.format(BrineTideglass.cost(rank)))+'</span><span class="ref-buy">'+(rank>=c.cap?'MAXED':model.best<10?'LOCKED':'UPGRADE')+'</span>';}
-  }
+  window.decorateOverclock(document);
  };
  refresh();
 })();
