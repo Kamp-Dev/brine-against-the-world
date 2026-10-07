@@ -24,3 +24,6 @@
 #screen[data-deck=voyage] #drawer .depth-medal{display:block;background:#e9d8a8;padding:8px;color:#153d43;border-left:4px solid #bb5c37}
 #screen[data-deck=voyage] #drawer .tideglass-bank strong{font-size:22px}#screen[data-deck=voyage] #drawer .tideglass-bank small{font-size:18px}
 #screen[data-deck=voyage] #drawer .deck-group>h2{border-bottom:2px solid #c77750;padding:12px 0;letter-spacing:.06em}
+
+#screen[data-deck=voyage] #drawer .voyage-briefing{border-left:4px solid #bd623f;padding-left:12px;margin:12px 0 18px}
+#screen[data-deck=voyage] #drawer .voyage-briefing b{display:block;color:#81391f;font-size:18px;letter-spacing:.04em;margin-bottom:3px}
