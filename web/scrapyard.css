@@ -15,3 +15,15 @@
 #drawer #scrapyard .scrap-detail .scrap-remove{position:static;background:#f3e4bd;color:#10333a;width:100%}
 
 #drawer #scrapyard canvas[data-projectile-icon]{position:static;width:100px;height:100px}#drawer #scrapyard .scrap-options canvas[data-projectile-icon]{width:45px;height:45px}
+/* Dock plates: shared art, rivets and unmistakable selected tabs. */
+#drawer .scrapyard-switch,#drawer #scrapyard .scrap-tabs{display:grid;gap:6px;margin:0 0 12px;padding:0;background:none;border:0}
+#drawer .scrapyard-switch{grid-template-columns:repeat(2,minmax(0,1fr))}
+#drawer #scrapyard .scrap-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+#drawer .scrapyard-switch button:not(#close-drawer),#drawer #scrapyard .scrap-tabs button{position:relative;display:flex;align-items:center;justify-content:center;width:100%;min-width:0;min-height:48px;margin:0;padding:9px 5px 12px;border:5px solid transparent;border-image:url('ui/reference/action-frame.png') 12 stretch;border-radius:0;background:#073640 var(--ref-teal) center/180px;color:#fff0cf;font:700 clamp(13px,3cqw,24px)/1.05 'Barlow Condensed';text-align:center;letter-spacing:.02em;box-shadow:0 3px 0 #031e25;cursor:pointer;isolation:isolate}
+#drawer .scrapyard-switch button:not(#close-drawer)::before,#drawer #scrapyard .scrap-tabs button::before{content:'';position:absolute;inset:4px;pointer-events:none;background:radial-gradient(circle at 0 0,#cfbc8a 0 1px,transparent 2px),radial-gradient(circle at 100% 0,#cfbc8a 0 1px,transparent 2px)}
+#drawer .scrapyard-switch button:not(#close-drawer)[aria-pressed=true]{background:#c85f38 url('ui/reference/salmon.png') center/180px;color:#fff4d8}
+#drawer #scrapyard .scrap-tabs button[aria-pressed=true]{background:#f4e5be var(--ref-paper) center/240px;color:#082e37}
+#drawer .scrapyard-switch button:not(#close-drawer)[aria-pressed=true]::after,#drawer #scrapyard .scrap-tabs button[aria-pressed=true]::after{content:'';position:absolute;bottom:2px;left:30%;right:30%;height:3px;background:#f5cc69;box-shadow:0 1px 0 #092b34}
+#drawer #scrapyard .scrap-tabs button[aria-pressed=true]::after{background:#c45733}
+#drawer .scrapyard-switch button:not(#close-drawer):focus-visible,#drawer #scrapyard .scrap-tabs button:focus-visible{outline:2px solid #ffd878;outline-offset:2px}
+@media(hover:hover){#drawer .scrapyard-switch button:not(#close-drawer):hover,#drawer #scrapyard .scrap-tabs button:hover{filter:brightness(1.12)}}

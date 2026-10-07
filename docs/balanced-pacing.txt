@@ -1,9 +1,5 @@
-Balanced pacing trial (2026-10-06)
-Activate in Settings > Try balanced pacing, or ?pacing=trial.
-Optional, reversible; original save snapshot is stored under brine-rpg-v1-before-pacing before activation. Return to classic preserves current resources, purchases and earned progress.
-First 50 stages unchanged. Subsequent stages compact by 191/30: 2915 becomes 500. Stage requirements for shop and reforges compact as well. Campaigns keep their original balance; finish/claim or leave any current campaign before switching.
-Calibration samples the current build once for sustained gun damage. Enemy health follows a fixed growth curve thereafter, so upgrades and ultimates can overpower it. Reduced enemy damage and repair prevent longer battles from simply becoming more punishing. Rewards and XP per victory increase to compensate for time, approximately; this is not a guaranteed exact income match.
-Representative late-game build (not an export of the player's save): 58M salvage, 635 Tideglass, level 63, Boilerjaw attachment3/reforge2, primary upgrades60, power overclock10.
-Measured combat duration at1x: normal stages496-499 5.12,6.48,7.17,5.80 seconds; boss500 25.62 seconds. 3x boss8.53 seconds. Travel time adds about3.1 seconds at1x.
-Validation: 29 Node suites; isolated browser checks for stage500 activation, wallet preservation, backup, return control, restoring2915 and re-enabling trial. No real browser save modified by automated testing.
-Browser fixture: node tests/prepare-stable-tabs.cjs --pacing, then open stable-review.html. Remove generated stable-review files before publication.
+Calibrated pacing is now the default (2026-10-06).
+The Settings trial toggle has been removed. Saves convert automatically on refresh after stretch50, preserving wallets, purchases and upgrades. Already calibrated saves are not compressed again. First50 stages remain unchanged; new players are calibrated once upon clearing50.
+Active campaigns retain wave, enemy health and reward state; their return-to-road stage is converted. Completed, unclaimed cargo remains collectible. No campaign is abandoned by migration. The original local backup remains available internally.
+Stage2915 maps to500. Fixed calibration lets later upgrades and ultimates overpower earlier stages. Representative late-game tests measured ordinary fights5-7 seconds and boss25.62 seconds at1x. Rewards increase approximately with fight duration.
+Validation:29 gameplay suites, including migration during active/completed campaigns, save roundtrips and fixed calibration; isolated browser checks verify automatic conversion, preserved58M wallet, absence of trial controls and no double conversion.

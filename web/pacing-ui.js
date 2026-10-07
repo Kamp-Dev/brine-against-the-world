@@ -1,12 +1,6 @@
 (()=>{
- const section=document.createElement('section');section.id='pacing-settings';section.innerHTML='<h3>BALANCED PACING · TRIAL</h3><p class="pacing-description"></p><button id="pacing-toggle"></button><p id="pacing-feedback" role="status"></p>';$('deck-settings').append(section);
- function apply(fromLink=false){const run=model.forge.run,leaving=model.pacing?.enabled;
-  if(run&&fromLink){document.querySelector('[aria-label="Open settings"]').click();$('pacing-feedback').textContent=run.complete?'Your campaign cargo is ready. Use the button below to collect it and start the trial.':'A campaign is still in progress. Use the button below to leave it and start the trial. Unfinished campaign rewards are not earned.';return;}
-  if(!leaving){try{if(!localStorage.getItem(SAVE_KEY+'-before-pacing'))localStorage.setItem(SAVE_KEY+'-before-pacing',JSON.stringify(model.save()));}catch{$('pacing-feedback').textContent='Could not save a backup. Trial has not started.';return;}}
-  if(run&&!(run.complete?model.claimCampaign():model.leaveCampaign()))return;
-  if(leaving?model.leavePacing():model.tryPacing()){persist();$('pacing-feedback').textContent=leaving?'Classic pacing restored. Your current resources and upgrades are kept.':'Trial started. Resources and upgrades preserved. You can return to classic pacing here.';refresh();}
- }
- $('pacing-toggle').onclick=()=>apply();
- const prior=refresh;refresh=function(){prior();const on=model.pacing?.enabled,run=model.forge.run,stage=run&&!run.complete?run.road.stage:model.stage;section.querySelector('.pacing-description').textContent=(on?'Trial active. Longer road battles, gentler enemy hits and larger rewards per victory. Enemy strength was calibrated once; upgrades still make you stronger.':'Try longer road battles with compact stages: stretch '+stage+' becomes about '+BrinePacing.compact(stage)+'. Your salvage, Tideglass, equipment and upgrades stay yours. A backup is saved first.')+(run&&!run.complete?' Leaving ends this unfinished campaign without its reward.':'');$('pacing-toggle').textContent=run?(run.complete?'COLLECT CARGO & ':'LEAVE CAMPAIGN & ')+(on?'RESTORE CLASSIC':'START TRIAL'):on?'RETURN TO CLASSIC PACING':model.best<50?'CLEAR STRETCH 50 TO TRY':'TRY BALANCED PACING';$('pacing-toggle').disabled=!on&&model.best<50;};
- if(new URLSearchParams(location.search).get('pacing')==='trial'){const timer=setInterval(()=>{if(!ready)return;clearInterval(timer);if(!model.pacing?.enabled)apply(true);history.replaceState(null,'',location.pathname);},100);}
+ let checking=false;
+ const prior=refresh;refresh=function(){if(ready&&!checking&&!model.pacing?.enabled&&model.best>=50){checking=true;try{try{if(!localStorage.getItem(SAVE_KEY+'-before-pacing'))localStorage.setItem(SAVE_KEY+'-before-pacing',JSON.stringify(model.save()));}catch{}if(model.ensureCalibrated())persist();}finally{checking=false;}}prior();};
+ // Older trial links now open the same default experience.
+ if(new URLSearchParams(location.search).has('pacing'))history.replaceState(null,'',location.pathname);
 })();

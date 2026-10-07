@@ -14,6 +14,11 @@ function install(C){if(C.prototype.pacingInstalled)return;C.prototype.pacingInst
   Object.assign(this.pacing,{enabled:true,originalStage,originalBest,compactStage:newStage,compactBest:newBest});this.stage=newStage;this.best=newBest;this.startEncounter();return true;
  };
  C.prototype.leavePacing=function(){const p=this.pacing;if(!p?.enabled||this.forge?.run)return false;this.stage=this.stage===p.compactStage?p.originalStage:expand(this.stage);this.best=this.best===p.compactBest?p.originalBest:expand(this.best);p.enabled=false;this.stage=Math.min(this.stage,this.best+1);this.startEncounter();return true;};
+ // Migrate the road without interrupting an in-progress campaign or losing cargo.
+ C.prototype.ensureCalibrated=function(){if(this.pacing?.enabled||this.best<50)return false;const run=this.forge?.run;
+  if(run){const copy=new C(this.settings),data=this.save();copy.load(data,data.savedAt);copy.forge.run=null;copy.stage=run.complete?this.stage:run.road.stage;copy.route=run.complete?this.route:run.road.route;copy.startEncounter();if(!copy.tryPacing())return false;this.pacing={...copy.pacing};this.best=copy.best;run.road.stage=compact(run.road.stage);if(run.complete){this.stage=copy.stage;this.startEncounter();}return true;}
+  const paused=this.paused,dead=this.state==='defeat';const changed=this.tryPacing();this.paused=paused;if(dead)this.enter('defeat');return changed;
+ };
  function growth(m,power=1.35){return Math.pow(Math.max(.015,(expand(m.stage)-45)/(expand(m.pacing.anchor)-45)),power);}
  const start=C.prototype.startEncounter;C.prototype.startEncounter=function(){start.call(this);if(active(this)){const protection=this.enemy.action==='guard'?.6:this.enemy.action==='burrow'?.65:1;const seconds=this.boss?25:6;this.hp=this.maxHp=Math.max(1,Math.round(this.pacing.dps*seconds*growth(this)*protection*(this.boss?1:Math.min(1.1,this.enemy.health))));}};
  const incoming=Object.getOwnPropertyDescriptor(C.prototype,'enemyDamage').get;Object.defineProperty(C.prototype,'enemyDamage',{get(){return active(this)?Math.max(1,Math.round(this.pacing.hit*growth(this,.75)*(this.boss?1.5:1))):incoming.call(this);}});
