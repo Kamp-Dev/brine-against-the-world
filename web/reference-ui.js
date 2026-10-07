@@ -50,7 +50,7 @@ function renderReferenceBattle(){
   formStatus.hidden=!model.ultimateActive&&!(model.lowTideTime>0);formStatus.textContent=model.lowTideTime>0?'LOW TIDE · '+model.recoverySeconds+'s — Damage −40% / incoming +25%':formName()+' · '+model.ultimateSeconds+'s · STRAIN '+Math.round(Math.min(100,model.formStrain/25*100))+'%';
   const q=$('ultimate-quick'),status=model.ultimateActive?model.ultimateSeconds+'s':model.lowTideTime>0?'REST '+model.recoverySeconds+'s':!J.available(model,model.selectedForm)?'LOCKED':model.paused?'PAUSED':model.pendingUltimate?'QUEUED':model.ultimateCharge>=100?'READY':Math.floor(model.ultimateCharge)+'%';
   // The legacy refresher writes text each frame; rebuild only this small live control.
-  q.innerHTML='<i class="ref-icon ref-action-icon" style="--icon:url(ui/reference/icon-form.png)"></i><strong>'+formName()+'</strong><small>'+(model.ultimateActive?'Tap to withdraw · half recovery':model.selectedForm==='samurai'?'14s · kills +5s':'18s · kills +3s')+'</small><b class="ref-ready">'+status+'</b>';
+  q.innerHTML='<i class="ref-icon ref-action-icon" style="--icon:url(ui/reference/icon-form.png)"></i><strong>'+formName()+'</strong><small>'+(model.ultimateActive?'Tap to end':model.selectedForm==='samurai'?'14s · +5s/kill':'18s · +3s/kill')+'</small><b class="ref-ready">'+status+'</b>';
   window.decorateOverclock(document);
  };
  refresh();
