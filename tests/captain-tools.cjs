@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict'),{C,late,fresh}=require('./depth-fixture.cjs'),J=require('../web/journey.js'),S=require('../web/scrapyard.js');require('../web/captain-tools.js').install(C,J,S);
+const m=late();m.shop.owned.push('mod:duck');m.shop.mods.boiler='duck';m.selectedForm='samurai';assert(m.saveKit(0));m.weapon='scrap';m.selectedForm='step-shell';m.charge=47;m.ultimateCharge=61;assert(m.applyKit(0));assert.equal(m.weapon,'boiler');assert.equal(m.selectedForm,'samurai');assert.equal(m.shop.mods.boiler,'duck');assert.equal(m.charge,47);assert.equal(m.ultimateCharge,61);
+const s=m.save(),copy=fresh();assert(copy.load(s));assert.deepEqual(copy.savedKits,m.savedKits);assert.equal(copy.combatLog.length,0);
+m.ultimateTime=10;assert(m.ultimateActive);assert(!m.applyKit(0));m.ultimateTime=0;
+const locked=fresh();locked.savedKits[0]={weapon:'boiler',form:'samurai',mod:'duck'};assert(!locked.applyKit(0));assert.equal(locked.weapon,'scrap');assert(!locked.saveKit(-1));assert(!locked.applyKit(3));
+m.state='fight';m.hp=100;m.paused=true;const seconds=m.intelFight.seconds;m.tick(.1,{x:200,y:460});assert.equal(m.intelFight.seconds,seconds);m.paused=false;m.hitEnemy(1e9,'boiler',400);assert.equal(m.combatLog.length,1);assert.equal(m.combatLog[0].outcome,'Victory');assert.equal(m.combatLog[0].damage,100);m.hitEnemy(1e9,'boiler',400);assert.equal(m.combatLog.length,1);
+m.startEncounter();m.state='fight';m.playerHp=1;m.enemyShots=[{x:140,y:450,damage:10000}];m.tick(.1,{x:200,y:460});assert.equal(m.combatLog[0].outcome,'Defeat');assert.equal(m.combatLog.length,2);
+const r=late();assert(r.enterChallenge(1,1));assert(r.enemyIntel().some(x=>x.includes('Repair crew')));r.leaveCampaign();r.enterChallenge(0,1);assert(r.enemyIntel().some(x=>x.includes('Keelspike')));
+const corrupt=fresh();assert(corrupt.load({...s,savedKits:[{weapon:'evil',form:'oops',mod:'duck'},null,{}]}));assert.deepEqual(corrupt.savedKits,[null,null,null]);
+console.log('PASS saved kits, ownership gates, ultimate block, charges, roundtrip, corrupt saves, paused timing, clamped damage, reports and intel');
