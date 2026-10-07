@@ -8,4 +8,4 @@ game=game.replace("const SAVE_KEY='brine-rpg-v1'","const SAVE_KEY='brine-stable-
 fs.writeFileSync('web/stable-review-game.js',game);
 fs.writeFileSync('web/stable-review.js',fs.readFileSync(process.argv.includes('--rewards')?'tests/single-reward-browser.js':'tests/stable-tabs-browser.js'));
 fs.writeFileSync('web/stable-review.html',fs.readFileSync('web/index.html','utf8').replace('game.js?v=','stable-review-game.js?v=').replace('</body>','<script src="stable-review.js"></script></body>'));
-console.log('Open stable-review.html; expect all 13 checks to pass. Remove the three stable-review files after testing.');
+console.log('Open stable-review.html; expect every reported check to pass. Remove the three stable-review files after testing.');

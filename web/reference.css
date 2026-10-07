@@ -215,3 +215,12 @@
 /* Every reward uses the single ticket underneath the enemy name. */
 #comic-notice button.comic-close{position:absolute;display:block;top:-1cqw;right:-1cqw;z-index:2;width:5cqw;height:5cqw;min-width:24px;min-height:24px;border:1px solid #08252d;border-radius:50%;background:#f5e8c4;color:#08252d;font:700 20px/1 sans-serif;padding:0;cursor:pointer}
 #campaign-banner,#campaign-repeat-dismiss{display:none!important}
+
+/* Collect, repeat, and dismiss are simultaneous actions on one ticket. */
+#comic-notice button.comic-repeat{position:absolute;display:block;top:-1cqw;right:calc(-1cqw + max(24px,5cqw) + 4px);z-index:3;width:5cqw;height:5cqw;min-width:24px;min-height:24px;border:1px solid #08252d;border-radius:50%;background:#f5e8c4;color:#08252d;font:700 20px/1 sans-serif;padding:0;cursor:pointer}
+#comic-notice button.comic-repeat[hidden]{display:none}
+
+/* Journal artwork must not contain a permanent fake unread badge. */
+#reference-header:after{display:none}
+#reference-header #deck-tools button:first-child{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2cqw;background:#073640 var(--ref-teal) center/cover;color:#fff1d2;border:.7cqw solid transparent;border-image:url('ui/reference/action-frame.png') 12 stretch;font:700 2.1cqw/1 'Barlow Condensed';padding:.4cqw}
+#reference-header #deck-tools button:first-child svg{display:block;width:60%;height:65%;flex-shrink:1}

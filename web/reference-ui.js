@@ -11,7 +11,7 @@ function renderReferenceBattle(){
 (()=>{
  const screen=$('screen');screen.dataset.layout='reference';BrineDisplay.apply();
  const header=document.createElement('header');header.id='reference-header';header.setAttribute('aria-label','Brine Against the World');screen.append(header);
- header.append($('deck-tools'));$('deck-tools').children[0].textContent='JOURNAL';$('deck-tools').children[1].textContent='SETTINGS';
+ header.append($('deck-tools'));$('deck-tools').children[0].innerHTML='<svg viewBox="0 0 32 36" aria-hidden="true"><path d="M5 5h22v29H5z" fill="currentColor"/><path d="M10 1v8M22 1v8" stroke="currentColor" stroke-width="3"/><path d="M10 14h12M10 20h12M10 26h9" stroke="#103c46" stroke-width="2"/></svg><span>JOURNAL</span>';$('deck-tools').children[1].textContent='SETTINGS';
  // Keep the route visible above battle on every tab.
  screen.append($('masthead'));$('route-art').dataset.headerTools='true';
  const hud=document.createElement('section');hud.id='reference-hud';hud.setAttribute('aria-label','Battle health');hud.innerHTML='<div class="ref-health"><strong id="ref-player-name"></strong><div class="ref-hp"><i></i><b></b></div><span id="ref-xp-text"></span><div class="ref-xp"><i></i></div></div><div class="ref-health enemy-health"><strong id="ref-enemy-name"></strong><div class="ref-hp"><i></i><b></b></div></div>';screen.append(hud);const formStatus=document.createElement('div');formStatus.id='form-status';screen.append(formStatus);
@@ -48,7 +48,7 @@ function renderReferenceBattle(){
   const xp=levelProgress();$('ref-xp-text').textContent='XP   '+xp.earned+' / '+xp.needed;hud.querySelector('.ref-xp i').style.width=xp.ratio*100+'%';
   for(const id of Object.keys(descriptions)){const b=$('upgrade-'+id);b.querySelector('.ref-rank').textContent='RANK '+model.upgrades[id]+' / '+(Number.isFinite(model.cap(id))?model.cap(id):'∞');b.querySelector('.ref-buy').textContent=model.upgrades[id]>=model.cap(id)?'MAXED':b.dataset.locked==='true'?'LOCKED':'UPGRADE';}
   formStatus.hidden=!model.ultimateActive&&!(model.lowTideTime>0);formStatus.textContent=model.lowTideTime>0?'LOW TIDE · '+model.recoverySeconds+'s — Damage −40% / incoming +25%':formName()+' · '+model.ultimateSeconds+'s · STRAIN '+Math.round(Math.min(100,model.formStrain/25*100))+'%';
-  const q=$('ultimate-quick'),status=model.ultimateActive?model.ultimateSeconds+'s':model.lowTideTime>0?'REST '+model.recoverySeconds+'s':!J.available(model,model.selectedForm)?'LOCKED':model.paused?'PAUSED':model.ultimateCharge>=100?(model.state==='fight'?'READY':'NEXT BATTLE'):Math.floor(model.ultimateCharge)+'%';
+  const q=$('ultimate-quick'),status=model.ultimateActive?model.ultimateSeconds+'s':model.lowTideTime>0?'REST '+model.recoverySeconds+'s':!J.available(model,model.selectedForm)?'LOCKED':model.paused?'PAUSED':model.pendingUltimate?'QUEUED':model.ultimateCharge>=100?'READY':Math.floor(model.ultimateCharge)+'%';
   // The legacy refresher writes text each frame; rebuild only this small live control.
   q.innerHTML='<i class="ref-icon ref-action-icon" style="--icon:url(ui/reference/icon-form.png)"></i><strong>'+formName()+'</strong><small>'+(model.ultimateActive?'Tap to withdraw · half recovery':model.selectedForm==='samurai'?'14s · kills +5s':'18s · kills +3s')+'</small><b class="ref-ready">'+status+'</b>';
   window.decorateOverclock(document);
