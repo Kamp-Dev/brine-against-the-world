@@ -1,0 +1,40 @@
+BRINE PLAYABILITY AND BALANCE REVIEW — 6 OCTOBER 2026
+
+Verdict
+The combat loop works and active decisions help early, but the mature game relies too heavily on buying larger numbers. Slowing every enemy further would lengthen waiting without adding depth. Preserve idle farming and add optional, purposeful challenges.
+
+Scope and limitations
+Deterministic model simulations: fresh accounts, representative level63/58M late-game account, six weapons, five mod states, six campaign/tier pairs, eight-hour away cap, migration/save recovery, route rewards, progression sessions up to four hours at1x. These are not the player's actual save. Upgrade policies purchase the cheapest eligible upgrades every second, retry after defeat and reattempt progression after60seconds; this is an automation stress test, not a forecast of human progress. Active policy fires charged skills immediately; boss-skills uses Volley and reserves transformation for bosses below50% player health. No purchases, player save edits or real reward claims during browser QA.
+Browser:13 passing interaction checks (held upgrade across kills, focus/scroll, selectors, contracts, shop nodes, valid projectile labels), plus manual skill queue/navigation checks.29 regression suites pass. Enjoyability judgments are design assessments, not player-study results.
+
+Confirmed fixes applied
+1. Calibrated routes incorrectly had identical incoming damage while paying +25%/+50%. Restored +20%/+45% risk. Representative boss hits now151/181/219.
+2. Post50 growth used an almost-zero denominator; fresh players suffered an abrupt cliff. Smoothed growth denominator while keeping the calibration anchor's6second/25second health targets and permanent upgrade value.
+3. Calibrating with a deliberately weak equipped weapon permanently lowered difficulty. New calibrations sample the strongest unlocked weapon with its actual upgrades/attachments. Equipped gun remains unchanged; existing calibrations remain intact.
+4. Away income was effectively irrelevant late game (86,400 salvage over8h in sample). Calibrated away income is now25% of estimated normal road earnings at1x,8h cap; sample35.7M/8h. No boss, risk-route or3x multiplier. Estimate uses frozen calibration, so it is not guaranteed to equal25% of actual optimized income. This is a significant economy increase and should be monitored.
+5. Unlocked abilities could retain a stale accessibility label claiming they were locked. Clear that label after unlock.
+
+Simulation evidence
+Before: unspent late build advances499 to611 in30min, then eventually dies around814 in the4h scenario. Buying upgrades advances to784; automatically using every ultimate reaches698; selective skill policy reaches791.
+After: unspent late build advances to612 in30min, eventually dies around824. Upgrade/active/selective outcomes remain784/698/791. This patch deliberately avoids another large late-game nerf.
+Fresh1h scripted runs: upgrade-only before54/34deaths, after119/18deaths; active before64/14deaths, after204/2deaths. These aggressive purchase/retry scripts expose the early cliff and the value of defense; a real player will not follow these exact paths. Untouched starter still dies at first boss, so onboarding remains important.
+Weapon boss benchmark at equal attachment3/reforge2: Boilerjaw29s, Keelspike36s, others45-50s including approach. Boilerjaw dominates raw single-target throughput; Keelspike retains anti-guard utility. Do not flatten all weapons to identical stats; give underused ones encounter niches.
+Mod benchmark: no mod29.4s, brick30.05s, whoopee26.6s, duck29.4s, confetti32.2s. Brick's slower rate can lose despite larger impacts. Duck is redundant when already at full health. Confetti intentionally trades speed for salvage.
+All campaign tier1 and10 samples complete in23.15s including1.5s entry, with most time spent approaching enemies. Tier10 repeat pays26Tideglass (~67/min at1x). Late builds have outgrown campaign difficulty. No immediate campaign reward nerf applied.
+
+Recommended next design pass, in priority order
+1. Optional challenge campaigns: clearly advertised modifiers (guarded convoy, repair crew, swarms), tiered rewards and first-clear goals. Keep a farmable normal mode. Fixed tiers, not enemies that rescale after every player upgrade. Make weapon/skill choice matter.
+2. Boss decisions: visible attack intent and short vulnerability windows. Volley interrupts a repair; Step Shell handles a heavy attack; Samurai capitalizes on a damage window. Avoid mandatory precision timing on phones and avoid forcing interaction for normal farming.
+3. Weapon identities: test Rivet Rattle against swarms/rapid-hit shields, Keelspike against guards/captains, Boilerjaw against slow armored targets. Show concise matchup guidance. Review Brick as stagger/armor break rather than merely a tiny DPS tradeoff.
+4. Mid-term goals: explicit next milestone/reward, campaign badges, cosmetic unlocks and boat/crew development. Existing campaign tiers and weapon mastery end too early compared with the endless road.
+5. Economics: measure salvage earned/spent and time-to-purchase for weapon tiers, paints and Overclock. Away-income change means sinks need observation. Do not make weak idle income the reason to keep the app open.
+6. Optional session summary: stages gained, deaths, salvage spent, next meaningful unlock. Useful for future balance feedback without collecting player data automatically.
+
+Remaining risks
+Individual once-per-save calibration remains a migration compromise, not a globally standardized competitive ladder. Campaign content is still finite. Repeated entry/claim at3x accelerates Tideglass farming. Browser-only saves/currencies can be edited; before any real-money shop, purchases and valuable balances need server-side validation. No paywall or telemetry added.
+
+Reproduce
+node tests/audit-progression.cjs
+node tests/pacing.cjs
+node tests/prepare-stable-tabs.cjs then open stable-review.html (isolated save fixture).
+Detailed scenario outputs: progression-audit-before.json and progression-audit-after.json.
