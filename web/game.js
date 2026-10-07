@@ -89,6 +89,7 @@ function effects(){
  for(const s of model.enemyShots){if(s.kind==='slam'||s.kind==='burrow'){ctx.strokeStyle=s.kind==='slam'?'#b65332':'#746348';ctx.lineWidth=5;ctx.beginPath();ctx.arc(s.x,570,s.kind==='slam'?22:13,Math.PI,Math.PI*2);ctx.stroke();}else{ctx.save();ctx.translate(s.x,s.y);ctx.rotate(model.time*8);path([[-6,0],[0,-5],[6,1],[0,5]],s.kind==='burst'?'#426d68':'#ae6a48');ctx.restore();}}
 
  for(const s of model.shots){const travel=s.x-s.startX;ctx.save();ctx.translate(s.x,s.y);if(s.secondary)ctx.scale(.55,.55);if(model.lowTideTime>0){ctx.globalAlpha=.65;ctx.scale(.8,.8);}
+  if(typeof drawShopProjectile==='function'&&drawShopProjectile(ctx,s,travel)){ctx.restore();continue;}
   if(['repeater','riveter','harpoon'].includes(s.weapon)){ctx.strokeStyle='#244f54';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(-Math.min(65,travel),0);ctx.lineTo(0,0);ctx.stroke();ctx.strokeStyle='#a4ddd0';ctx.lineWidth=2;ctx.stroke()}
   else if(['lowtide','boiler'].includes(s.weapon)){for(let i=-2;i<=2;i++){const y=i*Math.min(7,travel*.04);path([[-8,y-2],[3,y-2],[6,y+1],[-5,y+3]],i%2?'#c86a3c':'#f4d695','#322d26',1)}}
   else path([[-9,-3],[2,-3],[6,0],[2,3],[-9,3]],'#f5e1b1','#302f24',2);ctx.restore();
@@ -134,6 +135,7 @@ Promise.all(['animation.json','gameplay.json','enemies/bounds.json','parallax.js
  for(const kind of ['punch','walk'])pending.push(loader.image(stepShellImages[kind],stepShellConfig[kind].sheet+'?v=comic-hd-2'));
  for(const l of parallax.layers)pending.push(loader.image(sceneryImages[l.image]=new Image(),'scenery/'+l.image+'.png'));
  for(const [name,file] of [...samuraiConfig.clips.map(c=>[c.name,c.image]),['katana','katana.png'],['original','walk-original.png']])pending.push(loader.image(samuraiImages[name]=new Image(),'samurai/'+file+'?v=comic-hd-2'));
+ for(const [id,art] of Object.entries(typeof BrineProjectileArt==='undefined'?{}:BrineProjectileArt))pending.push(loader.image(shopProjectileImages[id]=new Image(),art.image));
  await Promise.all(pending);
  await loader.preparing('Preparing Step Shell animations');
  for(const kind of ['punch','walk'])stepShellImages[kind]=prepareStepShellImage(stepShellImages[kind],stepShellConfig[kind]);

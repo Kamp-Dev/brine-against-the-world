@@ -1,0 +1,17 @@
+.scrapyard-switch,.scrap-tabs{display:flex;gap:6px;margin:0 0 10px}.scrapyard-switch button,.scrap-tabs button{flex:1;min-height:42px;background:var(--ref-teal);border:1px solid #eeddb4;color:#f9edcf;font:700 max(12px,2.6cqw) 'Barlow Condensed';padding:6px}.scrapyard-switch button[aria-pressed=true],.scrap-tabs button[aria-pressed=true]{background:#b95735}
+[data-panel=guns].scrapyard-open>:not(.scrapyard-switch):not(#scrapyard){display:none!important}
+#scrapyard{color:#0b3039;font-family:'Barlow Condensed',sans-serif}#scrapyard[hidden]{display:none}
+.scrap-heading{display:flex;justify-content:space-between;align-items:center;background:var(--ref-teal);color:#fff0c6;padding:10px;margin-bottom:10px;border:2px solid #d3c599}.scrap-heading h2{font:4cqw Bungee;margin:0!important}.scrap-heading small{display:block;font-size:12px}.scrap-heading>strong{text-align:right;font-size:22px}
+.scrap-options{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;scrollbar-color:#e39d69 #123c43}.scrap-options button{flex:0 0 24%;min-height:90px;background:var(--ref-paper);color:#12343d;border:2px solid #a5b8ad;font:700 13px 'Barlow Condensed';padding:6px}.scrap-options button[aria-pressed=true]{border:3px solid #bd5532}.scrap-options i{display:block;width:26px;height:26px;border:2px solid #12343d;border-radius:50%;margin:0 auto 6px}.scrap-options span,.scrap-options small{display:block}.scrap-options svg{width:45px;height:45px}
+.scrap-detail{background:var(--ref-paper);border:1cqw solid transparent;border-image:url('ui/reference/row-frame.png') 12 stretch;padding:12px;margin:8px 0}.scrap-detail h3{font:700 max(22px,4cqw) 'Barlow Condensed';margin:0;color:#10323a}.scrap-detail p{font-size:max(15px,2.8cqw);line-height:1.25}.scrap-detail .scrap-muted{font-size:max(13px,2.4cqw);color:#31565b}.scrap-preview{position:static!important;display:block;width:100%!important;height:auto!important;aspect-ratio:600/250}.scrap-mod-art{text-align:center}.scrap-mod-art svg{width:100px;height:100px}.scrap-purchase,.scrap-remove{width:100%;min-height:44px;padding:8px;border:2px solid #123b42;background:var(--ref-teal);color:#fff0c6;font:700 17px 'Barlow Condensed'}.scrap-purchase:disabled{opacity:.65}.scrap-remove{margin-top:8px;background:#f3e4bd;color:#10333a}.scrap-result:empty{display:none}
+
+#drawer #scrapyard .scrap-heading h2{color:#fff0c6;font:4cqw Bungee;margin:0!important}
+#drawer #scrapyard .scrap-options button{background:var(--ref-paper);color:#12343d;display:block;position:static;text-align:center;border:2px solid #8fa9a4}
+#drawer #scrapyard .scrap-options button[aria-pressed=true]{border:3px solid #bc5534}
+#drawer #scrapyard .scrap-options span,#drawer #scrapyard .scrap-options small{color:#12343d;position:static}
+#drawer #scrapyard .scrap-detail h3{color:#10323a;font-size:22px}
+#drawer #scrapyard .scrap-detail p{color:#10323a;position:static}
+#drawer #scrapyard .scrap-detail .scrap-purchase{position:static;display:block;background:var(--ref-teal);color:#fff0c6;width:100%}
+#drawer #scrapyard .scrap-detail .scrap-remove{position:static;background:#f3e4bd;color:#10333a;width:100%}
+
+#drawer #scrapyard canvas[data-projectile-icon]{position:static;width:100px;height:100px}#drawer #scrapyard .scrap-options canvas[data-projectile-icon]{width:45px;height:45px}

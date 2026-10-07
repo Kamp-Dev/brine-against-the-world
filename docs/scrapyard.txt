@@ -1,0 +1,14 @@
+Scrapyard Shop
+Available in Gear, with shell paints, weapon casing paints and one mod per gun.
+Purchases use salvage, have fixed prices and progression gates, and persist in saves.
+Existing saves receive an empty shop without losing progression.
+
+Projectile artwork: original eight-frame sheets supplied by the user. Frames use alpha bounds; the source PNGs are unchanged. Brick and duck tumble; cushion ping-pongs with squash and bob; confetti uses colorful canvas particles. Projectiles remember the equipped mod at firing time.
+
+Comic captions: !!, Quack, Pfft (wind emoji). Eligible direct hits roll a 30% chance after at least ten real seconds, followed by another 10-14 second cooldown. Game speed does not accelerate the cooldown. Captions last 1.3 seconds and do not pause combat.
+
+Paint uses a saturated rust/orange mask, preserving alpha, cream and dark ink. Recolored frame cache is bounded to 48 MiB. Original artwork is unchanged.
+
+Mods: brick +25% damage with 20% longer shot interval; cushion fourth hit +45%; duck fifth hit heals 2% max HP; confetti -10% damage and +15% salvage on gun-finished road battles, excluding campaign rewards.
+
+Ships/passive income remain proposed concepts, not part of this release.
