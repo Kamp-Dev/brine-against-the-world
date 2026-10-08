@@ -26,7 +26,7 @@
   json:async url=>JSON.parse(await (await transfer(url)).text()),
   image:async(im,url)=>{const blob=await transfer(url),local=URL.createObjectURL(blob);try{im.src=local;await im.decode();return im;}finally{URL.revokeObjectURL(local);}},
   preparing:async(text='Preparing animations')=>{setPhase(text);await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,0)));},
-  finish:()=>{clearInterval(timer);el('load-progress').value=100;el('load-percent').textContent='100%';el('loading').hidden=true;},
+  finish:()=>{clearInterval(timer);el('load-progress').value=100;el('load-percent').textContent='100%';if(root.BrineTitleReady){root.BrineTitleReady.then(()=>{el('loading').hidden=true;});}else el('loading').hidden=true;},
   fail:()=>{failed=true;clearInterval(timer);el('load-phase').textContent='Download interrupted';el('load-eta').textContent='Check your connection, then try again. Your saved progress is kept.';el('load-retry').hidden=false;}
  };
  el('load-retry').onclick=()=>location.reload();setPhase(phase);

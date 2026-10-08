@@ -2,4 +2,5 @@
 #loading-title img,#loading-title video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 #loading-title video{opacity:0}
 #loading-title.title-playing video{opacity:1}
-@media(prefers-reduced-motion:reduce){#loading-title video{display:none}}
+.title-play{display:block;margin:0 auto 4%;padding:3% 5%;border:2px solid #092329;background:#bd572e;color:#fff0c6;font:4cqw Bangers,sans-serif;cursor:pointer}
+.title-play[hidden]{display:none}
