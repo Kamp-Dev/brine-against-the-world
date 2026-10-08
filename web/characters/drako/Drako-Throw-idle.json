@@ -1,0 +1,203 @@
+{
+  "frames": {
+    "idle_001": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 498,
+        "h": 444
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 498,
+        "h": 444
+      },
+      "sourceSize": {
+        "w": 498,
+        "h": 444
+      },
+      "duration": 125
+    },
+    "idle_002": {
+      "frame": {
+        "x": 498,
+        "y": 0,
+        "w": 498,
+        "h": 444
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 498,
+        "h": 444
+      },
+      "sourceSize": {
+        "w": 498,
+        "h": 444
+      },
+      "duration": 125
+    },
+    "idle_003": {
+      "frame": {
+        "x": 996,
+        "y": 0,
+        "w": 498,
+        "h": 444
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 498,
+        "h": 444
+      },
+      "sourceSize": {
+        "w": 498,
+        "h": 444
+      },
+      "duration": 125
+    },
+    "idle_004": {
+      "frame": {
+        "x": 1494,
+        "y": 0,
+        "w": 498,
+        "h": 444
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 498,
+        "h": 444
+      },
+      "sourceSize": {
+        "w": 498,
+        "h": 444
+      },
+      "duration": 125
+    },
+    "idle_005": {
+      "frame": {
+        "x": 0,
+        "y": 444,
+        "w": 498,
+        "h": 444
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 498,
+        "h": 444
+      },
+      "sourceSize": {
+        "w": 498,
+        "h": 444
+      },
+      "duration": 125
+    },
+    "idle_006": {
+      "frame": {
+        "x": 498,
+        "y": 444,
+        "w": 498,
+        "h": 444
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 498,
+        "h": 444
+      },
+      "sourceSize": {
+        "w": 498,
+        "h": 444
+      },
+      "duration": 125
+    },
+    "idle_007": {
+      "frame": {
+        "x": 996,
+        "y": 444,
+        "w": 498,
+        "h": 444
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 498,
+        "h": 444
+      },
+      "sourceSize": {
+        "w": 498,
+        "h": 444
+      },
+      "duration": 125
+    },
+    "idle_008": {
+      "frame": {
+        "x": 1494,
+        "y": 444,
+        "w": 498,
+        "h": 444
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 498,
+        "h": 444
+      },
+      "sourceSize": {
+        "w": 498,
+        "h": 444
+      },
+      "duration": 125
+    }
+  },
+  "meta": {
+    "app": "SpriteForge Animation Editor",
+    "version": "1.0.0",
+    "image": "Drako-Throw-idle.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1992,
+      "h": 888
+    },
+    "scale": "1",
+    "name": "idle",
+    "fps": 8,
+    "loop": true,
+    "anchor": {
+      "x": 0.5,
+      "y": 1,
+      "description": "bottom-center of frame canvas"
+    },
+    "sourceRange": {
+      "start": 0,
+      "end": 7
+    },
+    "frameTags": [
+      {
+        "name": "idle",
+        "from": 0,
+        "to": 7,
+        "direction": "forward"
+      }
+    ]
+  }
+}
