@@ -3,3 +3,12 @@
 #drawer #captain-kits>h2,#drawer #captain-intel>h2{color:#fff0cc;font:700 25px/1.2 'Barlow Condensed';margin:16px 0 12px}
 
 #battle-speed[data-afk=true]::after{content:"AFK";position:absolute;top:100%;left:0;right:0;background:#f4e5bf;color:#123941;font:700 11px/1.2 sans-serif;text-align:center}
+
+/* Keep navigation and primary controls in view; avoid duplicate shop loadouts. */
+#drawer .scrapyard-open #captain-kits{display:none}
+#drawer #captain-kits .saved-kit{padding:12px;margin:8px 0}
+#drawer #captain-kits .saved-kit h3{font-size:21px;margin:0 0 6px}
+#drawer #captain-kits .saved-kit p{margin:6px 0;font-size:18px}
+#drawer #captain-kits .kit-actions button{min-height:44px;padding:8px}
+#screen[data-deck=camp] #drawer .fleet-portrait{height:clamp(120px,33cqw,180px);margin-bottom:8px}
+@media(prefers-reduced-motion:reduce){#comic-notice .reward-crate:before,#deck-home #next-goal[data-ready=true]:before,#campaign-banner[data-ready=true]:before{animation:none!important}}

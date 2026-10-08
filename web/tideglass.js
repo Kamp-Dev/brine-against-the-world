@@ -11,7 +11,7 @@ const campaigns=[{id:'breakwater',name:'Breakwater Sweep',unlock:10,stage:6,rout
 const integer=(v,max)=>Number.isFinite(v)?Math.max(0,Math.min(max,Math.floor(v))):0;
 const fresh=()=>({version:1,tideglass:0,overclock:{power:0,hull:0,tempo:0},cleared:[0,0,0],run:null,refundDone:true,notice:''});
 function settings(s){return {...s,weapons:[...s.weapons.filter(w=>!guns.some(g=>g.id===w.id)),...guns]};}
-function format(value){return Math.abs(value)>=1e15?value.toExponential(2):Math.abs(value)<10000?Number(value.toFixed(2)).toLocaleString('en-US'):value.toLocaleString('en-US',{notation:'compact',maximumFractionDigits:2});}
+function format(value){if(!Number.isFinite(value))return '—';const n=Math.abs(value)<.005?0:value;return Math.abs(n)>=1e15?n.toExponential(1):n.toLocaleString('en-US',{notation:Math.abs(n)>=1000?'compact':'standard',maximumFractionDigits:Math.abs(n)>=1000?1:2});}
 function effective(rank,knee=60){return rank<=knee?rank:knee+knee*Math.log1p((rank-knee)/knee);}
 function clockBonus(rank,step){return effective(rank,20)*step;}
 function cost(rank){return Math.ceil((30+rank*20)*Math.max(1,rank/20)**1.5);}

@@ -42,10 +42,10 @@ function renderReferenceBattle(){
   }
  };
  const previous=refresh;refresh=function(){previous();const page=screen.dataset.deck||'road',info=pageInfo[page];$('ref-page-title').textContent=info[0];$('ref-page-description').textContent=info[1];$('ref-page-icon').style.setProperty('--icon','url(ui/reference/icon-'+info[2]+'.png)');banner.dataset.page=page;advanced.hidden=page!=='build';
-  $('ref-salvage').textContent=BrineTideglass.format(model.gold);$('ref-glass').textContent=BrineTideglass.format(model.forge.tideglass);
+  $('ref-salvage').textContent=BrineTideglass.format(model.gold);$('ref-salvage').title=Math.floor(model.gold).toLocaleString('en-US')+' salvage';$('ref-glass').textContent=BrineTideglass.format(model.forge.tideglass);$('ref-glass').title=model.forge.tideglass.toLocaleString('en-US')+' Tideglass';
   $('ref-player-name').textContent='BRINE · LV '+model.level;$('ref-enemy-name').textContent=model.enemy.name.toUpperCase();
   for(const [el,hp,max] of [[hud.children[0],model.playerHp,model.maxPlayerHp],[hud.children[1],model.hp,model.maxHp]]){el.querySelector('.ref-hp i').style.width=Math.max(0,Math.min(100,hp/max*100))+'%';el.querySelector('.ref-hp b').textContent=BrineTideglass.format(hp)+' / '+BrineTideglass.format(max);}
-  const xp=levelProgress();$('ref-xp-text').textContent='XP   '+xp.earned+' / '+xp.needed;hud.querySelector('.ref-xp i').style.width=xp.ratio*100+'%';
+  const xp=levelProgress();$('ref-xp-text').textContent='XP '+BrineTideglass.format(xp.earned)+' / '+BrineTideglass.format(xp.needed);hud.querySelector('.ref-xp i').style.width=xp.ratio*100+'%';
   for(const id of Object.keys(descriptions)){const b=$('upgrade-'+id);b.querySelector('.ref-rank').textContent='RANK '+model.upgrades[id]+' / '+(Number.isFinite(model.cap(id))?model.cap(id):'∞');b.querySelector('.ref-buy').textContent=model.upgrades[id]>=model.cap(id)?'MAXED':b.dataset.locked==='true'?'LOCKED':'UPGRADE';}
   formStatus.hidden=!model.ultimateActive&&!(model.lowTideTime>0);formStatus.textContent=model.lowTideTime>0?'LOW TIDE · '+model.recoverySeconds+'s — Damage −40% / incoming +25%':formName()+' · '+model.ultimateSeconds+'s · STRAIN '+Math.round(Math.min(100,model.formStrain/25*100))+'%';
   const q=$('ultimate-quick'),status=model.ultimateActive?model.ultimateSeconds+'s':model.lowTideTime>0?'REST '+model.recoverySeconds+'s':!J.available(model,model.selectedForm)?'LOCKED':model.paused?'PAUSED':model.pendingUltimate?'QUEUED':model.ultimateCharge>=100?'READY':Math.floor(model.ultimateCharge)+'%';
