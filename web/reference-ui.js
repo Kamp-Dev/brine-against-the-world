@@ -5,8 +5,8 @@ function renderReferenceBattle(){
  ctx.save();ctx.beginPath();ctx.rect(6,top,438,bottom-top);ctx.clip();fill(6,top,438,bottom-top,'#e9ddb5');
  const sceneScale=.75,sceneY=bottom-577*sceneScale;
  ctx.save();ctx.translate(0,sceneY);ctx.scale(sceneScale,sceneScale);
- for(const l of parallaxData.layers){const travel=model.distance*l.speed/l.period,base=Math.floor(travel),offset=(travel-base)*l.period;for(let tile=-1;tile<4;tile++){const flip=(base+tile)%2!==0;ctx.save();ctx.translate(tile*l.period-offset+(flip?l.period:0),l.y);ctx.scale(flip?-1:1,1);ctx.drawImage(sceneryImages[l.image],0,0,l.period+.5,l.height);ctx.restore();}if(l===parallaxData.layers[0]&&typeof drawHarborGrowth==='function'){ctx.save();ctx.translate(0,249);drawHarborGrowth(ctx,model);ctx.restore();}}
- ctx.restore();ctx.save();ctx.translate(48,bottom-577*.72);ctx.scale(.72,.72);enemy();actor();effects();ctx.restore();ctx.restore();
+ if(!window.drawCraftScenery?.(ctx,model)){for(const l of parallaxData.layers){const travel=model.distance*l.speed/l.period,base=Math.floor(travel),offset=(travel-base)*l.period;for(let tile=-1;tile<4;tile++){const flip=(base+tile)%2!==0;ctx.save();ctx.translate(tile*l.period-offset+(flip?l.period:0),l.y);ctx.scale(flip?-1:1,1);ctx.drawImage(sceneryImages[l.image],0,0,l.period+.5,l.height);ctx.restore();}if(l===parallaxData.layers[0]&&typeof drawHarborGrowth==='function'){ctx.save();ctx.translate(0,249);drawHarborGrowth(ctx,model);ctx.restore();}}
+ }ctx.restore();ctx.save();ctx.translate(48,bottom-577*.72);ctx.scale(.72,.72);enemy();actor();effects();ctx.restore();ctx.restore();
 }
 (()=>{
  const screen=$('screen');screen.dataset.layout='reference';BrineDisplay.apply();

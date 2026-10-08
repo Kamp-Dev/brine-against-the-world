@@ -18,7 +18,7 @@ ctx.drawImage=function(image,...a){
  const f=a.length===8?shopPaintFrame(image,paint,...a.slice(0,4)):shopPaintFrame(image,paint);
  return a.length===8?shopDrawImage(f.image,0,0,f.sw,f.sh,...a.slice(4)):shopDrawImage(f.image,...a);
 };
-const shopEffects=effects;effects=function(){shopEffects();for(const e of model.effects){if(e.type==='confetti-burst'){ctx.save();ctx.translate(e.x,e.y);ctx.globalAlpha=Math.min(1,e.life/.16);drawConfettiFrame(ctx,4+Math.min(3,Math.floor((1-e.life/e.duration)*4)));ctx.restore();continue;}if(e.type!=='shop-mod')continue;ctx.save();ctx.translate(e.x,e.y);ctx.globalAlpha=e.life/e.duration;ctx.strokeStyle='#092e36';ctx.lineWidth=2;const t=1-e.life/e.duration;for(let n=0;n<7;n++){const a=n*6.283/7,x=Math.cos(a)*(12+t*35),y=Math.sin(a)*(12+t*35);ctx.fillStyle=e.mod==='duck'?'#f2cf69':n%2?'#ee805d':'#9acac0';ctx.beginPath();ctx.arc(x,y,e.mod==='whoopee'?5:3,0,7);ctx.fill();ctx.stroke();}ctx.restore();}};
+const shopEffects=effects;effects=function(){shopEffects();for(const e of (globalThis.brineCombatVisual?.accents||[])){if(e.type==='confetti-burst'){ctx.save();ctx.translate(e.x,e.y);ctx.globalAlpha=Math.min(1,e.life/.16);drawConfettiFrame(ctx,4+Math.min(3,Math.floor((1-e.life/e.duration)*4)));ctx.restore();continue;}if(e.type!=='shop-mod')continue;ctx.save();ctx.translate(e.x,e.y);ctx.globalAlpha=e.life/e.duration;ctx.strokeStyle='#092e36';ctx.lineWidth=2;const t=1-e.life/e.duration;for(let n=0;n<7;n++){const a=n*6.283/7,x=Math.cos(a)*(12+t*35),y=Math.sin(a)*(12+t*35);ctx.fillStyle=e.mod==='duck'?'#f2cf69':n%2?'#ee805d':'#9acac0';ctx.beginPath();ctx.arc(x,y,e.mod==='whoopee'?5:3,0,7);ctx.fill();ctx.stroke();}ctx.restore();}};
 
 // Supplied projectile sheets are loaded alongside the battle artwork.
 const shopProjectileImages={};
@@ -43,7 +43,7 @@ const shopDamageNumbers=drawComicDamageNumbers;
 drawComicDamageNumbers=function(c,effects,format){
  shopDamageNumbers(c,effects,format);const now=performance.now();
  model.shopCaptions=(model.shopCaptions||[]).filter(e=>now-e.at<1300);
- for(const e of model.shopCaptions){const age=(now-e.at)/1000,t=age/1.3,brick=e.mod==='sinker',x=Math.max(100,Math.min(415,e.x-(brick?0:65))),y=Math.max(315,e.y-(brick?70:36))-t*25;
+ for(const e of model.shopCaptions.slice(globalThis.brineVisualMode==='calm'?-1:-2)){const age=(now-e.at)/1000,t=age/1.3,brick=e.mod==='sinker',x=Math.max(100,Math.min(415,e.x-(brick?0:65))),y=Math.max(315,e.y-(brick?70:36))-t*25;
   c.save();c.translate(x,y);c.rotate(-.1);const pop=age<.12?.7+age*3:1;c.scale(pop,pop);c.globalAlpha=Math.min(1,(1.3-age)/.25);c.font='24px Bangers, "Segoe UI Emoji", sans-serif';c.textAlign='center';c.textBaseline='middle';c.lineJoin='round';c.lineWidth=5;c.strokeStyle='#08252d';const text=brick?'!!':e.mod==='duck'?'Quack':'Pfft 💨';c.strokeText(text,0,0);c.fillStyle=brick?'#ff9864':e.mod==='duck'?'#ffdc66':'#ff9cc8';c.fillText(text,0,0);c.restore();
  }
 };

@@ -55,7 +55,7 @@ function pose(){const firing=model.state!=='travel'&&!model.meleeWalking,a=firin
  else if(model.state==='lower')phase=Math.min(6,model.age/model.settings.lowerDuration*7);
  const lowering=firing&&model.state==='lower',f=lowering?6-Math.floor(phase):Math.floor(phase),img=firing&&f!==0?fire:walk,b=a.renderBounds||{x:190,y:20,w:413,h:405},k=120/b.h,left=124-b.w*k/2,top=452,p=a.grips[f],next=a.grips[lowering?Math.max(0,f-1):firing?Math.min(6,f+1):(f+1)%a.frames];
  const t=phase-Math.floor(phase),w=equipped(),u=Math.min(1,model.sinceShot/model.settings.recoilDuration);
- const kick=firing?Math.sin(Math.PI*u)*Math.exp(-3*u)*3*w.recoil:0,lean=-kick*.012;
+ const kick=firing?Math.sin(Math.PI*u)*Math.exp(-3*u)*3*w.recoil*(globalThis.brineVisualMode==='calm'||model.interval<.22?.25:1):0,lean=-kick*.012;
  const hx=left+(p.x-b.x)*k,hy=top+(p.y-b.y)*k,dx=hx-124,dy=hy-572;
  const bearing=0; // Weapon barrel artwork is horizontal; grip-to-muzzle offset is not its angle.
  return{a,img,f,b,k,left,top,lean,grip:{x:124+dx*Math.cos(lean)-dy*Math.sin(lean),y:572+dx*Math.sin(lean)+dy*Math.cos(lean),angle:p.angle+(next.angle-p.angle)*t+bearing+lean-kick*.025,scale:.85}}}
@@ -77,24 +77,26 @@ function enemy(){
  const squash=1-windup*profile.squash+(e.action==='repair'?recoil*.12:0),bob=model.state==='travel'?Math.sin(model.time*6)*profile.bob:0;
  const h=e.height*.78,w=b.w/b.h*h;
  ctx.save();/* The battle viewport owns the screen edges. Only burrowing needs a ground mask. */if(model.enemyDepth>0){ctx.beginPath();ctx.rect(-1000,-1000,3000,1573);ctx.clip();}ctx.translate(x-recoil*profile.lunge,572+bob+(model.enemyDepth||0)-windup*profile.hop);ctx.rotate(windup*profile.lean-recoil*.06);ctx.scale(1+(1-squash)*.22,squash);
- const impact=model.effects.findLast(e=>e.type==='hit'&&e.duration-e.life<.18);if(impact){const age=impact.duration-impact.life,k=(1-age/.18)*(impact.critTier?1.6:1);ctx.translate(Math.sin(age*45)*7*k,0);ctx.scale(1-.06*k,1+.045*k);if(age<.065)ctx.filter='brightness(1.35)';}
+ const impact=(globalThis.brineVisualMode==='calm'||model.interval<.22)?null:model.effects.findLast(e=>e.type==='hit'&&e.duration-e.life<.18);if(impact){const age=impact.duration-impact.life,k=(1-age/.18)*(impact.critTier?1.6:1);ctx.translate(Math.sin(age*45)*7*k,0);ctx.scale(1-.06*k,1+.045*k);if(age<.065)ctx.filter='brightness(1.35)';}
  ctx.drawImage(img,b.x,b.y,b.w,b.h,-w/2,-h,w,h);
  ctx.restore();if(model.enemyDepth>1){ctx.fillStyle='#b99a66';ctx.beginPath();ctx.ellipse(x,570,45,10,0,0,7);ctx.fill();}
 
 
 }
+const combatPresentation=BrinePresentation.create();
 function effects(){
- for(const e of model.effects)if(e.type==='hit')drawComicImpact({...e,power:e.critTier?1.15:e.weapon==='melee'?.85:.5});
+ const visual=combatPresentation.frame(model,performance.now()/1000,window.brineVisualMode||'balanced');window.brineCombatVisual=visual;
+ for(const e of visual.bursts)if(typeof drawCraftImpact==='function')drawCraftImpact(e,visual.mode);else drawComicImpact({...e,power:.6});
 
- for(const s of model.enemyShots){if(s.kind==='slam'||s.kind==='burrow'){ctx.strokeStyle=s.kind==='slam'?'#b65332':'#746348';ctx.lineWidth=5;ctx.beginPath();ctx.arc(s.x,570,s.kind==='slam'?22:13,Math.PI,Math.PI*2);ctx.stroke();}else{ctx.save();ctx.translate(s.x,s.y);ctx.rotate(model.time*8);path([[-6,0],[0,-5],[6,1],[0,5]],s.kind==='burst'?'#426d68':'#ae6a48');ctx.restore();}}
+ for(const s of visual.enemyShots){if(s.kind==='slam'||s.kind==='burrow'){ctx.strokeStyle=s.kind==='slam'?'#b65332':'#746348';ctx.lineWidth=5;ctx.beginPath();ctx.arc(s.x,570,s.kind==='slam'?22:13,Math.PI,Math.PI*2);ctx.stroke();}else{ctx.save();ctx.translate(s.x,s.y);ctx.rotate(model.time*8);path([[-6,0],[0,-5],[6,1],[0,5]],s.kind==='burst'?'#426d68':'#ae6a48');ctx.restore();}}
 
- for(const s of model.shots){const travel=s.x-s.startX;ctx.save();ctx.translate(s.x,s.y);if(s.secondary)ctx.scale(.55,.55);if(model.lowTideTime>0){ctx.globalAlpha=.65;ctx.scale(.8,.8);}
+ for(const s of visual.shots){const travel=s.x-s.startX;ctx.save();ctx.translate(s.x,s.y);if(s.secondary)ctx.scale(.55,.55);if(model.lowTideTime>0){ctx.globalAlpha=.65;ctx.scale(.8,.8);}
   if(typeof drawShopProjectile==='function'&&drawShopProjectile(ctx,s,travel)){ctx.restore();continue;}
   if(['repeater','riveter','harpoon'].includes(s.weapon)){ctx.strokeStyle='#244f54';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(-Math.min(65,travel),0);ctx.lineTo(0,0);ctx.stroke();ctx.strokeStyle='#a4ddd0';ctx.lineWidth=2;ctx.stroke()}
   else if(['lowtide','boiler'].includes(s.weapon)){for(let i=-2;i<=2;i++){const y=i*Math.min(7,travel*.04);path([[-8,y-2],[3,y-2],[6,y+1],[-5,y+3]],i%2?'#c86a3c':'#f4d695','#322d26',1)}}
   else path([[-9,-3],[2,-3],[6,0],[2,3],[-9,3]],'#f5e1b1','#302f24',2);ctx.restore();
  }
- for(const e of model.effects){
+ for(const e of [...visual.flashes,...visual.other]){
   if(e.weapon!=='melee'&&(e.type==='hit'||e.type==='flash')){const t=1-e.life/e.duration,impact=e.type==='hit',k=impact?Math.min(2,e.power||1):.42;ctx.save();ctx.translate(e.x,e.y);ctx.scale(k,k);ctx.globalAlpha=Math.max(0,1-t);
    if(e.weapon==='boiler'){
     const points=Array.from({length:20},(_,i)=>{const a=i*Math.PI/10,r=(i%2?12:28)*(1+t);return [Math.cos(a)*r,Math.sin(a)*r]});path(points,'#f3d798','#172d30',3);ctx.rotate(.15);path(points.map(([x,y])=>[x*.55,y*.55]),'#d46a43','#172d30',2);
@@ -115,7 +117,7 @@ function effects(){
  }
  if(model.lowTideTime>0){ctx.save();for(let n=0;n<4;n++){const t=(model.time*.65+n*.25)%1;ctx.globalAlpha=(1-t)*.35;ctx.fillStyle='#e8dec3';ctx.beginPath();ctx.ellipse(124+model.meleeAdvance+Math.sin(t*6+n)*13,480-t*65,4+t*8,3+t*7,0,0,7);ctx.fill();}ctx.restore();}
  drawBuildFeedback(ctx,model);
- drawComicDamageNumbers(ctx,model.effects,BrineTideglass.format);
+ drawComicDamageNumbers(ctx,visual.hits,BrineTideglass.format);
 }
 function render(t){if(ready&&last&&t-last<1000/BrineDisplay.fps-1){requestAnimationFrame(render);return;}const dt=last?Math.min((t-last)/1000,.1):0;last=t;if(ready){origin=muzzle(blendedPose().grip);origin.x+=model.meleeAdvance||0;if(!document.hidden)BrineSpeed.advance(dt,model,()=>{const p=muzzle(blendedPose().grip);p.x+=model.meleeAdvance||0;return p;});if(typeof renderReferenceBattle==='function'){renderReferenceBattle();}else{harborBackdrop();ctx.save();ctx.beginPath();ctx.rect(5,52,440,382+BrineDisplay.extra);ctx.clip();ctx.translate(0,-143+BrineDisplay.extra);enemy();actor();effects();ctx.restore();harborHUD();}refresh()}requestAnimationFrame(render)}
 function hud(){
