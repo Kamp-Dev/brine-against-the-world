@@ -9,3 +9,5 @@ Gear exposes the next weapon milestone. Build summarizes affordable upgrade cate
 Validation: all 37 test files pass, including seeded 6-hour/24-hour progression and 120-hit-per-second rendering stress. Rendering preserves late-game damage and rewards. Autoplay, auto-resume, Calm persistence and desktop/390px phone layouts checked in browser. PrintCraft validated the three print PDFs; all pages and FilmCraft frames inspected.
 
 Native Craft sources and print/promotional deliverables are in the companion brine-craft-pack, outside the game repository.
+
+Parallax correction: all districts now use continuous distance-driven background, structure and ground layers. Dry Docks restores the original illustrated quay and timber layers. Drainage and Salt Flats add independently scrolling supports and stone/iron paths. Travel stops during combat and pause. The regression suite now includes layer speeds, wrap coverage and actual model travel; all 38 test files pass.
