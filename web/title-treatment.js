@@ -9,10 +9,10 @@
  const video=document.createElement('video');
  video.muted=true;video.defaultMuted=true;video.playsInline=true;video.preload='auto';video.autoplay=true;
  video.setAttribute('muted','');video.setAttribute('playsinline','');video.setAttribute('aria-hidden','true');
- video.src='ui/title/brine-comic-title.mp4';
+ video.src='ui/title/brine-hero-intro.mp4';
  let finished=false;
- function complete(){if(finished)return;finished=true;clearTimeout(timeout);finishIntro();button.textContent='REPLAY TITLE ANIMATION';}
- const timeout=setTimeout(complete,6000);
+ function complete(){if(finished)return;finished=true;clearTimeout(timeout);finishIntro();button.textContent='REPLAY INTRO';}
+ const timeout=setTimeout(complete,10000);
  video.addEventListener('playing',()=>host.classList.add('title-playing'));
  video.addEventListener('ended',complete);
  video.addEventListener('error',()=>{host.classList.remove('title-playing');complete();});
@@ -22,5 +22,5 @@
   video.currentTime=0;video.play().catch(()=>host.classList.remove('title-playing'));
  });
  new MutationObserver(()=>{if(loading.hidden)video.pause();}).observe(loading,{attributes:true,attributeFilter:['hidden']});
- video.play().catch(()=>{host.classList.remove('title-playing');complete();button.textContent='PLAY TITLE ANIMATION';});
+ video.play().catch(()=>{host.classList.remove('title-playing');complete();button.textContent='PLAY INTRO';});
 })();
