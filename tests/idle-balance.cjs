@@ -1,0 +1,18 @@
+const assert=require('node:assert/strict'),{fresh,late}=require('./depth-fixture.cjs'),{session}=require('../scripts/audit-idle.cjs');
+// Earning more road progress must not reduce away or fleet income, on any route.
+for(const setup of [fresh,late]){const m=setup();m.depth.boats=[1,1,1];let income=0,fleet=0;for(const stage of [1,5,25,49,50,51,80,140,220,500,1000,5000]){m.best=stage;assert(m.offlineRate>=income);assert(m.fleetRate()>=fleet);income=m.offlineRate;fleet=m.fleetRate();m.route=2;assert.equal(m.offlineRate,income);m.route=0;}}
+// A strong build at stretch 50 retains its advantage instead of raising future enemy health.
+const a=fresh(),b=fresh();for(const m of [a,b]){m.best=50;m.stage=51;}b.upgrades.damage=45;b.upgrades.speed=40;b.upgrades.shell=40;assert(a.ensureCalibrated());assert(b.ensureCalibrated());assert.equal(a.maxHp,b.maxHp);assert.equal(a.enemyDamage,b.enemyDamage);assert(b.damage>a.damage);
+// Ordinary retreat targets must be cleared and avoid repair/guard/burrow/captain loops.
+for(let best=1;best<300;best++){a.best=best;a.stage=a.farmStage;assert(a.stage<=best);assert(!a.boss);assert(!['guard','repair','burrow'].includes(a.enemy.action));}
+// Repair crews have finite supplies; a low-DPS fight cannot become an endless heal loop.
+const repair=fresh();repair.stage=4;repair.startEncounter();repair.state='fight';repair.playerHp=1e9;repair.cycle=-1e9;const cap=repair.maxHp;let healed=0;for(let i=0;i<30;i++){repair.hp=1;repair.enemyCycle=repair.enemy.interval;repair.tick(.01,{x:200,y:460});healed+=repair.hp-1;}assert(healed<=Math.round(cap*.24));assert(healed>0);assert.equal(repair.hp,1);repair.startEncounter();assert.equal(repair.repairUsed,0);
+// Fleet acquisition fits the early idle economy and improves as cleared ground improves.
+const boat=fresh();boat.best=50;boat.depth.fleetAt=1000;const cost=boat.fleetCost(0);assert(cost/boat.offlineRate<180);boat.gold=cost;assert(boat.buyBoat(0,false,1000));const rate=boat.fleetRate();boat.best=100;assert(boat.fleetRate()>rate);const s=boat.save(1000),restored=fresh();restored.load(s,1000+8*3600000);const eight=restored.gold;restored.load(s,1000+24*3600000);assert.equal(restored.gold,eight);assert.deepEqual(restored.depth.boats,s.depth.boats);
+// First-clear cargo is a milestone; low-tier replay cannot recycle the same windfall.
+const voyage=late();for(let id=0;id<3;id++){const first=voyage.challengeReward(id,1);voyage.depth.cleared[id]=1;const repeat=voyage.challengeReward(id,1);assert(first.salvage>repeat.salvage*10);assert(repeat.salvage>0);const campaign=voyage.normalCampaignReward(id,1);voyage.forge.cleared[id]=1;assert.equal(voyage.normalCampaignReward(id,1).salvage,Math.round(campaign.salvage*.2));}
+const frontier=fresh();frontier.best=50;frontier.stage=50;frontier.state='reward';frontier.ensureCalibrated();assert.equal(frontier.stage,51,'Do not replay an already-cleared captain at migration');
+// Test actual combat, purchases, deaths and retreat loops, with three deterministic random seeds.
+for(const seed of [1,17,93])for(const skills of [true,false]){const r=session({seed,skills,check:skills?1:30,minutes:360});assert(r.milestones[50]>=12&&r.milestones[50]<=60,JSON.stringify(r.milestones));assert(r.milestones[220]>=45&&r.milestones[220]<=180);assert(r.best>600&&r.best<1600);assert(r.maxStallMinutes<12);assert(r.deaths<35);}
+const long=session({minutes:1440});assert(long.best>1500);assert(long.maxStallMinutes<12);assert(long.cheapestUpgrade.minutesAway<40);
+console.log('PASS seeded 6-hour progression, 24-hour growth, fixed onboarding difficulty, sustainable away/fleet earnings, safe retreats and finite repairs');

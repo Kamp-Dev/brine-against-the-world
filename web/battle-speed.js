@@ -5,7 +5,7 @@
  if(typeof module!=='undefined'){module.exports={valid,stepper};return;}
  let speed=1;try{speed=valid(localStorage.getItem('brine-battle-speed'));}catch{}
  const away=root.BrineAway.tracker();let afk=false,lastModel=null;const timer=stepper(),button=document.getElementById('battle-speed'),choice=document.getElementById('speed-choice');
- function paint(){button.textContent=(afk?1:speed)+'x';button.title=afk?'AFK: 25% of estimated 1x road income. Interact to resume.':'Change battle speed';button.dataset.fast=!afk&&speed>1;button.dataset.afk=String(afk);button.setAttribute('aria-label','Battle speed '+(afk?1:speed)+' times. Activate to change speed.');choice.value=String(speed);}
+ function paint(){button.textContent=(afk?1:speed)+'x';button.title=afk?'AFK: earning salvage from cleared ground. Interact to resume.':'Change battle speed';button.dataset.fast=!afk&&speed>1;button.dataset.afk=String(afk);button.setAttribute('aria-label','Battle speed '+(afk?1:speed)+' times. Activate to change speed.');choice.value=String(speed);}
  function set(value){speed=valid(value);try{localStorage.setItem('brine-battle-speed',speed);}catch{}paint();}
  button.onclick=()=>set(speed===3?1:speed+1);choice.onchange=()=>set(choice.value);
  root.BrineSpeed={advance(dt,model,origin){lastModel=model;const result=away.step(Date.now(),model.offlineRate,model.paused);if(afk!==result.afk){afk=result.afk;timer.reset();paint();}if(afk){model.gold=Math.min(Number.MAX_VALUE,model.gold+result.gain);return;}timer.advance(dt,speed,model,origin);},reset:()=>timer.reset()};
