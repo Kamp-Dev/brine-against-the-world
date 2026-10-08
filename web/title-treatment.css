@@ -1,0 +1,5 @@
+#loading-title{position:relative;width:min(100%,64cqw);aspect-ratio:1;margin:0 auto 4%;overflow:hidden;background:#092329;border:2px solid #071d22}
+#loading-title img,#loading-title video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+#loading-title video{opacity:0}
+#loading-title.title-playing video{opacity:1}
+@media(prefers-reduced-motion:reduce){#loading-title video{display:none}}
