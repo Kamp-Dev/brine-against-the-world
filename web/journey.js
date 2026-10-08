@@ -1,8 +1,8 @@
 (function(root){
 'use strict';
 const rules={damage:['Damage','Available from the start',m=>true],farm:['Farming','Clear stretch 1',m=>m.best>=1],shell:['Shell','Reach level 2',m=>m.level>=2],speed:['Speed','Reach level 2',m=>m.level>=2],volley:['3-shot volley','Reach level 3',m=>m.level>=3],
- 'step-shell':['Step Shell','Clear stretch 5',m=>m.best>=5],workshop:['Workshop','Clear stretch 5',m=>m.best>=5],repeater:['Tideline','Clear stretch 6',m=>m.best>=6],contracts:['Contracts','Clear stretch 6',m=>m.best>=6],
- scavenging:['Scavenging','Clear stretch 8',m=>m.best>=8],patch:['Patch up','Clear stretch 8',m=>m.best>=8],tide:['Tide charge','Clear stretch 8',m=>m.best>=8],lowtide:['Low Tide','Clear stretch 10',m=>m.best>=10],ferry:['Ferry Dock','Clear stretch 10',m=>m.best>=10],
+ 'step-shell':['Step Shell','Clear stretch 5',m=>m.best>=5],workshop:['Workshop','Clear stretch 5',m=>m.best>=5],repeater:['Tideline','Clear stretch 15',m=>m.weaponAvailable('repeater')],contracts:['Contracts','Clear stretch 6',m=>m.best>=6],
+ scavenging:['Scavenging','Clear stretch 8',m=>m.best>=8],patch:['Patch up','Clear stretch 8',m=>m.best>=8],tide:['Tide charge','Clear stretch 8',m=>m.best>=8],lowtide:['Low Tide','Clear stretch 40',m=>m.weaponAvailable('lowtide')],ferry:['Ferry Dock','Clear stretch 10',m=>m.best>=10],
  samurai:['Samurai','Clear stretch 15',m=>m.best>=15],lighthouse:['Lighthouse','Clear stretch 15',m=>m.best>=15],scrap:['Plugger','Available from the start',m=>true]};
 const fresh=()=>({version:1,done:[],seen:['damage','scrap'],grants:[],actions:[],awaitingStart:false,replay:null});
 const clean=a=>Array.isArray(a)?[...new Set(a.filter(v=>typeof v==='string'&&v.length<50))].slice(0,80):[];

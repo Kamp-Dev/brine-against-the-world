@@ -7,7 +7,7 @@ assert.equal(m.buy('damage'),true);assert.equal(J.scan(m),undefined);
 m.xp=30;assert.equal(J.scan(m).id,'shell');assert.equal(m.buy('shell'),true);assert.equal(J.scan(m).id,'speed');J.finish(m,'speed');assert.equal(J.active(m),undefined);
 m.xp=120;assert.equal(m.volley(),true);assert(m.journey.actions.includes('volley'));J.scan(m);
 m.best=5;assert.equal(m.ultimate(),true);assert.equal(m.equip('repeater'),false);m.ultimateTime=0;m.progress.district[0]=true;m.progress.materials=[999,999,999];assert.equal(P.build(m.progress,0),true);assert.equal(P.build(m.progress,1),false);
-m.best=6;assert.equal(m.equip('repeater'),true);assert.equal(P.selectContract(m.progress,'samurai'),false);m.progress.counts[0]=12;assert.equal(P.claimContract(m.progress),true);
+m.best=6;assert.equal(m.equip('repeater'),false);m.best=14;assert.equal(m.equip('repeater'),false);m.best=15;assert.equal(m.equip('repeater'),true);m.best=6;assert.equal(P.selectContract(m.progress,'samurai'),false);m.progress.counts[0]=12;assert.equal(P.claimContract(m.progress),true);
 m.best=10;assert.equal(P.build(m.progress,1),true);assert.equal(P.dispatch(m.progress,0,1000),true);assert(m.journey.actions.includes('dispatch'));assert.equal(P.build(m.progress,2),false);
 m.best=15;assert.equal(m.chooseForm('samurai'),true);assert.equal(P.build(m.progress,2),true);
 const s=m.save(1000),copy=new Encounter();assert(copy.load(s,1000));assert.deepEqual(copy.journey,m.journey);copy.reset();assert.equal(J.available(copy,'samurai'),false);assert.equal(copy.journey.done.length,0);

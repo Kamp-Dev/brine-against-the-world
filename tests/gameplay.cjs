@@ -16,7 +16,7 @@ until(m,()=>m.state==='fight');m.charge=100;assert(m.volley());assert.equal(m.ch
 const count=m.shotSerial;for(let i=0;i<25;i++)m.tick(.02,origin);assert.equal(m.shotSerial-count,3,'Volley fires three rapid shots');
 m.playerHp=1;until(m,()=>m.state==='defeat');assert.equal(m.playerHp,0);const dead=JSON.stringify(m);m.tick(.1,origin);assert.equal(JSON.stringify(m),dead);
 const gold=m.gold,upgrades={...m.upgrades};m.retry();assert.equal(m.playerHp,m.maxPlayerHp);assert.equal(m.gold,gold);assert.deepEqual(m.upgrades,upgrades);assert(m.farming);assert.equal(m.stage,4);
-m.toggleFarm();assert.equal(m.stage,5);assert(!m.farming);assert(m.equip('repeater'));assert.equal(m.weapon,'repeater');
+m.toggleFarm();assert.equal(m.stage,5);assert(!m.farming);assert(!m.equip('repeater'));m.best=15;assert(m.equip('repeater'));assert.equal(m.weapon,'repeater');
 m.gold=0;assert(!m.buy('shell'));assert(!m.buy('bogus'));m.gold=100;const hp=m.playerHp;assert(m.buy('shell'));assert.equal(m.playerHp,hp+25);
 m.load({version:1,savedAt:1,best:NaN,gold:Infinity,upgrades:{shell:-1},playerHp:-3},1);assert.equal(m.gold,0);assert.equal(m.best,0);assert.equal(m.state,'defeat');
 const run=new Encounter(settings);for(let i=0;i<15000&&run.best<10;i++){for(const kind of ['damage','shell','speed'])run.buy(kind);if(run.best>=3)run.equip('repeater');if(run.state==='defeat')run.retry();run.volley();run.tick(.02,origin);if(run.farming&&run.kills%3===0)run.toggleFarm()}

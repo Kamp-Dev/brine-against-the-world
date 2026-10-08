@@ -6,10 +6,10 @@ $('form-choice').onchange=()=>{model.chooseForm($('form-choice').value);persist(
 function refresh(){
  refreshTicketControls();
  $('form-choice').value=model.selectedForm;$('form-choice').disabled=model.ultimateActive;
- for(const id of model.settings.weapons.map(w=>w.id)){$(id).setAttribute('aria-pressed',model.weapon===id);$(id).disabled=model.best<model.settings.weapons.find(w=>w.id===id).unlock}
+ for(const id of model.settings.weapons.map(w=>w.id)){$(id).setAttribute('aria-pressed',model.weapon===id);$(id).disabled=!model.weaponAvailable(id)}
  $('stats').textContent='Salvage '+model.gold+' · Cleared '+model.best+' · Level '+model.level;
  $('status').textContent=model.paused?'Paused.':model.state==='defeat'?'Shell cracked. Your salvage and upgrades are safe. Refit to try again.':model.state==='reward'?'Road clear. +'+model.lastReward+' salvage.':model.farming?'Gathering salvage on cleared ground.':'Pushing toward stretch '+model.stage+(model.boss?' — boss ahead.':'.');
- for(const w of model.settings.weapons)$(w.id).querySelector('span').textContent=model.best<w.unlock?'Clear stretch '+w.unlock+' to unlock':w.description;
+ for(const w of model.settings.weapons)$(w.id).querySelector('span').textContent=!model.weaponAvailable(w.id)?'Clear stretch '+w.unlock+' to unlock':w.description;
  for(const kind of ['damage','shell','speed']){const button=$('upgrade-'+kind),rank=model.upgrades[kind];button.disabled=rank>=model.cap(kind)||model.gold<model.cost(kind);button.querySelector('.sr-only').textContent=rank>=model.cap(kind)?'Fully upgraded':'Rank '+rank+' · '+model.cost(kind)+' salvage';button.setAttribute('aria-label',rank>=model.cap(kind)?kind+' fully upgraded, rank 30 of 30':'Upgrade '+kind+', '+model.cost(kind)+' salvage, rank '+rank+' / '+(Number.isFinite(model.cap(kind))?model.cap(kind):'unlimited'))}
  $('health').textContent=model.playerHp+' / '+model.maxPlayerHp+' shell';$('health-bar').value=model.playerHp;$('health-bar').max=model.maxPlayerHp;
  const xp=levelProgress();$('xp').textContent=xp.earned+' / '+xp.needed+' XP to level '+(model.level+1);canvas.setAttribute('aria-label','Live harbor battle. Brine level '+model.level+', '+model.playerHp+' of '+model.maxPlayerHp+' health, '+xp.earned+' of '+xp.needed+' XP toward level '+(model.level+1)+'.');
@@ -126,7 +126,7 @@ function hud(){
  if(model.state==='defeat'||model.paused){ctx.fillStyle='#17221ee8';ctx.fillRect(26,237,398,122);ctx.fillStyle='#f6ead2';ctx.font='bold 24px system-ui';ctx.fillText(model.paused?'TAKE A BREATHER.':'SHELL CRACKED.',46,278);ctx.font='13px system-ui';ctx.fillText(model.paused?'Resume when you’re ready.':'Refit below. Your upgrades stay with you.',46,311)}
 }
 const loader=BrineLoading;
-Promise.all(['animation.json','gameplay.json','enemies/bounds.json','parallax.json','step-shell.json','enemy-motion.json','samurai/animation.json'].map(url=>loader.json(url+'?v=forge-24'))).then(async([d,s,b,parallax,ultimate,motion,samurai])=>{
+Promise.all(['animation.json','gameplay.json','enemies/bounds.json','parallax.json','step-shell.json','enemy-motion.json','samurai/animation.json'].map(url=>loader.json(url+'?v=weapon-pacing-1'))).then(async([d,s,b,parallax,ultimate,motion,samurai])=>{
  s=BrineTideglass.settings(s);for(const w of s.weapons)Object.assign(w,BrineWeaponArt[w.id]);enemyMotionConfig=motion;stepShellConfig=ultimate;samuraiConfig=samurai;config=d;enemyBounds=b;parallaxData=parallax;model.settings=s;model.reset();try{model.load(JSON.parse(localStorage.getItem(SAVE_KEY)))}catch{saveNote='Could not read the saved game. This session starts fresh.'}
  showOffline();persist();
  const pending=[loader.image(walk,d.walk.sheet),loader.image(fire,d.fire.sheet),loader.image(harborPlate,'ui/ticket-board.png'),loader.image(harborClean,'ui/harbor-clean.png')];

@@ -72,7 +72,7 @@ public static class BrineProject
         restored.Load(save,100000+48*3600000L);Require(restored.OfflineEarned==4800,"8 hour offline cap");
         var collected=restored.Save(100000+48*3600000L);restored.Load(collected,collected.savedAt);Require(restored.OfflineEarned==0,"no repeated offline reward");
         restored.Load(save,1);Require(restored.OfflineEarned==0,"future timestamp has no payout");
-        Require(restored.Equip("repeater"),"weapon unlock");
+        restored.Best=15;Require(restored.Equip("repeater"),"weapon unlock");
         for(int i=0;i<300 && restored.State!=EncounterState.Fight;i++)restored.Tick(.02f,215,500);
         restored.Charge=100;Require(restored.Volley() && restored.Charge==0 && !restored.Volley(),"volley consumes charge");
         int serial=restored.ShotSerial;for(int i=0;i<25;i++)restored.Tick(.02f,215,500);Require(restored.ShotSerial-serial==3,"three rapid shots");

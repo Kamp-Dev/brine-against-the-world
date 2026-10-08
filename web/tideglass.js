@@ -1,9 +1,9 @@
 (function(root){
 'use strict';
 const guns=[
- {id:'riveter',name:'Rivet Rattle',unlock:20,damage:9,interval:.65,speed:1150,recoil:.55,description:'Every fifth hit releases a double-strength rivet burst.',effect:'rivets'},
- {id:'harpoon',name:'Keelspike',unlock:35,damage:27,interval:1.6,speed:1000,recoil:1.8,description:'Ignores guard. Deals 35% extra gun damage to captains.',effect:'harpoon'},
- {id:'boiler',name:'Boilerjaw',unlock:50,damage:29,interval:1.9,speed:630,recoil:2.1,description:'Every third hit detonates pressure for triple damage.',effect:'pressure'}
+ {id:'riveter',name:'Rivet Rattle',unlock:80,damage:9,interval:.65,speed:1150,recoil:.55,description:'Every fifth hit releases a double-strength rivet burst.',effect:'rivets'},
+ {id:'harpoon',name:'Keelspike',unlock:140,damage:27,interval:1.6,speed:1000,recoil:1.8,description:'Ignores guard. Deals 35% extra gun damage to captains.',effect:'harpoon'},
+ {id:'boiler',name:'Boilerjaw',unlock:220,damage:29,interval:1.9,speed:630,recoil:2.1,description:'Every third hit detonates pressure for triple damage.',effect:'pressure'}
 ].map(w=>({...w,image:'weapons/'+w.id+'.svg',art:w.id,length:58,gripX:390,gripY:650,muzzleX:1410,muzzleY:420,splitX:620,splitY:535,scale:.05,width:1536,height:1024}));
 const upgrades={focus:{name:'Deadeye',unlock:12,cap:100,cost:90,description:'+2% crit chance per rank, up to 200%. Above 100%, roll a second crit tier.'},rupture:{name:'Rupture',unlock:20,cap:30,cost:110,description:'+5% crit damage per rank, up to 300% per crit tier.'},plating:{name:'Bulkhead',unlock:25,cap:20,cost:100,description:'Armor keeps growing. Damage reduction has diminishing returns.'}};
 const clocks={power:{name:'Hot Load',detail:'All damage',step:10,cap:Infinity},hull:{name:'Deep Shell',detail:'Maximum health',step:10,cap:Infinity},tempo:{name:'Quick Steam',detail:'Gun firing rate',step:3,cap:Infinity}};
@@ -17,7 +17,7 @@ function clockBonus(rank,step){return effective(rank,20)*step;}
 function cost(rank){return Math.ceil((30+rank*20)*Math.max(1,rank/20)**1.5);}
 function install(C,P,J){if(C.prototype.tideglassInstalled)return;C.prototype.tideglassInstalled=true;
  const oldFresh=P.fresh,oldLoad=P.load;P.fresh=function(){const p=oldFresh();p.weaponXP.push(0,0,0);p.weaponPath.push('','','');return p;};P.load=function(raw){const p=oldLoad(raw);p.weaponXP=p.weaponXP.slice(0,3).concat(guns.map((_,i)=>integer(raw?.weaponXP?.[i+3],1e6)));p.weaponPath=p.weaponPath.slice(0,3).concat(guns.map((g,i)=>P.paths[g.id].some(v=>v[0]===raw?.weaponPath?.[i+3])?raw.weaponPath[i+3]:''));return p;};
- for(const g of guns){P.ids.push(g.id);P.paths[g.id]=[['impact','Pressure load','+25% gun damage per mastery tier.'],['tempo','Clockwork feed','15% faster firing per mastery tier.']];if(J)J.rules[g.id]=[g.name,'Clear stretch '+g.unlock,m=>m.best>=g.unlock];}
+ for(const g of guns){P.ids.push(g.id);P.paths[g.id]=[['impact','Pressure load','+25% gun damage per mastery tier.'],['tempo','Clockwork feed','15% faster firing per mastery tier.']];if(J)J.rules[g.id]=[g.name,'Clear stretch '+g.unlock,m=>m.weaponAvailable(g.id)];}
  for(const [id,u]of Object.entries(upgrades))if(J)J.rules[id]=[u.name,'Clear stretch '+u.unlock,m=>m.best>=u.unlock];
  if(J){J.rules.campaigns=['Campaigns','Clear stretch 10',m=>m.best>=10];J.rules.overclock=['Overclock','Clear stretch 10',m=>m.best>=10];for(const [id,title,text,target,complete]of [
  ['campaigns','Chart a campaign','Open Camp > Campaigns. Win five battles, then collect Tideglass. Your road progress is kept safe.','#nav-camp',m=>m.forge?.cleared.some(Boolean)],

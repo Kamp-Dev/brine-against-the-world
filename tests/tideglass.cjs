@@ -2,7 +2,7 @@ const assert=require('node:assert/strict');
 const {Encounter}=require('../web/combat-v3.js'),P=require('../web/progression.js'),J=require('../web/journey.js'),F=require('../web/tideglass.js'),settings=require('../web/gameplay.json');J.install(Encounter,P);F.install(Encounter,P,J);
 const origin={x:210,y:460};
 const m=new Encounter(settings);assert.equal(m.settings.weapons.length,6);assert.equal(Object.keys(m.upgrades).length,9);assert(!m.enterCampaign(0,1));assert(!m.buyOverclock('power'));assert(!m.equip('riveter'));
-m.best=210;m.xp=30*26**2;m.gold=1e7;m.upgrades.damage=18;m.upgrades.speed=17;m.upgrades.shell=19;m.playerHp=m.maxPlayerHp;
+m.best=220;m.xp=30*26**2;m.gold=1e7;m.upgrades.damage=18;m.upgrades.speed=17;m.upgrades.shell=19;m.playerHp=m.maxPlayerHp;
 const dps=[];for(const w of m.settings.weapons){assert(m.equip(w.id));dps.push([w.name,m.damage,+(m.damage/m.interval).toFixed(1)]);}console.log('Gun baseline at level 27 / Damage 18 / Speed 17:',JSON.stringify(dps));
 m.weapon='scrap';const before=m.damage;m.forge.tideglass=100;assert(m.buyOverclock('power'));assert.equal(m.forge.tideglass,70);assert(m.damage>before);assert(!m.buyOverclock('bad'));
 const oldGold=m.gold;m.upgrades.damage=29;assert(m.cost('damage')<50000);m.upgrades.damage=18;
@@ -21,7 +21,7 @@ t=target('harpoon',3);t.hitEnemy(100,'harpoon',460);assert.equal(t.maxHp-t.hp,10
 t=target('harpoon',5);t.hitEnemy(100,'harpoon',460);assert.equal(t.maxHp-t.hp,135);
 t=target('scrap');t.upgrades.focus=20;t.upgrades.rupture=20;for(let i=0;i<5;i++)t.hitEnemy(100,'scrap',460);assert.equal(t.maxHp-t.hp,800,'Two 250% critical hits among five hits');
 t=target('scrap');t.upgrades.plating=20;t.playerHp=100;t.enemyShots=[{x:0,y:500,damage:50}];t.tick(.01,origin);assert.equal(t.playerHp,60);
-for(const id of [0,1,2]){const a=new Encounter(settings);a.load(base,1000);a.upgrades.focus=10;a.upgrades.rupture=10;a.upgrades.plating=10;a.weapon='boiler';a.enterCampaign(id,1);for(let time=0;time<240&&!a.forge.run.complete&&a.state!=='defeat';time+=.02){a.ultimate();a.volley();a.tick(.02,origin);}assert(a.forge.run.complete,'Representative veteran clears campaign '+id);assert.equal(a.best,210);}
+for(const id of [0,1,2]){const a=new Encounter(settings);a.load(base,1000);a.upgrades.focus=10;a.upgrades.rupture=10;a.upgrades.plating=10;a.weapon='boiler';a.enterCampaign(id,1);for(let time=0;time<240&&!a.forge.run.complete&&a.state!=='defeat';time+=.02){a.ultimate();a.volley();a.tick(.02,origin);}assert(a.forge.run.complete,'Representative veteran clears campaign '+id);assert.equal(a.best,220);}
 console.log('PASS: unlocks, expanded saves, old-save credit once, malformed data, all campaign clears, road isolation, first/repeat rewards, duplicate prevention, resume/retry/leave, Overclock costs, weapon mechanics, criticals and bulkhead.');
 
 // Progression checkpoints: first available campaign is viable without Overclock.
